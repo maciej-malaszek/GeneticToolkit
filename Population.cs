@@ -1,27 +1,27 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using GeneticToolkit.Interfaces;
+using GeneticToolkit.Utils.Factories;
 
 namespace GeneticToolkit
 {
-    public class Population<TFitness> : IPopulation<TFitness> where TFitness : IComparable
+    public class Population : IPopulation
     {
-        protected List<IIndividual<TFitness>> Individuals;
+        protected List<IIndividual> Individuals;
 
-        private IIndividual<TFitness> _best = null;
+        private IIndividual _best = null;
         private bool _bestIsDeprecated = true;
 
-        public Population(IFitnessFunction<TFitness> fitnessFunction, int size)
+        public Population(IFitnessFunction fitnessFunction, int size)
         {
             FitnessFunction = fitnessFunction;
-            Individuals = new List<IIndividual<TFitness>>(size);
+            Individuals = new List<IIndividual>(size);
             for(int i = 0; i < size; i++)
                 Individuals.Add(null);
         }
 
-        public IIndividual<TFitness> Best
+        public IIndividual Best
         {
             get {
                 if(_bestIsDeprecated)
@@ -34,64 +34,70 @@ namespace GeneticToolkit
 
         public uint Generation { get; protected set; } = 0;
 
-        public IIndividual<TFitness> this[int indexer]
+        public IIndividual this[int indexer]
         {
             get => Individuals[indexer];
             set => Individuals[indexer] = value;
         }
 
-        public ICompareCriteria<TFitness> CompareCriteria { get; set; }
+        public ICompareCriteria CompareCriteria { get; set; }
 
-        public ICrossOverPolicy<TFitness> CrossOverPolicy { get; set; }
+        public ICrossOverPolicy CrossOverPolicy { get; set; }
 
-        public IFitnessFunction<TFitness> FitnessFunction { get; set; }
+        public IFitnessFunction FitnessFunction { get; set; }
 
-        public IHeavenPolicy<TFitness> HeavenPolicy { get; set; }
+        public IHeavenPolicy HeavenPolicy { get; set; }
 
-        public IIncompatibilityPolicy<TFitness> IncompatibilityPolicy { get; set; }
+        public IIncompatibilityPolicy IncompatibilityPolicy { get; set; }
 
-        public IIndividualFactory<TFitness> IndividualFactory { get; set; }
+        public IndividualFactoryBase IndividualFactory { get; set; }
 
-        public IMutationPolicy<TFitness> MutationPolicy { set; get; }
+        public IMutationPolicy MutationPolicy { set; get; }
 
-        public IPopulationResizePolicy<TFitness> ResizePolicy { set; get; }
+        public IPopulationResizePolicy ResizePolicy { set; get; }
 
-        public ISelectionMethod<TFitness> SelectionMethod { get; set; }
+        public ISelectionMethod SelectionMethod { get; set; }
 
-        public IDictionary<string, IStatisticUtility<TFitness>> StatisticUtilities { get; set; }
+        public IDictionary<string, IStatisticUtility> StatisticUtilities { get; set; }
 
-        public IIndividual<TFitness> GetBest()
+        public IIndividual GetBest()
         {
-            IIndividual<TFitness> best = this[0];
+            IIndividual best = this[0];
             for(int i = 1; i < Size; i++)
                 best = CompareCriteria.GetBetter(best, this[i]);
             return best;
         }
 
-        public IOrderedEnumerable<IIndividual<TFitness>> OrderAscending()
+        public IOrderedEnumerable<IIndividual> OrderAscending()
         {
             return Individuals.OrderBy(x => CompareCriteria.FitnessFunction.GetValue(x));
         }
 
-        public IOrderedEnumerable<IIndividual<TFitness>> OrderDescending()
+        public IOrderedEnumerable<IIndividual> OrderDescending()
         {
             return Individuals.OrderByDescending(x => CompareCriteria.FitnessFunction.GetValue(x));
         }
 
         public virtual void Initialize()
         {
-            Individuals = new List<IIndividual<TFitness>>(IndividualFactory.CreateRandomPopulation(Size));
+            Generation = 0;
+            _bestIsDeprecated = true;
+            _best = null;
+            foreach (KeyValuePair<string, IStatisticUtility> statisticUtility in StatisticUtilities)
+                statisticUtility.Value.Reset();
+
+            Individuals = new List<IIndividual>(IndividualFactory.CreateRandomPopulation(Size));
         }
 
         public virtual void NextGeneration()
         {
             _bestIsDeprecated = true;
             int nextGenSize = ResizePolicy.NextGenSize(this);
-            List<IIndividual<TFitness>> nextGeneration = new List<IIndividual<TFitness>>(nextGenSize);
+            List<IIndividual> nextGeneration = new List<IIndividual>(nextGenSize);
 
             for(int i = 0; i < nextGenSize; i++)
             {
-                IIndividual<TFitness>[] parents = new IIndividual<TFitness>[CrossOverPolicy.ParentsCount];
+                IIndividual[] parents = new IIndividual[CrossOverPolicy.ParentsCount];
                 for(int x = 0; x < parents.Length; x++)
                     parents[x] = SelectionMethod.Select(this);
                 nextGeneration.Add(parents[0].CrossOver(CrossOverPolicy, parents));
@@ -112,7 +118,7 @@ namespace GeneticToolkit
             Generation++;
             Individuals = nextGeneration;
             HeavenPolicy.HandleGeneration(this);
-            foreach(KeyValuePair<string,IStatisticUtility<TFitness>> statisticUtility in StatisticUtilities)
+            foreach(KeyValuePair<string, IStatisticUtility> statisticUtility in StatisticUtilities)
             {
                 statisticUtility.Value.UpdateData(this);
             }
@@ -120,5 +126,14 @@ namespace GeneticToolkit
             GetBest();
         }
 
+        public IEnumerator<IIndividual> GetEnumerator()
+        {
+            return Individuals.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return Individuals.GetEnumerator();
+        }
     }
 }
