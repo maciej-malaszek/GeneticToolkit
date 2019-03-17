@@ -3,7 +3,7 @@ using GeneticToolkit.Interfaces;
 
 namespace GeneticToolkit.Policies.Stop
 {
-    public class TimeSpanCondition<TFitness> : IStopCondition<TFitness> where TFitness:IComparable
+    public class TimeSpanCondition : IStopCondition
     {
         public DateTime StartTime { get; set; }
 
@@ -25,11 +25,16 @@ namespace GeneticToolkit.Policies.Stop
             EndTime = StartTime + CalculationTime;
         }
 
-        public bool Satisfied(IPopulation<TFitness> population)
+        public void Reset()
+        {
+            _notStarted = true;
+        }
+
+        public bool Satisfied(IPopulation population)
         {
             if(_notStarted)
                 Start();
-            return EndTime >= DateTime.Now;
+            return  DateTime.Now >= EndTime;
         }
     }
 }

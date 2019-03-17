@@ -1,43 +1,40 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using GeneticToolkit.Utils.Factories;
 
 namespace GeneticToolkit.Interfaces
 {
-    public interface IPopulation<TFitness> where TFitness:IComparable
+    public interface IPopulation : IEnumerable<IIndividual>
     {
         int Size { get; }
 
         uint Generation { get; }
 
-        IIndividual<TFitness>  this[int indexer] { get; set; }
+        IIndividual this[int indexer] { get; set; }
 
-        ICompareCriteria<TFitness> CompareCriteria { get; set; }
+        ICompareCriteria CompareCriteria { get; set; }
 
-        ICrossOverPolicy<TFitness> CrossOverPolicy { get; set; }
+        ICrossOverPolicy CrossOverPolicy { get; set; }
 
-        IFitnessFunction<TFitness> FitnessFunction { get; set; }
+        IHeavenPolicy HeavenPolicy { get; set; }
 
-        IHeavenPolicy<TFitness> HeavenPolicy { get; set; }
+        IIncompatibilityPolicy IncompatibilityPolicy { get; set; }
 
-        IIncompatibilityPolicy<TFitness> IncompatibilityPolicy { get; set; }
+        IndividualFactoryBase IndividualFactory { get; set; }
 
-        IIndividualFactory<TFitness> IndividualFactory { get; set; }
+        IMutationPolicy MutationPolicy { set; get; }
 
-        IMutationPolicy<TFitness> MutationPolicy { set; get; }
+        IPopulationResizePolicy ResizePolicy { set; get; }
 
-        IPopulationResizePolicy<TFitness> ResizePolicy { set; get; }
+        ISelectionMethod SelectionMethod { get; set; }
 
-        ISelectionMethod<TFitness> SelectionMethod { get; set; }
+        IDictionary<string, IStatisticUtility> StatisticUtilities { get; set; }
 
-        IDictionary<string, IStatisticUtility<TFitness>> StatisticUtilities { get; set; }
+        IIndividual GetBest();
 
-        IIndividual<TFitness>  GetBest();
+        IOrderedEnumerable<IIndividual> OrderDescending();
 
-        IOrderedEnumerable<IIndividual<TFitness>> OrderDescending();
-
-        IOrderedEnumerable<IIndividual<TFitness>> OrderAscending();
+        IOrderedEnumerable<IIndividual> OrderAscending();
 
         void Initialize();
 

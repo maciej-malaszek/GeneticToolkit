@@ -1,6 +1,6 @@
 ﻿namespace GeneticToolkit.Interfaces
 {
-    public interface IPhenotypeFactory<TPhenotype> where TPhenotype : IPhenotype
+    public interface IPhenotypeFactory<out TPhenotype> where TPhenotype : IPhenotype
     {
         TPhenotype Make(IGenotype genotype);
     }

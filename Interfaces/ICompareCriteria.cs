@@ -1,11 +1,9 @@
-﻿using System;
-
-namespace GeneticToolkit.Interfaces
+﻿namespace GeneticToolkit.Interfaces
 {
-    public interface ICompareCriteria<TFitness> where TFitness:IComparable
+    public interface ICompareCriteria
     {
-        IFitnessFunction<TFitness> FitnessFunction { get; set; }
-         IIndividual<TFitness>  GetBetter( IIndividual<TFitness>  x1,  IIndividual<TFitness>  x2);
-        int Compare( IIndividual<TFitness>  x1,  IIndividual<TFitness>  x2);
+        IFitnessFunction FitnessFunction { get; set; }
+        IIndividual GetBetter(IIndividual x1, IIndividual x2);
+        int Compare(IIndividual x1, IIndividual x2);
     }
 }

@@ -1,13 +1,23 @@
-﻿using System;
+﻿using System.Collections.Generic;
+using System.Linq;
 using GeneticToolkit.Interfaces;
 
 namespace GeneticToolkit.Policies.Stop
 {
-    public class PopulationDegradation<TFitness> : IStopCondition<TFitness> where TFitness : IComparable
+    public class PopulationDegradation : IStopCondition
     {
-        public bool Satisfied(IPopulation<TFitness> population)
+        public double MaximumSimilarity { get; set; }
+        public bool Satisfied(IPopulation population)
         {
-            throw new NotImplementedException();
+            IList<IGenotype> genotypes = population.Select(x => x.Genotype).OrderByDescending(x => x).ToList();
+            return genotypes[0].SimilarityCheck(genotypes[genotypes.Count - 1]) >= MaximumSimilarity;
+        }
+
+        public void Reset() { }
+
+        public PopulationDegradation(double maximumSimilarity)
+        {
+            MaximumSimilarity = maximumSimilarity;
         }
     }
 }

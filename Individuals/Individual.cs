@@ -4,7 +4,7 @@ using GeneticToolkit.Interfaces;
 
 namespace GeneticToolkit.Individuals
 {
-    public class Individual<TFitness> : IIndividual<TFitness> where TFitness : IComparable
+    public class Individual : IIndividual
     {
         private static readonly Random Rng = new Random();
 
@@ -12,7 +12,7 @@ namespace GeneticToolkit.Individuals
 
         public IPhenotype Phenotype { get; }
 
-        public void Mutate(IMutationPolicy<TFitness> policy)
+        public void Mutate(IMutationPolicy policy)
         {
             BitArray mask = new BitArray(Genotype.Length);
             for(int i = 0; i < policy.MutatedGenesCount; i++)
@@ -21,18 +21,18 @@ namespace GeneticToolkit.Individuals
             Genotype.Genes = Genotype.Genes.Xor(mask);
         }
 
-        public int CompareTo(IIndividual<TFitness> other, ICompareCriteria<TFitness> criteria)
+        public int CompareTo(IIndividual other, ICompareCriteria criteria)
         {
             return criteria.Compare(this, other);
         }
 
-        public IIndividual<TFitness> CrossOver(ICrossOverPolicy<TFitness> policy, params IIndividual<TFitness>[] parents)
+        public IIndividual CrossOver(ICrossOverPolicy policy, params IIndividual[] parents)
         {
-            Individual<TFitness> child = new Individual<TFitness>(Genotype.ShallowCopy(), Phenotype.ShallowCopy());
+            Individual child = new Individual(Genotype.ShallowCopy(), Phenotype.ShallowCopy());
             child.Phenotype.Genotype = child.Genotype;
             int counter = 0;
             int startCut=0, endCut = 0;
-            foreach(IIndividual<TFitness> parent in parents)
+            foreach(IIndividual parent in parents)
             {
                 for(int j = 0; j < policy.CutPointsPerParent; j++)
                 {

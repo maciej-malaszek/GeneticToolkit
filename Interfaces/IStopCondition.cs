@@ -1,9 +1,9 @@
-﻿using System;
-
-namespace GeneticToolkit.Interfaces
+﻿namespace GeneticToolkit.Interfaces
 {
-    public interface IStopCondition<TFitness> where TFitness:IComparable
+    public interface IStopCondition
     {
-        bool Satisfied(IPopulation<TFitness> population);
+        bool Satisfied(IPopulation population);
+
+        void Reset();
     }
 }

@@ -1,11 +1,9 @@
-﻿using System;
-
-namespace GeneticToolkit.Interfaces
+﻿namespace GeneticToolkit.Interfaces
 {
-    public interface ISelectionMethod<TFitness> where TFitness : IComparable
+    public interface ISelectionMethod
     {
-        ICompareCriteria<TFitness> CompareCriteria { get; set; }
+        ICompareCriteria CompareCriteria { get; set; }
 
-         IIndividual<TFitness>  Select(IPopulation<TFitness> population);
+        IIndividual Select(IPopulation population);
     }
 }

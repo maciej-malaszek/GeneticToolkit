@@ -1,8 +1,6 @@
-﻿using System;
-
-namespace GeneticToolkit.Interfaces
+﻿namespace GeneticToolkit.Interfaces
 {
-    public interface IMutationPolicy<TFitness> where TFitness:IComparable
+    public interface IMutationPolicy
     {
         float MutationChance { get; }
 

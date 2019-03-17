@@ -3,15 +3,15 @@ using GeneticToolkit.Interfaces;
 
 namespace GeneticToolkit.Comparisons
 {
-    public class SimpleComparison<TFitness> : ICompareCriteria<TFitness> where TFitness : IComparable
+    public class SimpleComparison : ICompareCriteria 
     {
-        public IFitnessFunction<TFitness> FitnessFunction { get; set; }
+        public IFitnessFunction FitnessFunction { get; set; }
 
         public enum EOrder { Ascending, Descending};
 
         private EOrder Order { get; set; } = EOrder.Ascending;
 
-        public  IIndividual<TFitness> GetBetter( IIndividual<TFitness>  x1,  IIndividual<TFitness>  x2)
+        public  IIndividual GetBetter( IIndividual  x1,  IIndividual  x2)
         {
             if (x1 == null)
                 return x2;
@@ -20,7 +20,7 @@ namespace GeneticToolkit.Comparisons
             return Compare(x1, x2) <= 0 ? x1 : x2;
         }
 
-        public int Compare( IIndividual<TFitness>  x1,  IIndividual<TFitness>  x2)
+        public int Compare( IIndividual  x1,  IIndividual  x2)
         {
         
             int result = FitnessFunction.GetValue(x1).CompareTo(FitnessFunction.GetValue(x2));

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Linq;
 using GeneticToolkit.Interfaces;
 
 namespace GeneticToolkit.Genotypes
@@ -10,7 +11,6 @@ namespace GeneticToolkit.Genotypes
         public SimpleGenotype(int size)
         {
             Genes = new BitArray(size);
-
         }
 
         public virtual BitArray Genes { get; set; }
@@ -53,6 +53,23 @@ namespace GeneticToolkit.Genotypes
         {
             Randomize();
             return this;
+        }
+
+        public virtual double SimilarityCheck(IGenotype other)
+        {
+            if (other.Length != Length)
+                return 0;
+            return ((double)Length - (from bool gene in Genes.Xor(other.Genes) where gene select gene).Count())/Length;
+        }
+
+        public virtual int CompareTo(IGenotype other)
+        {
+            int i = 0;
+            bool identical = false;
+            while ((identical = Genes[i] == other.Genes[i]) && i < Length-1)
+            { i++; }
+
+            return identical ? 0 : (other.Genes[i] ? -1 : 1);
         }
     }
 }

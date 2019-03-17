@@ -3,7 +3,7 @@ using GeneticToolkit.Interfaces;
 
 namespace GeneticToolkit.Policies.CrossOver
 {
-    public class BinarySinglePoint<TFitness> : ICrossOverPolicy<TFitness> where TFitness:IComparable
+    public class BinarySinglePoint : ICrossOverPolicy
     {
         public int CutPointsPerParent => 1;
 
@@ -15,7 +15,7 @@ namespace GeneticToolkit.Policies.CrossOver
 
         public int GetCutPoint(int rangeTop, int cutIndex, int previousCut)
         {
-            if (cutIndex == TotalCuts)
+            if(cutIndex == TotalCuts)
                 return rangeTop;
             int maxCutPoint = rangeTop - TotalCuts + cutIndex;
             return _random.Next(previousCut, maxCutPoint);

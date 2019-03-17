@@ -1,8 +1,6 @@
-﻿using System;
-
-namespace GeneticToolkit.Interfaces
+﻿namespace GeneticToolkit.Interfaces
 {
-    public interface ICrossOverPolicy<TFitness> where TFitness:IComparable
+    public interface ICrossOverPolicy
     {
         int CutPointsPerParent { get; }
 

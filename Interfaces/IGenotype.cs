@@ -1,8 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 
 namespace GeneticToolkit.Interfaces
 {
-    public interface IGenotype
+    public interface IGenotype : IComparable<IGenotype>
     {
         BitArray Genes { get; set; }
 
@@ -15,5 +16,8 @@ namespace GeneticToolkit.Interfaces
         void Randomize();
 
         IGenotype Randomized();
+
+        double SimilarityCheck(IGenotype other);
+
     }
 }

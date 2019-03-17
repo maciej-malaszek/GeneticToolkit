@@ -2,10 +2,10 @@
 
 namespace GeneticToolkit.Interfaces
 {
-    public interface IIncompatibilityPolicy<TFitness> where TFitness:IComparable
+    public interface IIncompatibilityPolicy
     {
-        Func<IPopulation<TFitness>,  IIndividual<TFitness> , bool> IsCompatible { get; set; }
+        Func<IPopulation, IIndividual, bool> IsCompatible { get; set; }
 
-         IIndividual<TFitness>  GetReplacement(IPopulation<TFitness> population,  IIndividual<TFitness>  incompatibleIndividual,  IIndividual<TFitness> [] parents);
+        IIndividual GetReplacement(IPopulation population, IIndividual incompatibleIndividual, IIndividual[] parents);
     }
 }

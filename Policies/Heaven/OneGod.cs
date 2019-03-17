@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using GeneticToolkit.Interfaces;
 
 namespace GeneticToolkit.Policies.Heaven
 {
-    public class OneGod<TFitness> : IHeavenPolicy<TFitness> where TFitness:IComparable
+    public class OneGod : IHeavenPolicy
     {
-        private readonly  IIndividual<TFitness> [] _memory = new  IIndividual<TFitness> [1];
+        private readonly IIndividual[] _memory = new IIndividual[1];
 
-        public ICollection< IIndividual<TFitness> > Memory => _memory;
+        public ICollection<IIndividual> Memory => _memory;
 
-        public void HandleGeneration(IPopulation<TFitness> population)
+        public void HandleGeneration(IPopulation population)
         {
             _memory[0] = population.CompareCriteria.GetBetter(_memory[0], population.GetBest());
         }

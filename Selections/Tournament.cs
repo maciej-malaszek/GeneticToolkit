@@ -3,15 +3,15 @@ using GeneticToolkit.Interfaces;
 
 namespace GeneticToolkit.Selections
 {
-    public class Tournament<TFitness> : ISelectionMethod<TFitness> where TFitness:IComparable
+    public class Tournament : ISelectionMethod
     {
-        public ICompareCriteria<TFitness> CompareCriteria { get; set; }
-        
+        public ICompareCriteria CompareCriteria { get; set; }
+
         public int TournamentSize { get; set; }
 
         private readonly Random _random = new Random();
 
-        public IIndividual<TFitness> Select(IPopulation<TFitness> population)
+        public IIndividual Select(IPopulation population)
         {
             int realSize = Math.Max(Math.Min(population.Size - 1, TournamentSize), 1);
             if(population == null)
@@ -19,17 +19,17 @@ namespace GeneticToolkit.Selections
             if(population.Size < 2)
                 throw new NullReferenceException("Population is smaller than 2 individuals and therefore degenerated!");
 
-            IPopulation<TFitness> tournament = new Population<TFitness>(CompareCriteria.FitnessFunction, realSize)
+            IPopulation tournament = new Population(CompareCriteria.FitnessFunction, realSize)
             {
-                CompareCriteria = this.CompareCriteria,
-                
+                CompareCriteria = CompareCriteria,
+
             };
             for(int i = 0; i < realSize; i++)
                 tournament[i] = population[_random.Next(population.Size)];
             return tournament.GetBest();
         }
 
-        public Tournament(ICompareCriteria<TFitness> compareCriteria, int tournamentSize)
+        public Tournament(ICompareCriteria compareCriteria, int tournamentSize)
         {
             CompareCriteria = compareCriteria;
             TournamentSize = tournamentSize;

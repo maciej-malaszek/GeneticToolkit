@@ -9,16 +9,16 @@ namespace GeneticToolkit.Policies.Incompatibility
     /// If maximum retry number is small, it may lead to same result as LethalMutations.
     /// Should not be used on sets with large search space with little allowed solution space.
     /// </summary>
-    public class LethalMutationsWithReplacement<TFitness> : IIncompatibilityPolicy<TFitness> where TFitness:IComparable
+    public class LethalMutationsWithReplacement : IIncompatibilityPolicy
     {
-        public Func<IPopulation<TFitness>,  IIndividual<TFitness> , bool> IsCompatible { get; set; }
+        public Func<IPopulation, IIndividual, bool> IsCompatible { get; set; }
         private readonly int _maxRetries;
 
-        public  IIndividual<TFitness>  GetReplacement(IPopulation<TFitness> population,  IIndividual<TFitness>  incompatibleIndividual,  IIndividual<TFitness> [] parents)
+        public IIndividual GetReplacement(IPopulation population, IIndividual incompatibleIndividual, IIndividual[] parents)
         {
             int retry = 0;
             bool compatible;
-             IIndividual<TFitness>  candidate;
+            IIndividual candidate;
             do
             {
                 candidate = parents[0].CrossOver(population.CrossOverPolicy, parents);
@@ -30,7 +30,7 @@ namespace GeneticToolkit.Policies.Incompatibility
         }
 
         public LethalMutationsWithReplacement(int maxRetries,
-            Func<IPopulation<TFitness>,  IIndividual<TFitness> , bool> compatibilityFunction)
+            Func<IPopulation, IIndividual, bool> compatibilityFunction)
         {
             _maxRetries = maxRetries;
             IsCompatible = compatibilityFunction;

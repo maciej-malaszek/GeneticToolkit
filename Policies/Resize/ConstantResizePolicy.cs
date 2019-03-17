@@ -1,11 +1,10 @@
-﻿using System;
-using GeneticToolkit.Interfaces;
+﻿using GeneticToolkit.Interfaces;
 
 namespace GeneticToolkit.Policies.Resize
 {
-    public class ConstantResizePolicy<TFitness> : IPopulationResizePolicy<TFitness> where TFitness:IComparable
+    public class ConstantResizePolicy : IPopulationResizePolicy
     {
-        public int NextGenSize(IPopulation<TFitness> population)
+        public int NextGenSize(IPopulation population)
         {
             return population.Size;
         }

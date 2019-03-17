@@ -3,20 +3,16 @@ using GeneticToolkit.Interfaces;
 
 namespace GeneticToolkit.Policies.Incompatibility
 {
-    public class RepairToNearest<TFitness> : IIncompatibilityPolicy<TFitness> where TFitness:IComparable
+    public class RepairToNearest : IIncompatibilityPolicy
     {
-        public Func<IPopulation<TFitness>,  IIndividual<TFitness> , bool> IsCompatible { get; set; }
+        public Func<IPopulation, IIndividual, bool> IsCompatible { get; set; }
 
-        public Func<IGenotype, IGenotype> GetNearest { get; set; }
+        public Action<IGenotype> RepairFunction { get; set; }
 
-        public RepairToNearest(Func<IGenotype, IGenotype> repairFunction)
+
+        public IIndividual GetReplacement(IPopulation population, IIndividual incompatibleIndividual, IIndividual[] parents)
         {
-            GetNearest = repairFunction;
-        }
-
-        public  IIndividual<TFitness>  GetReplacement(IPopulation<TFitness> population,  IIndividual<TFitness>  incompatibleIndividual,  IIndividual<TFitness> [] parents)
-        {
-            incompatibleIndividual.Genotype = GetNearest(incompatibleIndividual.Genotype);
+            RepairFunction(incompatibleIndividual.Genotype);
             return incompatibleIndividual;
         }
     }

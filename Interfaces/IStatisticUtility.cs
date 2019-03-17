@@ -1,9 +1,9 @@
-﻿using System;
-
-namespace GeneticToolkit.Interfaces
+﻿namespace GeneticToolkit.Interfaces
 {
-    public interface IStatisticUtility<TFitness> where TFitness : IComparable
+    public interface IStatisticUtility
     {
-        void UpdateData(IPopulation<TFitness> population);
+        void UpdateData(IPopulation population);
+
+        void Reset();
     }
 }

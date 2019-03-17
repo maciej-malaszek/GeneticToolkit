@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace GeneticToolkit.Interfaces
+﻿namespace GeneticToolkit.Interfaces
 {
-    public interface IPopulationResizePolicy<TFitness> where TFitness:IComparable
+    public interface IPopulationResizePolicy
     {
-        int NextGenSize(IPopulation<TFitness> population);
+        int NextGenSize(IPopulation population);
     }
 }

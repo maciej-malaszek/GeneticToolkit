@@ -8,10 +8,10 @@ namespace GeneticToolkit.Policies.Incompatibility
     /// As it may lead to extinction of entire population, it is unsafe way (may crash system)
     /// Should not be used on sets with large search space with little allowed solution space.
     /// </summary>
-    public class LethalMutation<TFitness> : IIncompatibilityPolicy<TFitness> where TFitness:IComparable
+    public class LethalMutation : IIncompatibilityPolicy
     {
-        public Func<IPopulation<TFitness>,  IIndividual<TFitness> , bool> IsCompatible { get; set; }
-        public  IIndividual<TFitness>  GetReplacement(IPopulation<TFitness> population,  IIndividual<TFitness>  incompatibleIndividual,  IIndividual<TFitness> [] parents)
+        public Func<IPopulation, IIndividual, bool> IsCompatible { get; set; }
+        public IIndividual GetReplacement(IPopulation population, IIndividual incompatibleIndividual, IIndividual[] parents)
         {
             return null;
         }

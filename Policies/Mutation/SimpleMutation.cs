@@ -1,9 +1,8 @@
-﻿using System;
-using GeneticToolkit.Interfaces;
+﻿using GeneticToolkit.Interfaces;
 
 namespace GeneticToolkit.Policies.Mutation
 {
-    public class SimpleMutation<TFitness> : IMutationPolicy<TFitness> where TFitness:IComparable
+    public class SimpleMutation : IMutationPolicy
     {
         public float MutationChance { get; protected set; }
         public uint MutatedGenesCount { get; protected set; }

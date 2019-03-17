@@ -2,10 +2,10 @@
 
 namespace GeneticToolkit.Interfaces
 {
-    public interface IFitnessFunction<TOutput> : IArithmetical<TOutput> where TOutput : IComparable
+    public interface IFitnessFunction
     {
-        Func<IPhenotype, TOutput> Function { get; } 
-        TOutput GetValue( IIndividual<TOutput> x);
-        TOutput GetValue(IPhenotype x);
+        Func<IPhenotype, double> Function { get; }
+        double GetValue(IIndividual x);
+        double GetValue(IPhenotype x);
     }
 }

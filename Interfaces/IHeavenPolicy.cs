@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace GeneticToolkit.Interfaces
 {
-    public interface IHeavenPolicy<TFitness> where TFitness : IComparable
+    public interface IHeavenPolicy
     {
-        ICollection< IIndividual<TFitness> > Memory { get; }
+        ICollection<IIndividual> Memory { get; }
 
-        void HandleGeneration(IPopulation<TFitness> population);
+        void HandleGeneration(IPopulation population);
     }
 }

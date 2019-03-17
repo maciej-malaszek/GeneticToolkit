@@ -10,7 +10,7 @@ namespace GeneticToolkit.Phenotypes
 
         public IGenotype Genotype
         {
-            get => _genotype; 
+            get => _genotype;
             set => _genotype = value as GenotypeWithBytes;
         }
 
@@ -18,14 +18,14 @@ namespace GeneticToolkit.Phenotypes
 
         public virtual double GetValue()
         {
-           return BitConverter.ToDouble(_genotype.Bytes);
+            return BitConverter.ToDouble(_genotype.Bytes);
         }
 
         public virtual IPhenotype ShallowCopy()
         {
             return new F64Phenotype()
             {
-                Genotype = _genotype.ShallowCopy() 
+                Genotype = _genotype.ShallowCopy()
             };
         }
     }

@@ -1,10 +1,9 @@
-﻿using System;
-using GeneticToolkit.Individuals;
+﻿using GeneticToolkit.Individuals;
 using GeneticToolkit.Interfaces;
 
 namespace GeneticToolkit.Utils.Factories
 {
-    public class IndividualFactory<TGenotype, TPhenotype, TFitness> : IIndividualFactory<TFitness> where TFitness:IComparable
+    public class IndividualFactory<TGenotype, TPhenotype> : IndividualFactoryBase
     where TGenotype : IGenotype, new()
     where TPhenotype : IPhenotype, new()
     {
@@ -16,10 +15,10 @@ namespace GeneticToolkit.Utils.Factories
             Factory = factory;
         }
 
-        public override  IIndividual<TFitness>  CreateRandomIndividual()
+        public override IIndividual CreateRandomIndividual()
         {
             IGenotype genotype = new TGenotype().Randomized();
-            return new Individual<TFitness>(genotype, Factory.Make(genotype));
+            return new Individual(genotype, Factory.Make(genotype));
         }
     }
 }
