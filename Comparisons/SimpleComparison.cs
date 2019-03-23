@@ -1,5 +1,4 @@
-﻿using System;
-using GeneticToolkit.Interfaces;
+﻿using GeneticToolkit.Interfaces;
 
 namespace GeneticToolkit.Comparisons
 {
@@ -17,7 +16,7 @@ namespace GeneticToolkit.Comparisons
                 return x2;
             if (x2 == null)
                 return x1;
-            return Compare(x1, x2) <= 0 ? x1 : x2;
+            return Compare(x1, x2) <= 0 ? x2 : x1;
         }
 
         public int Compare( IIndividual  x1,  IIndividual  x2)
