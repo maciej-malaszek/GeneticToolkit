@@ -6,11 +6,6 @@
     <RootNamespace>GeneticToolkit</RootNamespace>
     <ApplicationIcon />
     <StartupObject />
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Authors>Maciej Małaszek</Authors>
-    <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
-    <RepositoryUrl>https://github.com/MAlaSZ/GeneticToolkit</RepositoryUrl>
-    <RepositoryType>Git</RepositoryType>
   </PropertyGroup>
 
   <ItemGroup>
