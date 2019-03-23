@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using GeneticToolkit.Interfaces;
-using GeneticToolkit.Utils.Extensions;
 
 namespace GeneticToolkit.Selections
 {
