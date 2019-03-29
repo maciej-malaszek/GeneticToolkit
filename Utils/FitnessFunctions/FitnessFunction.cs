@@ -20,6 +20,5 @@ namespace GeneticToolkit.Utils.FitnessFunctions
         {
             return Function(x);
         }
-       
     }
 }

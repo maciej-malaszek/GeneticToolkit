@@ -19,10 +19,9 @@ namespace GeneticToolkit.Selections
             if(population.Size < 2)
                 throw new NullReferenceException("Population is smaller than 2 individuals and therefore degenerated!");
 
-            IPopulation tournament = new Population(CompareCriteria.FitnessFunction, realSize)
+            IPopulation tournament = new Population(population.FitnessFunction, realSize)
             {
                 CompareCriteria = CompareCriteria,
-
             };
             for(int i = 0; i < realSize; i++)
                 tournament[i] = population[_random.Next(population.Size)];
