@@ -15,6 +15,11 @@ namespace GeneticToolkit.Utils.Factories
             Factory = factory;
         }
 
+        public override IIndividual CreateFromGenotype(IGenotype genotype, IPhenotype phenotype)
+        {
+            return new Individual(genotype, phenotype);
+        }
+
         public override IIndividual CreateRandomIndividual()
         {
             IGenotype genotype = new TGenotype().Randomized();
