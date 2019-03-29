@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using GeneticToolkit.Interfaces;
 
 namespace GeneticToolkit.Genotypes
 {
@@ -30,6 +31,19 @@ namespace GeneticToolkit.Genotypes
         {
             _value = value;
             Genes = new BitArray(BitConverter.GetBytes(value));
+        }
+        public override IGenotype ShallowCopy()
+        {
+            return new UIntGenotype(sizeof(uint))
+            {
+                Genes = this.Genes.Clone() as BitArray,
+                _value = this._value
+            };
+        }
+
+        public override IGenotype EmptyCopy()
+        {
+            return new UIntGenotype(sizeof(uint));
         }
 
     }
