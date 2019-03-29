@@ -2,7 +2,7 @@
 
 namespace GeneticToolkit.Interfaces
 {
-    public interface ICrossOver
+    public interface ICrossover
     {
         int ParentsCount { get; }
 

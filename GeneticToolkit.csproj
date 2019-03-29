@@ -12,8 +12,4 @@
     <None Remove="Policies\Incompatibility\LethalMutations.cs~RFc7dd19.TMP" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Utils\Data\" />
-  </ItemGroup>
-
 </Project>
