@@ -37,6 +37,11 @@ namespace GeneticToolkit.Genotypes
             return new GenotypeWithWatcher(Length/8) { Genes = Genes.Clone() as BitArray };
         }
 
+        public override IGenotype EmptyCopy()
+        {
+            return new GenotypeWithWatcher(Length/8);
+        }
+
         protected virtual void OnValueChanged(EventArgs e)
         {
             ValueChanged?.Invoke(this, e);

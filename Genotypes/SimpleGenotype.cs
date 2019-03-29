@@ -28,6 +28,11 @@ namespace GeneticToolkit.Genotypes
             return new SimpleGenotype(Genes.Length) { Genes = Genes.Clone() as BitArray };
         }
 
+        public virtual IGenotype EmptyCopy()
+        {
+            return new SimpleGenotype(Genes.Count);
+        }
+
         public void Randomize()
         {
             int length = Length;

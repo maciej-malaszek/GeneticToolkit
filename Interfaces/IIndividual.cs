@@ -9,7 +9,5 @@
         void Mutate(IMutationPolicy policy);
 
         int CompareTo(IIndividual other, ICompareCriteria criteria);
-
-        IIndividual CrossOver(ICrossOverPolicy policy, params IIndividual[] individuals);
     }
 }

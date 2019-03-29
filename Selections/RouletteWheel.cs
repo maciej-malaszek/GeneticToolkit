@@ -54,7 +54,7 @@ namespace GeneticToolkit.Selections
             
             foreach(IIndividual ind in Population)
             {
-                double functionValue = CompareCriteria.FitnessFunction.GetValue(ind.Phenotype);
+                double functionValue = Population.FitnessFunction.GetValue(ind.Phenotype);
                 if(functionValue < MinValue || MinValue.HasValue == false)
                     MinValue = functionValue;
                 FitnessList.Add(functionValue);

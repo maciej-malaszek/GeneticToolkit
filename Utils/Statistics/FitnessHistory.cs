@@ -27,7 +27,7 @@ namespace GeneticToolkit.Utils.Statistics
 
         public void UpdateData(IPopulation population)
         {
-            double functionValue = population.CompareCriteria.FitnessFunction.GetValue(population.GetBest());
+            double functionValue = population.FitnessFunction.GetValue(population.GetBest());
             History.Add(functionValue);
         }
 
