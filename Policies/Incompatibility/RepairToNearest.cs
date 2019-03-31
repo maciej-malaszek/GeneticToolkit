@@ -1,5 +1,6 @@
 ﻿using System;
 using GeneticToolkit.Interfaces;
+using GeneticToolkit.Utils.Data;
 
 namespace GeneticToolkit.Policies.Incompatibility
 {
@@ -14,6 +15,11 @@ namespace GeneticToolkit.Policies.Incompatibility
         {
             RepairFunction(incompatibleIndividual.Genotype);
             return incompatibleIndividual;
+        }
+
+        public GeneticAlgorithmParameter Serialize()
+        {
+            return new GeneticAlgorithmParameter(this);
         }
     }
 }

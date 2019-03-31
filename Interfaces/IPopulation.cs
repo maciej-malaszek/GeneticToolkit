@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using GeneticToolkit.Utils.Data;
 using GeneticToolkit.Utils.Factories;
 
 namespace GeneticToolkit.Interfaces
@@ -40,6 +41,7 @@ namespace GeneticToolkit.Interfaces
 
         void Initialize();
 
+        GeneticAlgorithmSettings Serialize();
         void NextGeneration();
 
     }

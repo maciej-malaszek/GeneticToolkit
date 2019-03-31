@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using GeneticToolkit.Utils.Data;
 
 namespace GeneticToolkit.Crossovers
 {
@@ -13,6 +14,20 @@ namespace GeneticToolkit.Crossovers
         public int ChildrenCount { get; set; }
         public int CutPointCount { get; set; }
         protected Random RandomNumberGenerator { get; set; } = new Random();
+
+        public MultiPointCrossover(IDictionary<string, object> parameters)
+        {
+            ParentsCount =  (int) parameters["parentsCount"];
+            ChildrenCount = (int) parameters["childrenCount"];
+            CutPointCount = (int) parameters["cutPointCount"];
+        }
+        public MultiPointCrossover(int parentsCount, int childrenCount, int cutPointCount)
+        {
+            ParentsCount = parentsCount;
+            ChildrenCount = childrenCount;
+            CutPointCount = cutPointCount;
+        }
+
         public IList<IGenotype> Cross(IList<IGenotype> parents)
         {
             return Cross(parents, ChildrenCount);
@@ -52,6 +67,19 @@ namespace GeneticToolkit.Crossovers
              startCut = cutIndexes[index-1];
             var mask = new BitArray(endCut - startCut, true) { Length = genotypeLength };
             return mask.LeftShift(startCut);
+        }
+
+        public GeneticAlgorithmParameter Serialize()
+        {
+            return new GeneticAlgorithmParameter(this)
+            {
+                Params = new Dictionary<string, object>()
+                {
+                    { "ParentsCount", ParentsCount   },
+                    { "ChildrenCount", ChildrenCount },
+                    { "CutPointCount", CutPointCount }
+                }
+            };
         }
     }
 }
