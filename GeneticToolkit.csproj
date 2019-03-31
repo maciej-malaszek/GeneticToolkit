@@ -12,4 +12,8 @@
     <None Remove="Policies\Incompatibility\LethalMutations.cs~RFc7dd19.TMP" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
+  </ItemGroup>
+
 </Project>

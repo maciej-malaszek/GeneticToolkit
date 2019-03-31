@@ -1,8 +1,9 @@
 ﻿using GeneticToolkit.Interfaces;
+using GeneticToolkit.Utils.Data;
 
 namespace GeneticToolkit.Utils.Factories
 {
-    public abstract class IndividualFactoryBase
+    public abstract class IndividualFactoryBase : IGeneticSerializable
     {
         public abstract IIndividual CreateFromGenotype(IGenotype genotype, IPhenotype phenotype);
         public abstract IIndividual CreateRandomIndividual();
@@ -14,5 +15,6 @@ namespace GeneticToolkit.Utils.Factories
             return population;
         }
 
+        public abstract GeneticAlgorithmParameter Serialize();
     }
 }

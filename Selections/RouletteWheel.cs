@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using GeneticToolkit.Interfaces;
+using GeneticToolkit.Utils.Data;
+using Newtonsoft.Json;
 
 namespace GeneticToolkit.Selections
 {
@@ -64,5 +66,9 @@ namespace GeneticToolkit.Selections
             
         }
 
+        public GeneticAlgorithmParameter Serialize()
+        {
+            return new GeneticAlgorithmParameter(this);
+        }
     }
 }

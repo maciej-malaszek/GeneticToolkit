@@ -2,7 +2,7 @@
 
 namespace GeneticToolkit.Interfaces
 {
-    public interface IIncompatibilityPolicy
+    public interface IIncompatibilityPolicy : IGeneticSerializable
     {
         Func<IPopulation, IIndividual, bool> IsCompatible { get; set; }
 
