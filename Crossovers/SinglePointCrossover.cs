@@ -3,6 +3,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
+using GeneticToolkit.Utils.Data;
 
 namespace GeneticToolkit.Crossovers
 {
@@ -11,6 +13,9 @@ namespace GeneticToolkit.Crossovers
         protected Random RandomNumberGenerator { get; set; } = new Random();
         public int ParentsCount { get; } = 2;
         public int ChildrenCount { get; } = 2;
+
+        public SinglePointCrossover() { }
+        public SinglePointCrossover(IDictionary<string, object> parameters) { }
 
         public IList<IGenotype> Cross(IList<IGenotype> parents)
         {
@@ -25,6 +30,11 @@ namespace GeneticToolkit.Crossovers
             children[1].Genes = children[1].Genes.Or(maskArray.And(parents[0].Genes));
 
             return children;
+        }
+
+        public GeneticAlgorithmParameter Serialize()
+        {
+            return new GeneticAlgorithmParameter(this);
         }
     }
 }

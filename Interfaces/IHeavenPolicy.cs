@@ -2,7 +2,7 @@
 
 namespace GeneticToolkit.Interfaces
 {
-    public interface IHeavenPolicy
+    public interface IHeavenPolicy : IGeneticSerializable
     {
         ICollection<IIndividual> Memory { get; }
 

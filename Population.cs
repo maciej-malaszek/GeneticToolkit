@@ -1,7 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using GeneticToolkit.Interfaces;
+using GeneticToolkit.Utils.Data;
 using GeneticToolkit.Utils.Factories;
 
 namespace GeneticToolkit
@@ -24,6 +26,16 @@ namespace GeneticToolkit
         public int Size => Individuals.Count;
 
         public uint Generation { get; protected set; } = 0;
+
+        public Population(IFitnessFunction fitnessFunction, IDictionary<string, object> parameters)
+        {
+            FitnessFunction = fitnessFunction;
+            int size = Convert.ToInt32((long) parameters["Size"]);
+            Individuals = new List<IIndividual>(size);
+            for(int i = 0; i < size; i++)
+                Individuals.Add(null);
+            StatisticUtilities = new Dictionary<string, IStatisticUtility>();
+        }
 
         public Population(IFitnessFunction fitnessFunction, int size)
         {
@@ -122,6 +134,25 @@ namespace GeneticToolkit
             for(int i = 1; i < Size; i++)
                 best = CompareCriteria.GetBetter(best, this[i]);
             return best;
+        }
+
+        public virtual GeneticAlgorithmSettings Serialize()
+        {
+            return new GeneticAlgorithmSettings()
+            {                
+                Type = GetType().FullName,
+                GenericArguments = new string[] { },
+                CustomParameters = new Dictionary<string, object>()
+                {
+                    { "Size", Size}
+                },
+                SelectionMethod = SelectionMethod.Serialize(),
+                Crossover = Crossover.Serialize(),
+                HeavenPolicy = HeavenPolicy.Serialize(),
+                IncompatibilityPolicy = IncompatibilityPolicy.Serialize(),
+                ResizePolicy = ResizePolicy.Serialize(),
+                IndividualFactory = IndividualFactory.Serialize(),
+            };
         }
 
         #region Tools

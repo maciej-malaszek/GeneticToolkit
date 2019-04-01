@@ -1,5 +1,7 @@
-﻿using GeneticToolkit.Individuals;
+﻿using System.Collections.Generic;
+using GeneticToolkit.Individuals;
 using GeneticToolkit.Interfaces;
+using GeneticToolkit.Utils.Data;
 
 namespace GeneticToolkit.Utils.Factories
 {
@@ -9,6 +11,11 @@ namespace GeneticToolkit.Utils.Factories
     {
 
         public IPhenotypeFactory<TPhenotype> Factory { get; set; }
+
+        public IndividualFactory(IDictionary<string, object> parameters)
+        {
+            Factory = (IPhenotypeFactory<TPhenotype>) parameters["PhenotypeFactory"];
+        }
 
         public IndividualFactory(IPhenotypeFactory<TPhenotype> factory)
         {
@@ -24,6 +31,17 @@ namespace GeneticToolkit.Utils.Factories
         {
             IGenotype genotype = new TGenotype().Randomized();
             return new Individual(genotype, Factory.Make(genotype));
+        }
+
+        public override GeneticAlgorithmParameter Serialize()
+        {
+            return new GeneticAlgorithmParameter(this)
+            {
+                Params = new Dictionary<string, object>()
+                {
+                    { "PhenotypeFactory", Factory.Serialize() }
+                }
+            };
         }
     }
 }

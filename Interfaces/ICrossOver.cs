@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace GeneticToolkit.Interfaces
 {
-    public interface ICrossover
+    public interface ICrossover : IGeneticSerializable
     {
         int ParentsCount { get; }
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using GeneticToolkit.Interfaces;
+using GeneticToolkit.Utils.Data;
 
 namespace GeneticToolkit.Policies.Incompatibility
 {
@@ -37,6 +38,11 @@ namespace GeneticToolkit.Policies.Incompatibility
         {
             _maxRetries = maxRetries;
             IsCompatible = compatibilityFunction;
+        }
+
+        public GeneticAlgorithmParameter Serialize()
+        {
+            return new GeneticAlgorithmParameter(this);
         }
     }
 }
