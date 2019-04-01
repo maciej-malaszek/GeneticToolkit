@@ -102,13 +102,18 @@ namespace GeneticToolkit.Utils.Configuration
                 new GeneticAlgorithmParameter {Type = settings.Type, GenericArguments = settings.GenericArguments},
                 typeof(IPopulation));
             var population = Activator.CreateInstance(type, function, settings.CustomParameters) as IPopulation;
+            if (population == null)
+                return null;
+
             population.CompareCriteria = compareCriteria;
             population.SelectionMethod = SelectionMethod(settings.SelectionMethod, compareCriteria);
             population.Crossover = Crossover(settings.Crossover);
             population.HeavenPolicy = HeavenPolicy(settings.HeavenPolicy);
-            population.IncompatibilityPolicy = IncompatibilityPolicy(settings.IncompatibilityPolicy, isCompatibleFunc);
+            population.IncompatibilityPolicy =
+                IncompatibilityPolicy(settings.IncompatibilityPolicy, isCompatibleFunc);
             population.ResizePolicy = ResizePolicy(settings.ResizePolicy);
             population.IndividualFactory = IndividualFactory(settings.IndividualFactory);
+
             return population;
         }
     }
