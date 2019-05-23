@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using GeneticToolkit.Interfaces;
+using GeneticToolkit.Utils.Data;
 
 namespace GeneticToolkit.Policies.Incompatibility
 {
@@ -14,9 +16,19 @@ namespace GeneticToolkit.Policies.Incompatibility
             return incompatibleIndividual;
         }
 
+        public AllowAll(IDictionary<string, object> parameters)
+        {
+            
+        }
+
         public AllowAll()
         {
             IsCompatible = (population, individual) => true;
+        }
+
+        public GeneticAlgorithmParameter Serialize()
+        {
+            return new GeneticAlgorithmParameter(this);
         }
     }
 }

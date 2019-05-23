@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using GeneticToolkit.Utils.Data;
 using GeneticToolkit.Utils.Factories;
 
 namespace GeneticToolkit.Interfaces
@@ -14,7 +15,9 @@ namespace GeneticToolkit.Interfaces
 
         ICompareCriteria CompareCriteria { get; set; }
 
-        ICrossOverPolicy CrossOverPolicy { get; set; }
+        ICrossover Crossover { get; set; }
+
+        IFitnessFunction FitnessFunction { get; set; }
 
         IHeavenPolicy HeavenPolicy { get; set; }
 
@@ -32,12 +35,13 @@ namespace GeneticToolkit.Interfaces
 
         IIndividual GetBest();
 
-        IOrderedEnumerable<IIndividual> OrderDescending();
+        List<IIndividual> OrderDescending();
 
-        IOrderedEnumerable<IIndividual> OrderAscending();
+        List<IIndividual> OrderAscending();
 
         void Initialize();
 
+        GeneticAlgorithmSettings Serialize();
         void NextGeneration();
 
     }

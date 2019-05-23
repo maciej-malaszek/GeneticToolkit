@@ -33,6 +33,11 @@ namespace GeneticToolkit.Genotypes
             return new GenotypeWithBytes(_bytes) { Genes = Genes.Clone() as BitArray };
         }
 
+        public override IGenotype EmptyCopy()
+        {
+            return new GenotypeWithBytes(_bytes);
+        }
+
         public GenotypeWithBytes(int size) : base(size * ByteSize)
         {
             ValueChanged += Deprecate;

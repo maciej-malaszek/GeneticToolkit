@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using GeneticToolkit.Interfaces;
+using GeneticToolkit.Utils.Data;
+using Newtonsoft.Json;
 
 namespace GeneticToolkit.Selections
 {
@@ -54,7 +56,7 @@ namespace GeneticToolkit.Selections
             
             foreach(IIndividual ind in Population)
             {
-                double functionValue = CompareCriteria.FitnessFunction.GetValue(ind.Phenotype);
+                double functionValue = Population.FitnessFunction.GetValue(ind.Phenotype);
                 if(functionValue < MinValue || MinValue.HasValue == false)
                     MinValue = functionValue;
                 FitnessList.Add(functionValue);
@@ -64,5 +66,9 @@ namespace GeneticToolkit.Selections
             
         }
 
+        public GeneticAlgorithmParameter Serialize()
+        {
+            return new GeneticAlgorithmParameter(this);
+        }
     }
 }

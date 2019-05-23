@@ -11,7 +11,7 @@ namespace GeneticToolkit.Utils.Statistics
 
         public void UpdateData(IPopulation population)
         {
-            IFitnessFunction f = population.CompareCriteria.FitnessFunction;
+            IFitnessFunction f = population.FitnessFunction;
             History.Add(History.Count == 0
                 ? f.GetValue(population.GetBest())
                 : f.GetValue(population.GetBest()) - History.Last());

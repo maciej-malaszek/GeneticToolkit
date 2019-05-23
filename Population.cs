@@ -1,7 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using GeneticToolkit.Interfaces;
+using GeneticToolkit.Utils.Data;
 using GeneticToolkit.Utils.Factories;
 
 namespace GeneticToolkit
@@ -12,15 +14,6 @@ namespace GeneticToolkit
 
         private IIndividual _best = null;
         private bool _bestIsDeprecated = true;
-
-        public Population(IFitnessFunction fitnessFunction, int size)
-        {
-            FitnessFunction = fitnessFunction;
-            Individuals = new List<IIndividual>(size);
-            for(int i = 0; i < size; i++)
-                Individuals.Add(null);
-        }
-
         public IIndividual Best
         {
             get {
@@ -34,49 +27,53 @@ namespace GeneticToolkit
 
         public uint Generation { get; protected set; } = 0;
 
+        public Population(IFitnessFunction fitnessFunction, IDictionary<string, object> parameters)
+        {
+            FitnessFunction = fitnessFunction;
+            int size = Convert.ToInt32((long) parameters["Size"]);
+            Individuals = new List<IIndividual>(size);
+            for(int i = 0; i < size; i++)
+                Individuals.Add(null);
+            StatisticUtilities = new Dictionary<string, IStatisticUtility>();
+        }
+
+        public Population(IFitnessFunction fitnessFunction, int size)
+        {
+            FitnessFunction = fitnessFunction;
+            Individuals = new List<IIndividual>(size);
+            for(int i = 0; i < size; i++)
+                Individuals.Add(null);
+        }
         public IIndividual this[int indexer]
         {
             get => Individuals[indexer];
             set => Individuals[indexer] = value;
         }
 
-        public ICompareCriteria CompareCriteria { get; set; }
+        #region Params
+            public ICompareCriteria CompareCriteria { get; set; }
 
-        public ICrossOverPolicy CrossOverPolicy { get; set; }
+            public ICrossover Crossover { get; set; }
 
-        public IFitnessFunction FitnessFunction { get; set; }
+            public IFitnessFunction FitnessFunction { get; set; }
 
-        public IHeavenPolicy HeavenPolicy { get; set; }
+            public IHeavenPolicy HeavenPolicy { get; set; }
 
-        public IIncompatibilityPolicy IncompatibilityPolicy { get; set; }
+            public IIncompatibilityPolicy IncompatibilityPolicy { get; set; }
 
-        public IndividualFactoryBase IndividualFactory { get; set; }
+            public IndividualFactoryBase IndividualFactory { get; set; }
 
-        public IMutationPolicy MutationPolicy { set; get; }
+            public IMutationPolicy MutationPolicy { set; get; }
 
-        public IPopulationResizePolicy ResizePolicy { set; get; }
+            public IPopulationResizePolicy ResizePolicy { set; get; }
 
-        public ISelectionMethod SelectionMethod { get; set; }
+            public ISelectionMethod SelectionMethod { get; set; }
 
-        public IDictionary<string, IStatisticUtility> StatisticUtilities { get; set; }
+        #endregion
 
-        public IIndividual GetBest()
-        {
-            IIndividual best = this[0];
-            for(int i = 1; i < Size; i++)
-                best = CompareCriteria.GetBetter(best, this[i]);
-            return best;
-        }
-
-        public IOrderedEnumerable<IIndividual> OrderAscending()
-        {
-            return Individuals.OrderBy(x => CompareCriteria.FitnessFunction.GetValue(x));
-        }
-
-        public IOrderedEnumerable<IIndividual> OrderDescending()
-        {
-            return Individuals.OrderByDescending(x => CompareCriteria.FitnessFunction.GetValue(x));
-        }
+        #region Utils
+            public IDictionary<string, IStatisticUtility> StatisticUtilities { get; set; }
+        #endregion
 
         public virtual void Initialize()
         {
@@ -97,11 +94,17 @@ namespace GeneticToolkit
 
             for(int i = 0; i < nextGenSize; i++)
             {
-                IIndividual[] parents = new IIndividual[CrossOverPolicy.ParentsCount];
+                var parents = new IIndividual[Crossover.ParentsCount];
                 for(int x = 0; x < parents.Length; x++)
                     parents[x] = SelectionMethod.Select(this);
-                nextGeneration.Add(parents[0].CrossOver(CrossOverPolicy, parents));
-                nextGeneration[i].Mutate(MutationPolicy);
+
+                var genotypes =  Crossover.Cross(parents.Select(x => x.Genotype).ToList());
+                foreach (IGenotype genotype in genotypes)
+                {
+                    IIndividual child = IndividualFactory.CreateFromGenotype(genotype, parents[0].Phenotype.ShallowCopy());
+                    child.Mutate(MutationPolicy);
+                    nextGeneration.Add(child);
+                }
 
                 if(IncompatibilityPolicy.IsCompatible(this, nextGeneration[i]) == false)
                 {
@@ -110,7 +113,6 @@ namespace GeneticToolkit
                     {
                         Individuals.RemoveAt(i);
                         i--;
-                        continue;
                     }
                 }
             }
@@ -126,14 +128,58 @@ namespace GeneticToolkit
             GetBest();
         }
 
-        public IEnumerator<IIndividual> GetEnumerator()
+        public IIndividual GetBest()
         {
-            return Individuals.GetEnumerator();
+            IIndividual best = this[0];
+            for(int i = 1; i < Size; i++)
+                best = CompareCriteria.GetBetter(best, this[i]);
+            return best;
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
+        public virtual GeneticAlgorithmSettings Serialize()
         {
-            return Individuals.GetEnumerator();
+            return new GeneticAlgorithmSettings()
+            {                
+                Type = GetType().FullName,
+                GenericArguments = new string[] { },
+                CustomParameters = new Dictionary<string, object>()
+                {
+                    { "Size", Size}
+                },
+                SelectionMethod = SelectionMethod.Serialize(),
+                Crossover = Crossover.Serialize(),
+                HeavenPolicy = HeavenPolicy.Serialize(),
+                IncompatibilityPolicy = IncompatibilityPolicy.Serialize(),
+                ResizePolicy = ResizePolicy.Serialize(),
+                IndividualFactory = IndividualFactory.Serialize(),
+            };
         }
+
+        #region Tools
+            public List<IIndividual> OrderAscending()
+            {
+                List<IIndividual> sortedList = Individuals;
+                sortedList.Sort((x1, x2) => CompareCriteria.Compare(x1, x2));
+                return sortedList;
+            }
+
+            public List<IIndividual> OrderDescending()
+            {
+                List<IIndividual> sortedList = Individuals;
+                sortedList.Sort((x1, x2) => CompareCriteria.Compare(x2, x1));
+                return sortedList;
+            }
+
+            public IEnumerator<IIndividual> GetEnumerator()
+            {
+                return Individuals.GetEnumerator();
+            }
+
+            IEnumerator IEnumerable.GetEnumerator()
+            {
+                return Individuals.GetEnumerator();
+            }
+
+        #endregion
     }
 }

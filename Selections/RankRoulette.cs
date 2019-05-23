@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using GeneticToolkit.Interfaces;
+using GeneticToolkit.Utils.Data;
 
 namespace GeneticToolkit.Selections
 {
-    public class RankRoullete : ISelectionMethod
+    public class RankRoulette : ISelectionMethod
     {
         public ICompareCriteria CompareCriteria { get; set; }
 
@@ -13,7 +15,7 @@ namespace GeneticToolkit.Selections
 
         protected Random RandomNumberGenerator { get; set; } = new Random();
 
-        protected IPopulation Population { get; set; } = null;
+        protected IPopulation Population { get; set; }
 
         protected List<IIndividual> SortedList = new List<IIndividual>();
 
@@ -25,10 +27,10 @@ namespace GeneticToolkit.Selections
        
         protected double? MinValue { get; set; }
 
-        protected double Sum { get; set; } = 0;
+        protected double Sum { get; set; }
 
 
-        public RankRoullete(ICompareCriteria compareCriteria, Func<int, double> rankingValueFunc)
+        public RankRoulette(ICompareCriteria compareCriteria, Func<int, double> rankingValueFunc)
         {
             CompareCriteria = compareCriteria;
             RankingValueFunc = rankingValueFunc;
@@ -43,6 +45,8 @@ namespace GeneticToolkit.Selections
 
             double randomValue = RandomNumberGenerator.NextDouble() * Sum;
             int iterator = 0;
+
+            Debug.Assert(MinValue != null, nameof(MinValue) + " != null");
             double localSum = FitnessList[iterator] - MinValue.Value;
 
             while(localSum < randomValue && iterator < Population.Size - 1)
@@ -73,11 +77,18 @@ namespace GeneticToolkit.Selections
                 FitnessList.Add(functionValue);
             }
 
-            Sum = FitnessList.Sum(x => x - MinValue.Value);
+            Sum = FitnessList.Sum(x =>
+            {
+                Debug.Assert(MinValue != null, nameof(MinValue) + " != null");
+                return x - MinValue.Value;
+            });
 
             Deprecated = false;
         }
 
-
+        public GeneticAlgorithmParameter Serialize()
+        {
+            return new GeneticAlgorithmParameter(this);
+        }
     }
 }

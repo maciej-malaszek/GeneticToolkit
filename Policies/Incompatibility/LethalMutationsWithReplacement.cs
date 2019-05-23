@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Linq;
 using GeneticToolkit.Interfaces;
+using GeneticToolkit.Utils.Data;
 
 namespace GeneticToolkit.Policies.Incompatibility
 {
@@ -21,7 +23,9 @@ namespace GeneticToolkit.Policies.Incompatibility
             IIndividual candidate;
             do
             {
-                candidate = parents[0].CrossOver(population.CrossOverPolicy, parents);
+                candidate = population.IndividualFactory.CreateFromGenotype(
+                    population.Crossover.Cross(parents.Select(x => x.Genotype).ToList()).First(),
+                    incompatibleIndividual.Phenotype.ShallowCopy());
                 candidate.Mutate(population.MutationPolicy);
                 retry++;
             } while((compatible = IsCompatible(population, candidate)) == false && retry < _maxRetries);
@@ -34,6 +38,11 @@ namespace GeneticToolkit.Policies.Incompatibility
         {
             _maxRetries = maxRetries;
             IsCompatible = compatibilityFunction;
+        }
+
+        public GeneticAlgorithmParameter Serialize()
+        {
+            return new GeneticAlgorithmParameter(this);
         }
     }
 }

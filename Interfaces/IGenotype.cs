@@ -11,7 +11,18 @@ namespace GeneticToolkit.Interfaces
 
         int Length { get; }
 
+
+        /// <summary>
+        /// Creates new object of same type as caller and copies values of its genes.
+        /// </summary>
+        /// <returns>Shallow copy of IGenotype</returns>
         IGenotype ShallowCopy();
+
+        /// <summary>
+        /// Creates new object of same type as caller.
+        /// </summary>
+        /// <returns>IGenotype with default Genes</returns>
+        IGenotype EmptyCopy();
 
         void Randomize();
 
