@@ -68,18 +68,33 @@ namespace GeneticToolkit.Populations
         public virtual void NextGeneration()
         {
             int nextGenSize = ResizePolicy.NextGenSize(this);
-            var nextGeneration = new IIndividual[nextGenSize];
-            for (int i = 0; i < nextGenSize / Crossover.ChildrenCount; i++)
+            IIndividual[] nextGeneration = new IIndividual[nextGenSize];
+            for (var i = 0; i < nextGenSize / Crossover.ChildrenCount; i++)
             {
                 IGenotype[] parentalGenotypes = SelectParentalGenotypes();
                 IGenotype[] genotypes = Crossover.Cross(parentalGenotypes);
-                for (int j = 0; j < genotypes.Length; j++)
+                for (var j = 0; j < genotypes.Length; j++)
                 {
                     IIndividual child = IndividualFactory.CreateFromGenotype(genotypes[j]);
                     Mutation.Mutate(child.Genotype, MutationPolicy, this);
                     nextGeneration[i * Crossover.ChildrenCount + j] = child;
                 }
             }
+
+            int childrenCountDifference = nextGenSize % Crossover.ChildrenCount;
+            if(childrenCountDifference > 0)
+            {
+                IGenotype[] parentalGenotypes = SelectParentalGenotypes();
+                IGenotype[] genotypes = Crossover.Cross(parentalGenotypes);
+                int start = nextGenSize - childrenCountDifference;
+                for (var j = 0; j < childrenCountDifference; j++)
+                {
+                    IIndividual child = IndividualFactory.CreateFromGenotype(genotypes[j]);
+                    Mutation.Mutate(child.Genotype, MutationPolicy, this);
+                    nextGeneration[start+j] = child;
+                }
+            }
+
             Individuals = nextGeneration;
             DeprecateData();
             UpdatePerGenerationData();
@@ -89,7 +104,7 @@ namespace GeneticToolkit.Populations
         public float GetPopulationHomogeneity(double maxSimilarity)
         {
             float similar = 0;
-            for (int i = 0; i < Size-1; i++)
+            for (var i = 0; i < Size-1; i++)
                 if (this[i].Genotype.SimilarityCheck(this[i + 1].Genotype) > maxSimilarity)
                     similar++;
 
@@ -98,7 +113,7 @@ namespace GeneticToolkit.Populations
         public IIndividual GetBest()
         {
             IIndividual best = this[0];
-            for (int i = 1; i < Size; i++)
+            for (var i = 1; i < Size; i++)
                 best = CompareCriteria.GetBetter(best, this[i]);
             return best;
         }
