@@ -6,8 +6,6 @@
 
         IPhenotype Phenotype { get; }
 
-        void Mutate(IMutationPolicy policy);
-
         int CompareTo(IIndividual other, ICompareCriteria criteria);
     }
 }

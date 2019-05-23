@@ -1,48 +1,23 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using GeneticToolkit.Utils.Data;
-using GeneticToolkit.Utils.Factories;
-
-namespace GeneticToolkit.Interfaces
+﻿namespace GeneticToolkit.Interfaces
 {
-    public interface IPopulation : IEnumerable<IIndividual>
+    public interface IPopulation : IEvolutionaryPopulation
     {
-        int Size { get; }
-
-        uint Generation { get; }
-
-        IIndividual this[int indexer] { get; set; }
-
-        ICompareCriteria CompareCriteria { get; set; }
-
         ICrossover Crossover { get; set; }
 
-        IFitnessFunction FitnessFunction { get; set; }
-
-        IHeavenPolicy HeavenPolicy { get; set; }
-
-        IIncompatibilityPolicy IncompatibilityPolicy { get; set; }
-
-        IndividualFactoryBase IndividualFactory { get; set; }
-
+        /// <summary>
+        /// Defines probability of mutation
+        /// </summary>
         IMutationPolicy MutationPolicy { set; get; }
+
+        /// <summary>
+        /// Defines how mutation is performed on genes
+        /// </summary>
+        IMutation Mutation { get; set; }
+  
+        IIncompatibilityPolicy IncompatibilityPolicy { get; set; }        
 
         IPopulationResizePolicy ResizePolicy { set; get; }
 
         ISelectionMethod SelectionMethod { get; set; }
-
-        IDictionary<string, IStatisticUtility> StatisticUtilities { get; set; }
-
-        IIndividual GetBest();
-
-        List<IIndividual> OrderDescending();
-
-        List<IIndividual> OrderAscending();
-
-        void Initialize();
-
-        GeneticAlgorithmSettings Serialize();
-        void NextGeneration();
-
     }
 }

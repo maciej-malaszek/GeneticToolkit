@@ -1,10 +1,7 @@
-﻿using GeneticToolkit.Interfaces;
+﻿using GeneticToolkit.Genotypes;
+using GeneticToolkit.Interfaces;
 
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using GeneticToolkit.Utils.Data;
 
 namespace GeneticToolkit.Crossovers
 {
@@ -12,15 +9,10 @@ namespace GeneticToolkit.Crossovers
     {
         public int ParentsCount { get; set; }
         public int ChildrenCount { get; set; }
+        public int BitAlign { get; set; } = 1;
         public int CutPointCount { get; set; }
         protected Random RandomNumberGenerator { get; set; } = new Random();
 
-        public MultiPointCrossover(IDictionary<string, object> parameters)
-        {
-            ParentsCount =  (int) parameters["parentsCount"];
-            ChildrenCount = (int) parameters["childrenCount"];
-            CutPointCount = (int) parameters["cutPointCount"];
-        }
         public MultiPointCrossover(int parentsCount, int childrenCount, int cutPointCount)
         {
             ParentsCount = parentsCount;
@@ -28,58 +20,67 @@ namespace GeneticToolkit.Crossovers
             CutPointCount = cutPointCount;
         }
 
-        public IList<IGenotype> Cross(IList<IGenotype> parents)
+        public IGenotype[] Cross(IGenotype[] parents)
         {
             return Cross(parents, ChildrenCount);
         }
-        public IList<IGenotype> Cross(IList<IGenotype> parents, int childrenCount)
+        public IGenotype[] Cross(IGenotype[] parents, int childrenCount)
         {
             int genotypeLength = parents[0].Length;
             int parentIndex = 0;
-            var children = new List<IGenotype>(childrenCount);
+            IGenotype[] children = new IGenotype[childrenCount];
             for (int c = 0; c < childrenCount; c++)
             {
                 IGenotype child = parents[0].EmptyCopy();
-                List<int> cutIndexes = GetCutPoints(genotypeLength).ToList();   
+                int[] cutIndexes = GetCutPoints(genotypeLength);
                 for (int i = 0; i < CutPointCount - 1; i++)
                 {
-                    BitArray mask = GetMask(genotypeLength, cutIndexes, i);
-                    child.Genes = child.Genes.Or(mask.And(parents[parentIndex++].Genes));
-                    if (parentIndex >= parents.Count)
+                    byte[] mask = GetMask(genotypeLength, cutIndexes, i);
+                    for (int j = 0; j < genotypeLength; j++)
+                        child.Genes[j] |= (byte)(mask[j] & parents[parentIndex++].Genes[j]);
+
+                    if (parentIndex >= parents.Length)
                         parentIndex = 0;
                 }
-                children.Add(child);
+                children[c] = child;
             }
             return children;
         }
-        private IEnumerable<int> GetCutPoints(int genotypeLength)
+        private int[] GetCutPoints(int genotypeLength)
         {
-            var cutIndexes = new SortedSet<int>();
+            int[] cutIndexes = new int[CutPointCount];
             for (int i = 0; i < CutPointCount; i++)
-                // Add returns true if added to sorted set and false if already exists in hashset
-                while (!cutIndexes.Add(RandomNumberGenerator.Next(genotypeLength))) { }
+                cutIndexes[i] = RandomNumberGenerator.Next(genotypeLength - CutPointCount + i) * GenotypeBase.BitsPerGene;
+            Array.Sort(cutIndexes);
             return cutIndexes;
         }
-        private static BitArray GetMask(int genotypeLength, IList<int> cutIndexes, int index)
+        private static byte[] GetMask(int genotypeLength, int[] cutIndexes, int index)
         {
             int startCut = 0, endCut = cutIndexes[index];
-            if(index!=0)
-             startCut = cutIndexes[index-1];
-            var mask = new BitArray(endCut - startCut, true) { Length = genotypeLength };
-            return mask.LeftShift(startCut);
-        }
+            byte[] mask = new byte[genotypeLength];
 
-        public GeneticAlgorithmParameter Serialize()
-        {
-            return new GeneticAlgorithmParameter(this)
+            if (index != 0)
+                startCut = cutIndexes[index - 1];
+
+            if (startCut / GenotypeBase.BitsPerGene == endCut / GenotypeBase.BitsPerGene)
             {
-                Params = new Dictionary<string, object>()
-                {
-                    { "ParentsCount", ParentsCount   },
-                    { "ChildrenCount", ChildrenCount },
-                    { "CutPointCount", CutPointCount }
-                }
-            };
+                var byteIndex = startCut / GenotypeBase.BitsPerGene;
+                mask[byteIndex] = (byte)((1 << endCut % GenotypeBase.BitsPerGene + 1) - 1 - ((1 << startCut % GenotypeBase.BitsPerGene + 1) - 1));
+                return mask;
+            }
+                
+
+            for (int i = startCut / GenotypeBase.BitsPerGene + 1; i < (int)Math.Ceiling((float)endCut / GenotypeBase.BitsPerGene); i++)
+                mask[i] = byte.MaxValue;
+
+            int startIndex = startCut % GenotypeBase.BitsPerGene;
+            int endIndex = endCut % GenotypeBase.BitsPerGene;
+
+
+            mask[startCut / GenotypeBase.BitsPerGene] = (byte)((1 << startIndex + 1) - 1);
+            mask[endCut / GenotypeBase.BitsPerGene] = (byte)((1 << endIndex + 1) - 1);
+            return mask;
         }
+      
     }
 }

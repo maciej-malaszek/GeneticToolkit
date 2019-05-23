@@ -1,11 +1,10 @@
 ﻿using GeneticToolkit.Interfaces;
-using GeneticToolkit.Utils.Data;
 
 namespace GeneticToolkit.Utils.Factories
 {
-    public abstract class IndividualFactoryBase : IGeneticSerializable
+    public abstract class IndividualFactoryBase
     {
-        public abstract IIndividual CreateFromGenotype(IGenotype genotype, IPhenotype phenotype);
+        public abstract IIndividual CreateFromGenotype(IGenotype genotype);
         public abstract IIndividual CreateRandomIndividual();
         public virtual IIndividual[] CreateRandomPopulation(int size)
         {
@@ -14,7 +13,5 @@ namespace GeneticToolkit.Utils.Factories
                 population[i] = CreateRandomIndividual();
             return population;
         }
-
-        public abstract GeneticAlgorithmParameter Serialize();
     }
 }

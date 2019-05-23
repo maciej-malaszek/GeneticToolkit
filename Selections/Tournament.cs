@@ -1,23 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using GeneticToolkit.Interfaces;
-using GeneticToolkit.Utils.Data;
+﻿using GeneticToolkit.Interfaces;
+using GeneticToolkit.Populations;
+
+using System;
 
 namespace GeneticToolkit.Selections
 {
     public class Tournament : ISelectionMethod
     {
-        public ICompareCriteria CompareCriteria { get; set; }
-
-        public int TournamentSize { get; set; }
-
         private readonly Random _random = new Random();
+
+        public Tournament(ICompareCriteria compareCriteria, float populationPercentage)
+        {
+            CompareCriteria = compareCriteria;
+            PopulationPercentage = populationPercentage;
+        }
+        public float PopulationPercentage { get; set; }
+        public ICompareCriteria CompareCriteria { get; set; }
 
         public IIndividual Select(IPopulation population)
         {
-            int realSize = Math.Max(Math.Min(population.Size - 1, TournamentSize), 1);
+            int realSize = Math.Max(Math.Min(population.Size - 1, (int)(PopulationPercentage*population.Size)), 1);
             if (population == null)
                 throw new NullReferenceException("Population has not been initialized!");
             if (population.Size < 2)
@@ -30,30 +32,6 @@ namespace GeneticToolkit.Selections
             for (int i = 0; i < realSize; i++)
                 tournament[i] = population[_random.Next(population.Size)];
             return tournament.GetBest();
-        }
-
-        public Tournament(ICompareCriteria compareCriteria, int tournamentSize)
-        {
-            CompareCriteria = compareCriteria;
-            TournamentSize = tournamentSize;
-        }
-
-        public Tournament(IDictionary<string, object> parameters)
-        {
-            TournamentSize = Convert.ToInt32((long) parameters["Size"]);
-        }
-
-        public GeneticAlgorithmParameter Serialize()
-        {
-            Type type = GetType();
-            type = type.IsGenericType ? type.GetGenericTypeDefinition() : type;
-            return new GeneticAlgorithmParameter(this)
-            {
-                Params = new Dictionary<string, object>()
-                {
-                    {"Size", TournamentSize}
-                }
-            };
         }
     }
 }

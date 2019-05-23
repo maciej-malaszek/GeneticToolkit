@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace GeneticToolkit.Crossovers
+﻿namespace GeneticToolkit.Crossovers
 {
+    /// <summary>
+    /// Also known as OX2
+    /// </summary>
     class OrderBasedCrossover
     {
     }

@@ -7,7 +7,7 @@ namespace GeneticToolkit.Policies.Stop
     {
         private readonly uint _limit;
 
-        public bool Satisfied(IPopulation population)
+        public bool Satisfied(IEvolutionaryPopulation population)
         {
             if(population == null)
                 throw new NullReferenceException("Population has not been initialized!");

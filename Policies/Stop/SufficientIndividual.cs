@@ -9,13 +9,16 @@ namespace GeneticToolkit.Policies.Stop
 
         public double SufficientResult { get; set; }
 
-        public bool Satisfied(IPopulation population)
+        public bool Satisfied(IEvolutionaryPopulation population)
         {
             if(population == null)
                 throw new NullReferenceException("Population has not been initialized!");
             if(FitnessFunction == null)
                 throw new NullReferenceException("Fitness function has not been initialized!");
-            return FitnessFunction.GetValue(population.GetBest()).CompareTo(SufficientResult) <= 0;
+
+            var comparisonResult = FitnessFunction.GetValue(population.Best).CompareTo(SufficientResult);
+            comparisonResult *= population.CompareCriteria.OptimizationMode == EOptimizationModeOrder.Minimize ? -1 : 1;
+            return comparisonResult >= 0;
         }
 
         public void Reset()

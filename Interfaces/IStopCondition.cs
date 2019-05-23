@@ -2,8 +2,7 @@
 {
     public interface IStopCondition
     {
-        bool Satisfied(IPopulation population);
-
+        bool Satisfied(IEvolutionaryPopulation population);
         void Reset();
     }
 }

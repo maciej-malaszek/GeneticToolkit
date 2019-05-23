@@ -1,6 +1,6 @@
 ﻿namespace GeneticToolkit.Interfaces
 {
-    public interface IPopulationResizePolicy : IGeneticSerializable
+    public interface IPopulationResizePolicy
     {
         int NextGenSize(IPopulation population);
     }

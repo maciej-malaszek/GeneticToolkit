@@ -1,10 +1,7 @@
-﻿using GeneticToolkit.Interfaces;
+﻿using GeneticToolkit.Genotypes;
+using GeneticToolkit.Interfaces;
 
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
-using GeneticToolkit.Utils.Data;
 
 namespace GeneticToolkit.Crossovers
 {
@@ -13,28 +10,32 @@ namespace GeneticToolkit.Crossovers
         protected Random RandomNumberGenerator { get; set; } = new Random();
         public int ParentsCount { get; } = 2;
         public int ChildrenCount { get; } = 2;
+        public int BitAlign { get; set; } = 1;
 
         public SinglePointCrossover() { }
-        public SinglePointCrossover(IDictionary<string, object> parameters) { }
 
-        public IList<IGenotype> Cross(IList<IGenotype> parents)
+        public IGenotype[] Cross(IGenotype[] parents)
         {
-            int genotypeLength = parents[0].Length;
+            int genotypeLength = parents[0].Length; // in bytes
             IGenotype[] children = { parents[0].ShallowCopy(), parents[1].ShallowCopy() };
 
-            var cutIndex = RandomNumberGenerator.Next(genotypeLength);
-            var maskArray = new BitArray(genotypeLength, true);
-            maskArray.LeftShift(cutIndex);
+            var cutIndex = BitAlign * RandomNumberGenerator.Next(genotypeLength * GenotypeBase.BitsPerGene / BitAlign);
+            byte[] mask = new byte[genotypeLength];
+            for (int i = 0; i < cutIndex / GenotypeBase.BitsPerGene; i++)
+                mask[i] = byte.MaxValue;
 
-            children[0].Genes = children[0].Genes.Or(maskArray.And(parents[1].Genes)); 
-            children[1].Genes = children[1].Genes.Or(maskArray.And(parents[0].Genes));
+            mask[cutIndex / GenotypeBase.BitsPerGene] = (byte) ((1u << cutIndex + 1)-1);
 
+            for (int i = cutIndex / GenotypeBase.BitsPerGene + 1; i < genotypeLength; i++)
+                mask[i] = byte.MinValue;
+
+            for (int i = 0; i < genotypeLength; i++)
+                children[0].Genes[i] = (byte) ((parents[0].Genes[i] & mask[i]) | (parents[1].Genes[i] & ~mask[i]));
+
+            for (int i = 0; i < genotypeLength; i++)
+                children[1].Genes[i] = (byte) ((parents[1].Genes[i] & mask[i]) | (parents[0].Genes[i] & ~mask[i]));
             return children;
         }
 
-        public GeneticAlgorithmParameter Serialize()
-        {
-            return new GeneticAlgorithmParameter(this);
-        }
     }
 }

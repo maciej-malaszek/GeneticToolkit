@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using GeneticToolkit.Interfaces;
-using GeneticToolkit.Utils.Data;
+﻿using GeneticToolkit.Interfaces;
 
 namespace GeneticToolkit.Utils.Factories
 {
@@ -8,7 +6,7 @@ namespace GeneticToolkit.Utils.Factories
         where TPhenotype : IPhenotype, new()
 
     {
-        public SimplePhenotypeFactory(IDictionary<string, object> parameters)
+        public SimplePhenotypeFactory()
         {
         }
 
@@ -18,11 +16,6 @@ namespace GeneticToolkit.Utils.Factories
             {
                 Genotype = genotype
             };
-        }
-
-        public GeneticAlgorithmParameter Serialize()
-        {
-            return new GeneticAlgorithmParameter(this);
         }
     }
 }

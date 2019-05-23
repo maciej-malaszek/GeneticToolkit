@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using GeneticToolkit.Interfaces;
+﻿using GeneticToolkit.Interfaces;
 using GeneticToolkit.Utils.Data;
-using Newtonsoft.Json;
+
+using System;
 
 namespace GeneticToolkit.Selections
 {
@@ -19,7 +17,7 @@ namespace GeneticToolkit.Selections
 
         protected IPopulation Population { get; set; } = null;
 
-        protected IList<double> FitnessList = new List<double>();
+        protected List<double> FitnessList = new List<double>();
 
         protected uint CurrentGeneration { get; set; }
 
@@ -54,9 +52,9 @@ namespace GeneticToolkit.Selections
             MinValue = null;
             FitnessList.Clear();
             
-            foreach(IIndividual ind in Population)
+            for(int i = 0; i < Population.Size; i++)
             {
-                double functionValue = Population.FitnessFunction.GetValue(ind.Phenotype);
+                double functionValue = Population.FitnessFunction.GetValue(Population[i].Phenotype);
                 if(functionValue < MinValue || MinValue.HasValue == false)
                     MinValue = functionValue;
                 FitnessList.Add(functionValue);
@@ -64,11 +62,6 @@ namespace GeneticToolkit.Selections
             Deprecated = false;
             Sum = FitnessList.Sum(x => x - MinValue.Value);
             
-        }
-
-        public GeneticAlgorithmParameter Serialize()
-        {
-            return new GeneticAlgorithmParameter(this);
         }
     }
 }

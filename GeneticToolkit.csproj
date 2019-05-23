@@ -1,12 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
     <OutputType>Library</OutputType>
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <RootNamespace>GeneticToolkit</RootNamespace>
     <ApplicationIcon />
     <StartupObject />
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
+
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.2-beta1" />
+    <None Remove="Policies\Incompatibility\LethalMutations.cs~RFc7dd19.TMP" />
   </ItemGroup>
+
 </Project>

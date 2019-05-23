@@ -2,19 +2,17 @@
 
 namespace GeneticToolkit.Comparisons
 {
-    public class SimpleComparison : ICompareCriteria 
+    public class SimpleComparison : ICompareCriteria
     {
-        public enum EOrder { Maximize, Minimize};
-
         public IFitnessFunction FitnessFunction { get; set; }
 
-        private EOrder Order { get; set; }
-
-        public SimpleComparison(IFitnessFunction fitnessFunction, EOrder order = EOrder.Maximize)
+        public SimpleComparison(IFitnessFunction fitnessFunction, EOptimizationModeOrder optimizationMode = EOptimizationModeOrder.Maximize)
         {
-            Order = order;
+            OptimizationMode = optimizationMode;
             FitnessFunction = fitnessFunction;
         }
+
+        public EOptimizationModeOrder OptimizationMode { get; private set; }
 
         public IIndividual GetBetter( IIndividual  x1,  IIndividual  x2)
         {
@@ -28,7 +26,7 @@ namespace GeneticToolkit.Comparisons
         public int Compare( IIndividual  x1,  IIndividual  x2)
         {
             int result = FitnessFunction.GetValue(x1).CompareTo(FitnessFunction.GetValue(x2));
-            if (Order == EOrder.Maximize)
+            if (OptimizationMode == EOptimizationModeOrder.Maximize)
                 result *= -1;
             return result;
         }

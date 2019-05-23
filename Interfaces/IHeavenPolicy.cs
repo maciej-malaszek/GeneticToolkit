@@ -1,11 +1,9 @@
-﻿using System.Collections.Generic;
-
-namespace GeneticToolkit.Interfaces
+﻿namespace GeneticToolkit.Interfaces
 {
-    public interface IHeavenPolicy : IGeneticSerializable
+    public interface IHeavenPolicy
     {
-        ICollection<IIndividual> Memory { get; }
+        IIndividual[] Memory { get; }
 
-        void HandleGeneration(IPopulation population);
+        void HandleGeneration(IEvolutionaryPopulation population);
     }
 }

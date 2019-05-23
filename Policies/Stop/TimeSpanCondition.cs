@@ -30,7 +30,7 @@ namespace GeneticToolkit.Policies.Stop
             _notStarted = true;
         }
 
-        public bool Satisfied(IPopulation population)
+        public bool Satisfied(IEvolutionaryPopulation population)
         {
             if(_notStarted)
                 Start();

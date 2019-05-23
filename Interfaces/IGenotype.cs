@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections;
-
-namespace GeneticToolkit.Interfaces
+﻿namespace GeneticToolkit.Interfaces
 {
-    public interface IGenotype : IComparable<IGenotype>
+    public interface IGenotype
     {
-        BitArray Genes { get; set; }
+        byte[] Genes { get; set; }
 
-        bool this[int indexer] { get; set; }
+        bool GetBit(int index);
+        void SetBit(int index, bool value);
+        
+        byte this[int indexer] { get; set; }
 
         int Length { get; }
 
@@ -19,10 +19,18 @@ namespace GeneticToolkit.Interfaces
         IGenotype ShallowCopy();
 
         /// <summary>
+        /// Creates new object of same type as caller and copies values of its genes.
+        /// </summary>
+        /// <returns>Shallow copy of IGenotype</returns>
+        TGenotype ShallowCopy<TGenotype>() where TGenotype : class,IGenotype;
+
+        /// <summary>
         /// Creates new object of same type as caller.
         /// </summary>
         /// <returns>IGenotype with default Genes</returns>
         IGenotype EmptyCopy();
+
+        T EmptyCopy<T>();
 
         void Randomize();
 

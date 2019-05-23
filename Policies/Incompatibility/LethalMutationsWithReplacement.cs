@@ -1,7 +1,6 @@
-﻿using System;
-using System.Linq;
-using GeneticToolkit.Interfaces;
-using GeneticToolkit.Utils.Data;
+﻿using GeneticToolkit.Interfaces;
+
+using System;
 
 namespace GeneticToolkit.Policies.Incompatibility
 {
@@ -16,7 +15,7 @@ namespace GeneticToolkit.Policies.Incompatibility
         public Func<IPopulation, IIndividual, bool> IsCompatible { get; set; }
         private readonly int _maxRetries;
 
-        public IIndividual GetReplacement(IPopulation population, IIndividual incompatibleIndividual, IIndividual[] parents)
+        public IIndividual GetReplacement(IPopulation population, IIndividual incompatibleIndividual, IGenotype[] parents)
         {
             int retry = 0;
             bool compatible;
@@ -24,9 +23,9 @@ namespace GeneticToolkit.Policies.Incompatibility
             do
             {
                 candidate = population.IndividualFactory.CreateFromGenotype(
-                    population.Crossover.Cross(parents.Select(x => x.Genotype).ToList()).First(),
-                    incompatibleIndividual.Phenotype.ShallowCopy());
-                candidate.Mutate(population.MutationPolicy);
+                    population.Crossover.Cross(parents)[0]
+                    );
+                population.Mutation.Mutate(candidate.Genotype, population.MutationPolicy, population);
                 retry++;
             } while((compatible = IsCompatible(population, candidate)) == false && retry < _maxRetries);
 
@@ -40,9 +39,5 @@ namespace GeneticToolkit.Policies.Incompatibility
             IsCompatible = compatibilityFunction;
         }
 
-        public GeneticAlgorithmParameter Serialize()
-        {
-            return new GeneticAlgorithmParameter(this);
-        }
     }
 }

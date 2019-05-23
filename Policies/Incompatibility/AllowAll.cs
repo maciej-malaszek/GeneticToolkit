@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using GeneticToolkit.Interfaces;
-using GeneticToolkit.Utils.Data;
+﻿using GeneticToolkit.Interfaces;
+
+using System;
 
 namespace GeneticToolkit.Policies.Incompatibility
 {
@@ -10,25 +9,17 @@ namespace GeneticToolkit.Policies.Incompatibility
     /// </summary>
     public class AllowAll : IIncompatibilityPolicy
     {
-        public Func<IPopulation, IIndividual, bool> IsCompatible { get; set; }
-        public IIndividual GetReplacement(IPopulation population, IIndividual incompatibleIndividual, IIndividual[] parents)
-        {
-            return incompatibleIndividual;
-        }
-
-        public AllowAll(IDictionary<string, object> parameters)
-        {
-            
-        }
-
         public AllowAll()
         {
             IsCompatible = (population, individual) => true;
         }
 
-        public GeneticAlgorithmParameter Serialize()
+        public Func<IPopulation, IIndividual, bool> IsCompatible { get; set; }
+
+        public IIndividual GetReplacement(IPopulation population, IIndividual incompatibleIndividual,
+            IGenotype[] parents)
         {
-            return new GeneticAlgorithmParameter(this);
+            return incompatibleIndividual;
         }
     }
 }

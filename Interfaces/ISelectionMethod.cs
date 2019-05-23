@@ -1,6 +1,6 @@
 ﻿namespace GeneticToolkit.Interfaces
 {
-    public interface ISelectionMethod : IGeneticSerializable
+    public interface ISelectionMethod
     {
         ICompareCriteria CompareCriteria { get; set; }
 

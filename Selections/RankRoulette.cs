@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using GeneticToolkit.Interfaces;
-using GeneticToolkit.Utils.Data;
+﻿using GeneticToolkit.Interfaces;
+
+using System;
 
 namespace GeneticToolkit.Selections
 {
@@ -17,13 +14,11 @@ namespace GeneticToolkit.Selections
 
         protected IPopulation Population { get; set; }
 
-        protected List<IIndividual> SortedList = new List<IIndividual>();
-
         protected uint CurrentGeneration { get; set; }
 
         protected bool Deprecated { get; set; } = true;
 
-        protected IList<double> FitnessList = new List<double>();
+        protected double[] FitnessList;
        
         protected double? MinValue { get; set; }
 
@@ -44,13 +39,14 @@ namespace GeneticToolkit.Selections
                 Update(population);
 
             double randomValue = RandomNumberGenerator.NextDouble() * Sum;
-            int iterator = 0;
+            int iterator = population.Size-1;
 
-            Debug.Assert(MinValue != null, nameof(MinValue) + " != null");
+            if (MinValue == null) 
+                return Population[iterator];
+
             double localSum = FitnessList[iterator] - MinValue.Value;
-
-            while(localSum < randomValue && iterator < Population.Size - 1)
-                localSum += FitnessList[++iterator] - MinValue.Value;
+            while(localSum < randomValue && iterator > 0)
+                localSum += FitnessList[--iterator] - MinValue.Value;
 
             return Population[iterator];
         }
@@ -58,37 +54,26 @@ namespace GeneticToolkit.Selections
         public void Update(IPopulation population)
         {
             Population = population;
+            Population.SortDescending();
             CompareCriteria = Population.CompareCriteria;
             CurrentGeneration = Population.Generation;
-            FitnessList.Clear();
-            SortedList = Population.ToList();
-            SortedList.Sort( (individual, individual1) =>
-            {
-                var result = CompareCriteria.Compare(individual, individual1);
-                return result;
-            });
-
+            FitnessList = new double[Population.Size];
             MinValue = null;
-            for(int i = 0; i < SortedList.Count; i++)
+
+            // Population is already sorted from best to worse
+            for(int i = 0; i < Population.Size; i++)
             {
                 double functionValue = RankingValueFunc(i);
                 if(functionValue < MinValue || MinValue == null)
                     MinValue = functionValue;
-                FitnessList.Add(functionValue);
+                FitnessList[i] = functionValue;
             }
 
-            Sum = FitnessList.Sum(x =>
-            {
-                Debug.Assert(MinValue != null, nameof(MinValue) + " != null");
-                return x - MinValue.Value;
-            });
-
+            Sum = 0;
+            foreach (var x in FitnessList)
+                if (MinValue != null)
+                    Sum += x - MinValue.Value;
             Deprecated = false;
-        }
-
-        public GeneticAlgorithmParameter Serialize()
-        {
-            return new GeneticAlgorithmParameter(this);
         }
     }
 }

@@ -1,54 +1,44 @@
-﻿using System;
-using System.Collections;
-using GeneticToolkit.Interfaces;
+﻿using GeneticToolkit.Interfaces;
+
+using System;
 
 namespace GeneticToolkit.Genotypes
 {
-    public class GenotypeWithWatcher : SimpleGenotype
+    public class GenotypeWithWatcher : GenotypeBase
     {
-
-        // ReSharper disable once InconsistentNaming
-        protected BitArray _Genes;
-
         public event EventHandler ValueChanged;
 
-        public override bool this[int indexer]
+        public GenotypeWithWatcher(byte[] bytes):base(bytes.Length)
         {
-            get => _Genes[indexer];
+            Genes = bytes;
+        }
+        public GenotypeWithWatcher(int size) : base(size)
+        {
+        }
+        public override byte this[int indexer]
+        {
+            get => Genes[indexer];
             set
             {
-                _Genes[indexer] = value;
+                Genes[indexer] = value;
                 OnValueChanged(new EventArgs());
             }
         }
-
-        public override BitArray Genes
-        {
-            get => _Genes;
-            set
-            {
-                _Genes = value;
-                OnValueChanged(new EventArgs());
-            }
-        }
-
         public override IGenotype ShallowCopy()
         {
-            return new GenotypeWithWatcher(Length/8) { Genes = Genes.Clone() as BitArray };
+            return new GenotypeWithWatcher(Length) { Genes = Genes.Clone() as byte[] };
         }
-
         public override IGenotype EmptyCopy()
         {
-            return new GenotypeWithWatcher(Length/8);
+            return new GenotypeWithWatcher(Length);
         }
-
+        public override T EmptyCopy<T>()
+        {
+            return (T) EmptyCopy();
+        }
         protected virtual void OnValueChanged(EventArgs e)
         {
             ValueChanged?.Invoke(this, e);
-        }
-
-        public GenotypeWithWatcher(int size) : base(size)
-        {
         }
     }
 }

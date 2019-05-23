@@ -1,6 +1,8 @@
 ﻿using GeneticToolkit.Interfaces;
-using System.Collections.Generic;
-using System.Linq;
+using GeneticToolkit.Utils.Events;
+using GeneticToolkit.Utils.Extensions;
+
+using System;
 
 namespace GeneticToolkit
 {
@@ -8,19 +10,26 @@ namespace GeneticToolkit
 
     public class GeneticAlgorithm
     {
-        public IPopulation Population { get; set; }
+        public IEvolutionaryPopulation Population { get; set; }
 
-        public ICollection<IStopCondition> StopConditions { get; set; }
+        public event EventHandler<NewGenerationEventArgs> CreatedNextGeneration;
+
+        public IStopCondition[] StopConditions { get; set; }
 
         public EStopConditionMode StopConditionMode { get; set; } = EStopConditionMode.Any;
 
         public void Run()
         {
+            Population.Initialize();
             switch (StopConditionMode)
             {
                 case EStopConditionMode.Any:
                     while (StopConditions.Any(x => x.Satisfied(Population)) == false)
+                    {
                         Population.NextGeneration();
+                        CreatedNextGeneration?.Invoke(this, new NewGenerationEventArgs(Population, Population.Generation) );
+                    }
+
                     break;
                 case EStopConditionMode.All:
                     while (StopConditions.All(x => x.Satisfied(Population)) == false)
@@ -33,11 +42,8 @@ namespace GeneticToolkit
         public void Reset()
         {
             Population.Initialize();
-            foreach (var stopCondition in StopConditions)
+            foreach (IStopCondition stopCondition in StopConditions)
                 stopCondition.Reset();
         }
-
-
-
     }
 }

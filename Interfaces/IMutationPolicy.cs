@@ -2,8 +2,8 @@
 {
     public interface IMutationPolicy
     {
-        float MutationChance { get; }
+        float GetMutationChance(IPopulation population);
 
-        uint MutatedGenesCount { get; }
+        float MutatedGenesPercent { get; }
     }
 }

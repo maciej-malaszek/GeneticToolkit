@@ -9,14 +9,13 @@ namespace GeneticToolkit.Policies.Stop
         public ChangeHistory ChangeHistory { get; set; }
         public uint Generations { get; set; }
 
-        public bool Satisfied(IPopulation population)
+        public bool Satisfied(IEvolutionaryPopulation population)
         {
             if(population.Generation <= Generations + 1)
                 return false;
-            double newerValue = ChangeHistory.GetAverageImprovement((int)(population.Generation - (int)Generations), Generations);
-            double olderValue = ChangeHistory.GetAverageImprovement((int)(population.Generation - (int)Generations) - 1, Generations);
+            double improvement = ChangeHistory.GetAverageImprovement((int)(population.Generation - (int)Generations), Generations, population.CompareCriteria.OptimizationMode);
 
-            return newerValue - olderValue >= MinimalImprovement;
+            return improvement <= MinimalImprovement;
 
         }
 
