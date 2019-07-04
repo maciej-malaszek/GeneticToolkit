@@ -135,7 +135,7 @@ namespace GeneticToolkit.Populations
 
         private bool ParentAlreadySelected(IGenotype candidate, IEnumerable<IGenotype> parents)
         {
-            return parents.Any(parent => candidate == parent || candidate.SimilarityCheck(parent) > IncestLimit);
+            return parents.Any(parent => parent != null && (candidate == parent || candidate.SimilarityCheck(parent) > IncestLimit));
         }
 
         private IGenotype[] SelectParentalGenotypes()
