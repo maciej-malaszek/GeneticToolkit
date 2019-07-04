@@ -85,7 +85,7 @@ namespace GeneticToolkit.Populations
                     var child = IndividualFactory.CreateFromGenotype(genotypes[j]);
                     Mutation.Mutate(child.Genotype, MutationPolicy, this);
                     if (IncompatibilityPolicy.IsCompatible(this, child) == false)
-                        child = IncompatibilityPolicy.GetReplacement(this, nextGeneration[i], parentalGenotypes);
+                        child = IncompatibilityPolicy.GetReplacement(this, child, parentalGenotypes);
                     nextGeneration[i * Crossover.ChildrenCount + j] = child;
                 }
             }
@@ -100,6 +100,8 @@ namespace GeneticToolkit.Populations
                 {
                     var child = IndividualFactory.CreateFromGenotype(genotypes[j]);
                     Mutation.Mutate(child.Genotype, MutationPolicy, this);
+                    if (IncompatibilityPolicy.IsCompatible(this, child) == false)
+                        child = IncompatibilityPolicy.GetReplacement(this, child, parentalGenotypes);
                     nextGeneration[start + j] = child;
                 }
             }
