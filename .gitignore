@@ -6,3 +6,9 @@
 /obj/Release/netcoreapp2.2
 /obj
 /.vs/GeneticToolkit/v16
+
+GeneticToolkit/obj/
+
+Tests/PhenotypeNUnit/obj/
+
+\.idea/
