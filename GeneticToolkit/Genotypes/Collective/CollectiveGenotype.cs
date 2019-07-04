@@ -12,8 +12,7 @@ namespace GeneticToolkit.Genotypes.Collective
     {
         public CollectiveGenotype()
         {
-            T t = default;
-            Genes = t.Serialize();
+            Genes = new T().Serialize();
         }
         public CollectiveGenotype(int size)
         {
