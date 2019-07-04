@@ -9,7 +9,7 @@ using JetBrains.Annotations;
 namespace GeneticToolkit.Phenotypes.Collective
 {
     [PublicAPI]
-    public class CollectivePhenotype<T> : IPhenotype where T : struct, IGeneticallySerializable
+    public class CollectivePhenotype<T> : IPhenotype where T : IGeneticallySerializable, new()
     {
         private CollectiveGenotype<T> _genotype;
 

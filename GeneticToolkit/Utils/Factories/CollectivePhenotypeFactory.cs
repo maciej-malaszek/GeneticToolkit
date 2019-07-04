@@ -7,7 +7,7 @@ namespace GeneticToolkit.Utils.Factories
 {
     [PublicAPI]
     public class CollectivePhenotypeFactory<T> : IPhenotypeFactory<CollectivePhenotype<T>>
-        where T : struct,IGeneticallySerializable
+        where T : IGeneticallySerializable, new()
     {
         public CollectivePhenotype<T> Make(IGenotype genotype)
         {
