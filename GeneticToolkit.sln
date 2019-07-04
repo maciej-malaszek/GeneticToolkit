@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.329
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeneticToolkit", "GeneticToolkit.csproj", "{2A9263A9-E6C6-45C9-8D17-639C5FE9AF56}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeneticToolkit", "GeneticToolkit\GeneticToolkit.csproj", "{2A9263A9-E6C6-45C9-8D17-639C5FE9AF56}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhenotypeNUnit", "Tests\PhenotypeNUnit\PhenotypeNUnit.csproj", "{45F6B81E-D45E-490C-A0E7-FDADEDCE8697}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{8EBFB4D5-6CCF-4F99-9B42-9E3561D20DF2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,11 +19,26 @@ Global
 		{2A9263A9-E6C6-45C9-8D17-639C5FE9AF56}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2A9263A9-E6C6-45C9-8D17-639C5FE9AF56}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2A9263A9-E6C6-45C9-8D17-639C5FE9AF56}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C82384A7-2C06-4D6B-8E67-7A6795EAECFA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C82384A7-2C06-4D6B-8E67-7A6795EAECFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C82384A7-2C06-4D6B-8E67-7A6795EAECFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C82384A7-2C06-4D6B-8E67-7A6795EAECFA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{45F6B81E-D45E-490C-A0E7-FDADEDCE8697}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{45F6B81E-D45E-490C-A0E7-FDADEDCE8697}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{45F6B81E-D45E-490C-A0E7-FDADEDCE8697}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{45F6B81E-D45E-490C-A0E7-FDADEDCE8697}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {27817CAC-8175-4A81-8BF3-B5706865228F}
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{4015E6B8-9314-4467-AF1E-8E5D837AA156} = {148DFD27-4C79-4F5F-967D-98C02FD79D7F}
+		{C82384A7-2C06-4D6B-8E67-7A6795EAECFA} = {4015E6B8-9314-4467-AF1E-8E5D837AA156}
+		{613A9A25-9DCF-4A5F-9F39-DD46BFEE9A3A} = {8EBFB4D5-6CCF-4F99-9B42-9E3561D20DF2}
+		{04B2E025-F973-4B92-BDBD-5274FF538FA6} = {8EBFB4D5-6CCF-4F99-9B42-9E3561D20DF2}
+		{45F6B81E-D45E-490C-A0E7-FDADEDCE8697} = {8EBFB4D5-6CCF-4F99-9B42-9E3561D20DF2}
 	EndGlobalSection
 EndGlobal
