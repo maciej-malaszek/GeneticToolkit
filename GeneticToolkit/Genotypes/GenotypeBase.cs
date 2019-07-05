@@ -7,7 +7,7 @@ namespace GeneticToolkit.Genotypes
     [PublicAPI]
     public class GenotypeBase : IGenotype
     {
-        public GenotypeBase(){}
+        public GenotypeBase() { }
         public GenotypeBase(int size)
         {
             Genes = new byte[size];
@@ -23,7 +23,7 @@ namespace GeneticToolkit.Genotypes
         public void SetBit(int index, bool value)
         {
             Genes[index / 8] =
-                (byte) (value ? Genes[index / 8] & (1u << (index % 8)) : Genes[index / 8] | ~(1u << (index % 8)));
+                (byte)(value ? Genes[index / 8] & (1u << (index % 8)) : Genes[index / 8] | ~(1u << (index % 8)));
         }
 
         public virtual byte this[int indexer]
@@ -37,7 +37,7 @@ namespace GeneticToolkit.Genotypes
 
         public virtual IGenotype ShallowCopy()
         {
-            return new GenotypeBase(Genes.Length) {Genes = Genes.Clone() as byte[]};
+            return new GenotypeBase(Genes.Length) { Genes = Genes.Clone() as byte[] };
         }
 
         public virtual TGenotype ShallowCopy<TGenotype>() where TGenotype : class, IGenotype
@@ -52,7 +52,7 @@ namespace GeneticToolkit.Genotypes
 
         public virtual T EmptyCopy<T>()
         {
-            return (T) EmptyCopy();
+            return (T)EmptyCopy();
         }
 
         public virtual void Randomize()
@@ -73,9 +73,14 @@ namespace GeneticToolkit.Genotypes
             if (other.Length != Length)
                 return 0;
             long sum = 0;
+
             for (var i = 0; i < Length; i++)
-            for (var j = 0; j < 8; j++)
-                sum += (Genes[i] ^ other.Genes[i]) & (1u << j);
+            {
+                byte diff = (byte)(Genes[i] ^ other.Genes[i]);
+                for (var j = 0; j < 8; j++)
+                    sum += (diff & (1u << j)) > 0 ? 1 : 0;
+            }
+
             return (8.0 * Length - sum) / (Length * 8);
         }
 
@@ -86,6 +91,8 @@ namespace GeneticToolkit.Genotypes
             while ((identical = Genes[i] == other.Genes[i]) && i < Length - 1) i++;
 
             return identical ? 0 : other.Genes[i] > Genes[i] ? -1 : 1;
+
+
         }
     }
 }
