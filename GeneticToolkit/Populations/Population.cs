@@ -84,9 +84,28 @@ namespace GeneticToolkit.Populations
                 {
                     var child = IndividualFactory.CreateFromGenotype(genotypes[j]);
                     Mutation.Mutate(child.Genotype, MutationPolicy, this);
+                    if (IncompatibilityPolicy.IsCompatible(this, child) == false)
+                        child = IncompatibilityPolicy.GetReplacement(this, child, parentalGenotypes);
                     nextGeneration[i * Crossover.ChildrenCount + j] = child;
                 }
             }
+
+            int childrenCountDifference = nextGenSize % Crossover.ChildrenCount;
+            if (childrenCountDifference > 0)
+            {
+                var parentalGenotypes = SelectParentalGenotypes();
+                var genotypes = Crossover.Cross(parentalGenotypes);
+                int start = nextGenSize - childrenCountDifference;
+                for (var j = 0; j < childrenCountDifference; j++)
+                {
+                    var child = IndividualFactory.CreateFromGenotype(genotypes[j]);
+                    Mutation.Mutate(child.Genotype, MutationPolicy, this);
+                    if (IncompatibilityPolicy.IsCompatible(this, child) == false)
+                        child = IncompatibilityPolicy.GetReplacement(this, child, parentalGenotypes);
+                    nextGeneration[start + j] = child;
+                }
+            }
+
 
             Individuals = nextGeneration;
             DeprecateData();
@@ -135,7 +154,8 @@ namespace GeneticToolkit.Populations
 
         private bool ParentAlreadySelected(IGenotype candidate, IEnumerable<IGenotype> parents)
         {
-            return parents.Any(parent => candidate == parent || candidate.SimilarityCheck(parent) > IncestLimit);
+            return parents.Any(parent =>
+                parent != null && (candidate == parent || candidate.SimilarityCheck(parent) > IncestLimit));
         }
 
         private IGenotype[] SelectParentalGenotypes()

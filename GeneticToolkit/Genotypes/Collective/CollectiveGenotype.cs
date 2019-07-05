@@ -8,12 +8,11 @@ using JetBrains.Annotations;
 namespace GeneticToolkit.Genotypes.Collective
 {
     [PublicAPI]
-    public class CollectiveGenotype<T> : GenotypeBase where T : struct, IGeneticallySerializable
+    public class CollectiveGenotype<T> : GenotypeBase where T : IGeneticallySerializable, new()
     {
         public CollectiveGenotype()
         {
-            T t = default;
-            Genes = t.Serialize();
+            Genes = new T().Serialize();
         }
         public CollectiveGenotype(int size)
         {
