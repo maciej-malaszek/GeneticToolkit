@@ -12,3 +12,5 @@ GeneticToolkit/obj/
 Tests/PhenotypeNUnit/obj/
 
 \.idea/
+/.vs/GeneticToolkit
+/GeneticToolkit/bin/Debug/netcoreapp2.2
