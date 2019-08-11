@@ -15,19 +15,17 @@ namespace GeneticToolkit.Selections
     {
         public ICompareCriteria CompareCriteria { get; set; }
 
-        protected Random RandomNumberGenerator { get; set; } = new Random();
-
+        protected static Random RandomNumberGenerator { get; set; } = new Random();
         protected IPopulation Population { get; set; }
 
         protected List<double> FitnessList = new List<double>();
-
         protected uint CurrentGeneration { get; set; }
-
         protected bool Deprecated { get; set; } = true;
 
         protected double? MinValue { get; set; }
-
+        protected double? MaxValue { get; set; }
         protected double Sum { get; set; }
+
 
         public IIndividual Select(IPopulation population)
         {
@@ -36,33 +34,68 @@ namespace GeneticToolkit.Selections
                 Update(population);
 
             double randomValue = RandomNumberGenerator.NextDouble() * Sum;
-            var iterator = 0;
+            int iterator = 0;
             double localSum = FitnessList[iterator] - MinValue ?? 0;
 
-            while (localSum < randomValue && iterator < Population.Size - 1)
+            while (localSum < randomValue && iterator < FitnessList.Count - 1)
                 localSum += FitnessList[++iterator] - MinValue ?? 0;
 
-            return Population[iterator];
+            return iterator < population.Size ? Population[iterator] : Population.HeavenPolicy.Memory[iterator - population.Size];
         }
 
         private void Update(IPopulation population)
         {
-            Population = population;
+           Population = population;
             CompareCriteria = Population.CompareCriteria;
             CurrentGeneration = population.Generation;
             MinValue = null;
+            MaxValue = null;
             FitnessList.Clear();
-
-            for (var i = 0; i < Population.Size; i++)
+            if (CompareCriteria.OptimizationMode == EOptimizationMode.Maximize)
             {
-                double functionValue = Population.FitnessFunction.GetValue(Population[i].Phenotype);
-                if (functionValue < MinValue || MinValue.HasValue == false)
-                    MinValue = functionValue;
-                FitnessList.Add(functionValue);
-            }
+                for (int i = 0; i < Population.Size; i++)
+                {
+                    double functionValue = Population[i].Value;
+                    if (functionValue < MinValue || MinValue.HasValue == false)
+                        MinValue = functionValue;
+                    FitnessList.Add(functionValue);
+                }
 
+                if (Population.HeavenPolicy.UseInCrossover && population.Generation > 0)
+                    for (int i = 0; i < Population.HeavenPolicy.Size; i++)
+                    {
+                        double functionValue = Population.HeavenPolicy.Memory[i].Value;
+                        if (functionValue < MinValue || MinValue.HasValue == false)
+                            MinValue = functionValue;
+                        FitnessList.Add(functionValue);
+                    }
+                Sum = FitnessList.Sum(x => x - MinValue ?? 0);
+            }
+            else
+            {
+                for (int i = 0; i < Population.Size; i++)
+                {
+                    double functionValue = Population[i].Value;
+                    if (functionValue > MaxValue || MaxValue.HasValue == false)
+                        MaxValue = functionValue;
+                    FitnessList.Add(functionValue);
+                }
+
+                if (Population.HeavenPolicy.UseInCrossover && population.Generation > 0)
+                    for (int i = 0; i < Population.HeavenPolicy.Size; i++)
+                    {
+                        double functionValue = Population.HeavenPolicy.Memory[i].Value;
+                        if (functionValue > MaxValue || MaxValue.HasValue == false)
+                            MaxValue = functionValue;
+                        FitnessList.Add(functionValue);
+                    }
+
+                if (MaxValue.HasValue)
+                    for (int i = 0; i < FitnessList.Count; i++)
+                        FitnessList[i] = MaxValue.Value / FitnessList[i];
+                Sum = FitnessList.Sum(x => x);
+            }
             Deprecated = false;
-            Sum = FitnessList.Sum(x => x - (MinValue ?? 0));
         }
     }
 }

@@ -9,6 +9,7 @@ namespace GeneticToolkit.Interfaces
 
         IPhenotype Phenotype { get; }
 
+        double Value { get; }
         int CompareTo(IIndividual other, ICompareCriteria criteria);
     }
 }
