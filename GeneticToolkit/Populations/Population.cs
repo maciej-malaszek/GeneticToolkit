@@ -13,6 +13,7 @@ namespace GeneticToolkit.Populations
         private IIndividual _best;
         private bool _bestIsDeprecated = true;
         private bool _populationHomogeneityDeprecated = true;
+        private bool _sorted = false;
         private float _populationHomogeneity = -1;
         protected IIndividual[] Individuals;
 
@@ -116,6 +117,7 @@ namespace GeneticToolkit.Populations
 
         public float GetPopulationHomogeneity(double maxSimilarity)
         {
+            SortDescending();
             float similar = 0;
             for (var i = 0; i < Size - 1; i++)
                 if (this[i].Genotype.SimilarityCheck(this[i + 1].Genotype) > maxSimilarity)
@@ -212,12 +214,18 @@ namespace GeneticToolkit.Populations
 
         public void SortAscending()
         {
+            if(_sorted)
+                return;
             Array.Sort(Individuals, (x1, x2) => CompareCriteria.Compare(x1, x2));
+            _sorted = true;
         }
 
         public void SortDescending()
         {
+            if(_sorted)
+                return;
             Array.Sort(Individuals, (x1, x2) => CompareCriteria.Compare(x2, x1));
+            _sorted = true;
         }
 
         #endregion

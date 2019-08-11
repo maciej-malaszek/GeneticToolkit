@@ -10,21 +10,23 @@ namespace GeneticToolkit.Utils.Factories
         where TPhenotype : IPhenotype, new()
     {
         public IPhenotypeFactory<TPhenotype> Factory { get; set; }
+        public IFitnessFunction FitnessFunction { get; set; }
 
-        public IndividualFactory(IPhenotypeFactory<TPhenotype> factory)
+        public IndividualFactory(IPhenotypeFactory<TPhenotype> factory, IFitnessFunction fitnessFunction)
         {
             Factory = factory;
+            FitnessFunction = fitnessFunction;
         }
 
         public override IIndividual CreateFromGenotype(IGenotype genotype)
         {
-            return new Individual(genotype, Factory.Make(genotype));
+            return new Individual(genotype, Factory.Make(genotype),FitnessFunction);
         }
 
         public override IIndividual CreateRandomIndividual()
         {
             var genotype = new TGenotype().Randomized();
-            return new Individual(genotype, Factory.Make(genotype));
+            return new Individual(genotype, Factory.Make(genotype),FitnessFunction);
         }
     }
 }

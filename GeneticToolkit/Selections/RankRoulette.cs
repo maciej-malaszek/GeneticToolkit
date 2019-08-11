@@ -49,7 +49,7 @@ namespace GeneticToolkit.Selections
             while (localSum < randomValue && iterator > 0)
                 localSum += FitnessList[--iterator] - MinValue.Value;
 
-            return Population[iterator];
+            return iterator < population.Size ? Population[iterator] : Population.HeavenPolicy.Memory[iterator - population.Size];
         }
 
         public void Update(IPopulation population)
@@ -58,17 +58,26 @@ namespace GeneticToolkit.Selections
             Population.SortDescending();
             CompareCriteria = Population.CompareCriteria;
             CurrentGeneration = Population.Generation;
-            FitnessList = new double[Population.Size];
+            FitnessList = new double[Population.Size + (Population.HeavenPolicy.UseInCrossover ? Population.HeavenPolicy.Size : 0)];
             MinValue = null;
 
             // Population is already sorted from best to worse
             for (var i = 0; i < Population.Size; i++)
             {
-                double functionValue = RankingValueFunc(i);
+                double functionValue = RankingValueFunc(CompareCriteria.OptimizationMode == EOptimizationMode.Minimize ? i : Population.Size - 1 - i);
                 if (functionValue < MinValue || MinValue == null)
                     MinValue = functionValue;
                 FitnessList[i] = functionValue;
             }
+            if (Population.HeavenPolicy.UseInCrossover && population.Generation > 0)
+                for (int i = Population.Size; i < Population.Size + Population.HeavenPolicy.Size; i++)
+                {
+                    double functionValue = Population.HeavenPolicy.Memory[i - Population.Size].Value;
+                    if (functionValue < MinValue || MinValue.HasValue == false)
+                        MinValue = functionValue;
+                    FitnessList[i] = functionValue;
+                }
+
 
             Sum = 0;
             foreach (double x in FitnessList)

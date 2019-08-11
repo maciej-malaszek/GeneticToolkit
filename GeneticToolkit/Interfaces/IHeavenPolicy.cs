@@ -6,7 +6,8 @@ namespace GeneticToolkit.Interfaces
     public interface IHeavenPolicy
     {
         IIndividual[] Memory { get; }
-
+        bool UseInCrossover { get; set; }
+        int Size { get; }
         void HandleGeneration(IEvolutionaryPopulation population);
     }
 }
