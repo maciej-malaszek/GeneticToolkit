@@ -3,6 +3,7 @@ using GeneticToolkit.Genotypes.Collective;
 using GeneticToolkit.Interfaces;
 using GeneticToolkit.Phenotypes.Collective;
 using GeneticToolkit.Utils.Factories;
+using GeneticToolkit.Utils.FitnessFunctions;
 using NUnit.Framework;
 
 namespace CollectivePhenotypeNUnit
@@ -42,9 +43,7 @@ namespace CollectivePhenotypeNUnit
         {
             _phenotypeFactory = new CollectivePhenotypeFactory<SimpleStructure>();
             _individualFactory =
-                new IndividualFactory<CollectiveGenotype<SimpleStructure>, CollectivePhenotype<SimpleStructure>>(
-                    _phenotypeFactory
-                );
+                new IndividualFactory<CollectiveGenotype<SimpleStructure>, CollectivePhenotype<SimpleStructure>>(_phenotypeFactory, new FitnessFunction(phenotype => 0));
         }
 
         [Test(Author = "Maciej Małaszek", Description = "Is it possible to create individual with such phenotype")]
