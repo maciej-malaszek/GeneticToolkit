@@ -72,11 +72,11 @@ namespace GeneticToolkit.Crossovers
         private T[][] GetNumbers<T>(IGenotype[] parents)
         {
             int sizeOfType = Marshal.SizeOf<T>();
-            
+
             if (parents[0].Length % sizeOfType != 0)
                 return null;
 
-            var result = new T[parents[0].Length / sizeOfType][];
+            T[][] result = new T[parents[0].Length / sizeOfType][];
             
             for (int i = 0; i < result.Length; i++)
             {
