@@ -2,20 +2,7 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
-/bin
-/obj/Release/netcoreapp2.2
-/obj
-/.vs/GeneticToolkit/v16
-
-GeneticToolkit/obj/
-
-Tests/PhenotypeNUnit/obj/
-
-\.idea/
-/.vs/GeneticToolkit
-/GeneticToolkit/bin/Debug/netcoreapp2.2
-/GenotypesNUnit/obj/Debug/netcoreapp2.2
-/CrossoversNUnit/obj/Debug/netcoreapp2.2
-/.vs
-/Sandbox/SandboxApplication/obj/Debug/netcoreapp2.2
-/Tests/PhenotypeNUnit/bin/Debug/netcoreapp2.2
+**/.idea/
+**/.vs
+**/obj
+**/bin
