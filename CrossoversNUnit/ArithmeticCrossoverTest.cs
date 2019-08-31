@@ -67,11 +67,11 @@ namespace CrossoversNUnit
             {
                 Parents = new[]
                 {
-                    new Float32Genotype((float)new Random().NextDouble()*10000+1),
-                    new Float32Genotype((float)new Random().NextDouble()*10000+1),
+                    new Float32Genotype(11.0f),
+                    new Float32Genotype(12.0f),
                 },
             };
-            testCase003.ExpectedValue = testCase003.Parents.Average(x => ((Float32Genotype)x).Value);
+            testCase003.ExpectedValue = 11.5f;
 
             TestCase<float> testCase004 = new TestCase<float>()
             {

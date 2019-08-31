@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using GeneticToolkit.Utils.Factories;
 using JetBrains.Annotations;
 
@@ -37,6 +38,8 @@ namespace GeneticToolkit.Interfaces
         void SortAscending();
 
         void Initialize();
+
+        void Initialize(Func<IIndividual[]> populationGenerator);
         
         void NextGeneration();
 

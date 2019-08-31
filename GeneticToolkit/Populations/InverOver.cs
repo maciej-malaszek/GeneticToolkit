@@ -62,15 +62,26 @@ namespace GeneticToolkit.Populations
             set => Individuals[indexer] = value;
         }
 
-        public void Initialize()
+        private void Reset()
         {
             Generation = 0;
             _bestIsDeprecated = true;
             _best = null;
             foreach (var statisticUtility in StatisticUtilities.Values)
                 statisticUtility.Reset();
+        }
 
+        public virtual void Initialize()
+        {
+            Reset();
             Individuals = IndividualFactory.CreateRandomPopulation(Size);
+            SortDescending();
+        }
+
+        public virtual void Initialize(Func<IIndividual[]> populationGenerator)
+        {
+            Reset();
+            Individuals = populationGenerator();
             SortDescending();
         }
 

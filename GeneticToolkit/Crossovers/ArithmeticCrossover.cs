@@ -17,7 +17,8 @@ namespace GeneticToolkit.Crossovers
             Integer,
             Long
         };
-        public int ParentsCount { get; }
+
+        public int ParentsCount { get; set; } = 2;
         public int ChildrenCount => 1;
         public int BitAlign { get; set; } = -1;
         public EMode Mode { get; set; }
@@ -28,7 +29,7 @@ namespace GeneticToolkit.Crossovers
         }
         public IGenotype[] Cross(IGenotype[] parents)
         {
-            IGenotype child = parents[0].ShallowCopy();
+            IGenotype child = parents[0].EmptyCopy();
 
             switch (Mode)
             {
@@ -46,19 +47,19 @@ namespace GeneticToolkit.Crossovers
                     break;
                 case EMode.Integer:
                     child.Genes = GetNumbers<int>(parents)
-                        .Select(x => x.Average(y => y))
+                        .Select(x => (int)(x.Average(y => y)))
                         .SelectMany(BitConverter.GetBytes)
                         .ToArray();
                     break;
                 case EMode.Short:
                     child.Genes = GetNumbers<short>(parents)
-                        .Select(x => x.Average(y => y))
+                        .Select(x => (short)(x.Average(y => y)))
                         .SelectMany(BitConverter.GetBytes)
                         .ToArray();
                     break;
                 case EMode.Long:
                     child.Genes = GetNumbers<long>(parents)
-                        .Select(x => x.Average(y => y))
+                        .Select(x => (long)(x.Average(y => y)))
                         .SelectMany(BitConverter.GetBytes)
                         .ToArray();
                     break;

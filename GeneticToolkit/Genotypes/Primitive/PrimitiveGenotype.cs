@@ -17,7 +17,7 @@ namespace GeneticToolkit.Genotypes.Primitive
     [PublicAPI]
     public abstract class GenericPrimitiveGenotype<T> : PrimitiveGenotype where T : struct
     {
-        protected bool Deprecated;
+        protected bool Deprecated = true;
         private T _value;
 
         protected GenericPrimitiveGenotype(int size) : base(size)
