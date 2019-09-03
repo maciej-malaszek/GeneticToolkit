@@ -3,7 +3,9 @@ using GeneticToolkit.Interfaces;
 using GeneticToolkit.Utils.Extensions;
 using GeneticToolkit.Utils.Factories;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace GeneticToolkit.Populations
 {
@@ -208,6 +210,15 @@ namespace GeneticToolkit.Populations
             int t = index0;
             index0 = index1;
             index1 = t;
+        }
+        IEnumerator<IIndividual> IEnumerable<IIndividual>.GetEnumerator()
+        {
+            return Individuals.OfType<IIndividual>().GetEnumerator();
+        }
+
+        public IEnumerator GetEnumerator()
+        {
+            return Individuals.GetEnumerator();
         }
     }
 }
