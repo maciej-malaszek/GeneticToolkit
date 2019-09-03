@@ -31,12 +31,7 @@ namespace CrossoversNUnit
         [SetUp]
         public void Setup()
         {
-            _singleArithmeticCrossover = new ArithmeticCrossover(ArithmeticCrossover.EMode.Single);
-            _doubleArithmeticCrossover = new ArithmeticCrossover(ArithmeticCrossover.EMode.Double);
-            _shortArithmeticCrossover = new ArithmeticCrossover(ArithmeticCrossover.EMode.Short);
-            _integerArithmeticCrossover = new ArithmeticCrossover(ArithmeticCrossover.EMode.Integer);
-            _longArithmeticCrossover = new ArithmeticCrossover(ArithmeticCrossover.EMode.Long);
-
+      
             
         }
 
