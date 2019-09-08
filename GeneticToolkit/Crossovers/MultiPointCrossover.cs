@@ -33,16 +33,18 @@ namespace GeneticToolkit.Crossovers
             var children = new IGenotype[childrenCount];
             for (var c = 0; c < childrenCount; c++)
             {
-                var child = parents[0].EmptyCopy();
-                var cutIndexes = GetCutPoints(genotypeLength);
+                IGenotype child = parents[0].EmptyCopy();
+                int[] cutIndexes = GetCutPoints(genotypeLength);
                 for (var i = 0; i < CutPointCount - 1; i++)
                 {
-                    var mask = GetMask(genotypeLength, cutIndexes, i);
+                    byte[] mask = GetMask(genotypeLength, cutIndexes, i);
                     for (var j = 0; j < genotypeLength; j++)
+                    {
                         child.Genes[j] |= (byte) (mask[j] & parents[parentIndex++].Genes[j]);
 
-                    if (parentIndex >= parents.Length)
-                        parentIndex = 0;
+                        if (parentIndex >= parents.Length)
+                            parentIndex = 0;
+                    }
                 }
 
                 children[c] = child;

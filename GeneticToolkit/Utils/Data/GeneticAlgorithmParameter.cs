@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using GeneticToolkit.Interfaces;
 using JetBrains.Annotations;
@@ -14,7 +15,7 @@ namespace GeneticToolkit.Utils.Data
 
         public GeneticAlgorithmParameter(IGeneticSerializable serializableObject)
         {
-            var type = serializableObject.GetType();
+            Type type = serializableObject.GetType();
             Type = type.IsGenericType ? type.GetGenericTypeDefinition().FullName : type.FullName;
             GenericArguments = type.GenericTypeArguments.Select(x => x.FullName).ToArray();
         }
