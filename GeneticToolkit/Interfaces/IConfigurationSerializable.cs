@@ -2,7 +2,7 @@
 
 namespace GeneticToolkit.Interfaces
 {
-    public interface IGeneticSerializable
+    public interface IConfigurationSerializable
     {
         GeneticAlgorithmParameter Serialize();
     }

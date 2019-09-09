@@ -9,9 +9,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PhenotypeNUnit", "Tests\Phe
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{8EBFB4D5-6CCF-4F99-9B42-9E3561D20DF2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CrossoversNUnit", "CrossoversNUnit\CrossoversNUnit.csproj", "{C7EB602D-B8F0-4A03-8220-17481BF0A67E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CrossoversNUnit", "Tests\CrossoversNUnit\CrossoversNUnit.csproj", "{C7EB602D-B8F0-4A03-8220-17481BF0A67E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GenotypesNUnit", "GenotypesNUnit\GenotypesNUnit.csproj", "{816E7FE7-A9A0-43D2-A603-2DE1BAB5854B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GenotypesNUnit", "Tests\GenotypesNUnit\GenotypesNUnit.csproj", "{816E7FE7-A9A0-43D2-A603-2DE1BAB5854B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SerializationNUnit", "Tests\SerializationNUnit\SerializationNUnit.csproj", "{4FDDB9DA-ED3D-4294-9006-BB180EC99955}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,6 +37,10 @@ Global
 		{816E7FE7-A9A0-43D2-A603-2DE1BAB5854B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{816E7FE7-A9A0-43D2-A603-2DE1BAB5854B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{816E7FE7-A9A0-43D2-A603-2DE1BAB5854B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4FDDB9DA-ED3D-4294-9006-BB180EC99955}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4FDDB9DA-ED3D-4294-9006-BB180EC99955}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4FDDB9DA-ED3D-4294-9006-BB180EC99955}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4FDDB9DA-ED3D-4294-9006-BB180EC99955}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -43,6 +49,7 @@ Global
 		{45F6B81E-D45E-490C-A0E7-FDADEDCE8697} = {8EBFB4D5-6CCF-4F99-9B42-9E3561D20DF2}
 		{C7EB602D-B8F0-4A03-8220-17481BF0A67E} = {8EBFB4D5-6CCF-4F99-9B42-9E3561D20DF2}
 		{816E7FE7-A9A0-43D2-A603-2DE1BAB5854B} = {8EBFB4D5-6CCF-4F99-9B42-9E3561D20DF2}
+		{4FDDB9DA-ED3D-4294-9006-BB180EC99955} = {8EBFB4D5-6CCF-4F99-9B42-9E3561D20DF2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {27817CAC-8175-4A81-8BF3-B5706865228F}
