@@ -1,11 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using GeneticToolkit.Utils.Factories;
 using JetBrains.Annotations;
 
 namespace GeneticToolkit.Interfaces
 {
     [PublicAPI]
-    public interface IEvolutionaryPopulation
+    public interface IEvolutionaryPopulation : IEnumerable, IEnumerable<IIndividual>
     {
         int Size { get; }
 
@@ -37,6 +39,8 @@ namespace GeneticToolkit.Interfaces
         void SortAscending();
 
         void Initialize();
+
+        void Initialize(Func<IIndividual[]> populationGenerator);
         
         void NextGeneration();
 

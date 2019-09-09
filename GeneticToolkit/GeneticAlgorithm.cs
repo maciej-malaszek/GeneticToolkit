@@ -22,7 +22,6 @@ namespace GeneticToolkit
 
         public void Run()
         {
-            Population.Initialize();
             switch (StopConditionMode)
             {
                 case EStopConditionMode.Any:
@@ -43,8 +42,7 @@ namespace GeneticToolkit
 
         public void Reset()
         {
-            Population.Initialize();
-            foreach (var stopCondition in StopConditions)
+            foreach (IStopCondition stopCondition in StopConditions)
                 stopCondition.Reset();
         }
     }

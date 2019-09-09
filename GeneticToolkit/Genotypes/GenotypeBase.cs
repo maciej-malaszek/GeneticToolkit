@@ -81,7 +81,7 @@ namespace GeneticToolkit.Genotypes
                     sum += (diff & (1u << j)) > 0 ? 1 : 0;
             }
 
-            return (8.0 * Length - sum) / (Length * 8);
+            return (8.0 * Length - sum) / (Length * 8.0);
         }
 
         public virtual int CompareTo(IGenotype other)

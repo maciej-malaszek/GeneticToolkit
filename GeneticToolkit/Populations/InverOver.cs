@@ -3,7 +3,9 @@ using GeneticToolkit.Interfaces;
 using GeneticToolkit.Utils.Extensions;
 using GeneticToolkit.Utils.Factories;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace GeneticToolkit.Populations
 {
@@ -62,15 +64,26 @@ namespace GeneticToolkit.Populations
             set => Individuals[indexer] = value;
         }
 
-        public void Initialize()
+        private void Reset()
         {
             Generation = 0;
             _bestIsDeprecated = true;
             _best = null;
             foreach (var statisticUtility in StatisticUtilities.Values)
                 statisticUtility.Reset();
+        }
 
+        public virtual void Initialize()
+        {
+            Reset();
             Individuals = IndividualFactory.CreateRandomPopulation(Size);
+            SortDescending();
+        }
+
+        public virtual void Initialize(Func<IIndividual[]> populationGenerator)
+        {
+            Reset();
+            Individuals = populationGenerator();
             SortDescending();
         }
 
@@ -197,6 +210,15 @@ namespace GeneticToolkit.Populations
             int t = index0;
             index0 = index1;
             index1 = t;
+        }
+        IEnumerator<IIndividual> IEnumerable<IIndividual>.GetEnumerator()
+        {
+            return Individuals.OfType<IIndividual>().GetEnumerator();
+        }
+
+        public IEnumerator GetEnumerator()
+        {
+            return Individuals.GetEnumerator();
         }
     }
 }

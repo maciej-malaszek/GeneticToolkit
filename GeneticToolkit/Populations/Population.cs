@@ -1,6 +1,7 @@
 ﻿using GeneticToolkit.Interfaces;
 using GeneticToolkit.Utils.Factories;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
@@ -13,7 +14,7 @@ namespace GeneticToolkit.Populations
         private IIndividual _best;
         private bool _bestIsDeprecated = true;
         private bool _populationHomogeneityDeprecated = true;
-        private bool _sorted = false;
+        private bool _sorted;
         private float _populationHomogeneity = -1;
         protected IIndividual[] Individuals;
 
@@ -61,15 +62,26 @@ namespace GeneticToolkit.Populations
         #endregion
 
 
-        public virtual void Initialize()
+        private void Reset()
         {
             Generation = 0;
             _bestIsDeprecated = true;
             _best = null;
             foreach (var statisticUtility in StatisticUtilities.Values)
                 statisticUtility.Reset();
+        }
 
+        public virtual void Initialize()
+        {
+            Reset();
             Individuals = IndividualFactory.CreateRandomPopulation(Size);
+            SortDescending();
+        }
+
+        public virtual void Initialize(Func<IIndividual[]> populationGenerator)
+        {
+            Reset();
+            Individuals = populationGenerator();
             SortDescending();
         }
 
@@ -111,7 +123,7 @@ namespace GeneticToolkit.Populations
             Individuals = nextGeneration;
             DeprecateData();
             UpdatePerGenerationData();
-            if (Generation % 10 == 0)
+            if (Generation % 1000 == 0)
                 GC.Collect();
         }
 
@@ -229,5 +241,15 @@ namespace GeneticToolkit.Populations
         }
 
         #endregion
+
+        IEnumerator<IIndividual> IEnumerable<IIndividual>.GetEnumerator()
+        {
+            return Individuals.OfType<IIndividual>().GetEnumerator();
+        }
+
+        public IEnumerator GetEnumerator()
+        {
+            return Individuals.GetEnumerator();
+        }
     }
 }
