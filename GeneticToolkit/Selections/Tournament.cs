@@ -1,7 +1,9 @@
 ﻿using GeneticToolkit.Interfaces;
 using GeneticToolkit.Populations;
-using System;
+
 using JetBrains.Annotations;
+
+using System;
 
 namespace GeneticToolkit.Selections
 {
@@ -20,7 +22,7 @@ namespace GeneticToolkit.Selections
 
         public IIndividual Select(IPopulation population)
         {
-            int realSize = Math.Max(Math.Min(population.Size - 1, (int)(PopulationPercentage * population.Size)), 1);
+            int realSize = Math.Max(Math.Min(population.Size - 1, Math.Max(2,(int)(PopulationPercentage * population.Size))), 1);
             if (population == null)
                 throw new NullReferenceException("Population has not been initialized!");
             if (population.Size < 2)
@@ -46,5 +48,6 @@ namespace GeneticToolkit.Selections
             }
             return tournament.GetBest();
         }
+
     }
 }

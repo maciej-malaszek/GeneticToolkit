@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection;
 using GeneticToolkit.Interfaces;
 using GeneticToolkit.Utils.Data;
 using GeneticToolkit.Utils.Factories;
@@ -29,38 +30,38 @@ namespace GeneticToolkit.Utils.Configuration
         public static Type GetTypeFrom(GeneticAlgorithmParameter parameter, Type baseType)
         {
             string typeString = GetTypeString(parameter);
-            var assembly = baseType.Assembly;
+            Assembly assembly = baseType.Assembly;
             return assembly.GetType(typeString);
         }
 
-        private static ISelectionMethod SelectionMethod(GeneticAlgorithmParameter parameter,
+        public static ISelectionMethod SelectionMethod(GeneticAlgorithmParameter parameter,
             ICompareCriteria compareCriteria)
         {
-            var type = GetTypeFrom(parameter, typeof(IndividualFactoryBase));
+            Type type = GetTypeFrom(parameter, typeof(IndividualFactoryBase));
             var selectionMethod = Activator.CreateInstance(type, args: parameter.Params) as ISelectionMethod;
             if (selectionMethod != null)
                 selectionMethod.CompareCriteria = compareCriteria;
             return selectionMethod;
         }
 
-        private static ICrossover Crossover(GeneticAlgorithmParameter parameter)
+        public static ICrossover Crossover(GeneticAlgorithmParameter parameter)
         {
-            var type = GetTypeFrom(parameter, typeof(ICrossover));
+            Type type = GetTypeFrom(parameter, typeof(ICrossover));
             var crossover = Activator.CreateInstance(type, args: parameter.Params) as ICrossover;
             return crossover;
         }
 
-        private static IHeavenPolicy HeavenPolicy(GeneticAlgorithmParameter parameter)
+        public static IHeavenPolicy HeavenPolicy(GeneticAlgorithmParameter parameter)
         {
-            var type = GetTypeFrom(parameter, typeof(IHeavenPolicy));
+            Type type = GetTypeFrom(parameter, typeof(IHeavenPolicy));
             var heavenPolicy = Activator.CreateInstance(type, args: parameter.Params) as IHeavenPolicy;
             return heavenPolicy;
         }
 
-        private static IIncompatibilityPolicy IncompatibilityPolicy(GeneticAlgorithmParameter parameter,
+        public static IIncompatibilityPolicy IncompatibilityPolicy(GeneticAlgorithmParameter parameter,
             Func<IPopulation, IIndividual, bool> isCompatibleFunc)
         {
-            var type = GetTypeFrom(parameter, typeof(IIncompatibilityPolicy));
+            Type type = GetTypeFrom(parameter, typeof(IIncompatibilityPolicy));
             var incompatibilityPolicy =
                 Activator.CreateInstance(type, args: parameter.Params) as IIncompatibilityPolicy;
             if (incompatibilityPolicy != null)
@@ -68,29 +69,29 @@ namespace GeneticToolkit.Utils.Configuration
             return incompatibilityPolicy;
         }
 
-        private static IPopulationResizePolicy ResizePolicy(GeneticAlgorithmParameter parameter)
+        public static IPopulationResizePolicy ResizePolicy(GeneticAlgorithmParameter parameter)
         {
-            var type = GetTypeFrom(parameter, typeof(IPopulationResizePolicy));
+            Type type = GetTypeFrom(parameter, typeof(IPopulationResizePolicy));
             var resizePolicy = Activator.CreateInstance(type, args: parameter.Params) as IPopulationResizePolicy;
             return resizePolicy;
         }
 
-        private static IndividualFactoryBase IndividualFactory(GeneticAlgorithmParameter parameter)
+        public static IndividualFactoryBase IndividualFactory(GeneticAlgorithmParameter parameter)
         {
-            var type = GetTypeFrom(parameter, typeof(IndividualFactoryBase));
+            Type type = GetTypeFrom(parameter, typeof(IndividualFactoryBase));
             var phenotypeFactoryJObject = (JObject) parameter.Params["PhenotypeFactory"];
             var phenotypeFactoryParameter =
                 phenotypeFactoryJObject.ToObject<GeneticAlgorithmParameter>();
 
-            var phenotypeFactory = PhenotypeFactory(phenotypeFactoryParameter);
+            IPhenotypeFactory<IPhenotype> phenotypeFactory = PhenotypeFactory(phenotypeFactoryParameter);
             parameter.Params["PhenotypeFactory"] = phenotypeFactory;
 
             return Activator.CreateInstance(type, args: parameter.Params) as IndividualFactoryBase;
         }
 
-        private static IPhenotypeFactory<IPhenotype> PhenotypeFactory(GeneticAlgorithmParameter parameter)
+        public static IPhenotypeFactory<IPhenotype> PhenotypeFactory(GeneticAlgorithmParameter parameter)
         {
-            var type = GetTypeFrom(parameter, typeof(IPhenotypeFactory<IPhenotype>));
+            Type type = GetTypeFrom(parameter, typeof(IPhenotypeFactory<IPhenotype>));
             var phenotypeFactory =
                 Activator.CreateInstance(type, args: parameter.Params) as IPhenotypeFactory<IPhenotype>;
             return phenotypeFactory;
@@ -98,7 +99,7 @@ namespace GeneticToolkit.Utils.Configuration
 
         public static IPopulation GetPopulation(GeneticAlgorithmSettings settings, IFitnessFunction function)
         {
-            var type = GetTypeFrom(
+            Type type = GetTypeFrom(
                 new GeneticAlgorithmParameter() {Type = settings.Type, GenericArguments = settings.GenericArguments},
                 typeof(IPopulation));
             var population =

@@ -13,7 +13,7 @@ namespace GeneticToolkit.Utils.Data
         {
         }
 
-        public GeneticAlgorithmParameter(IGeneticSerializable serializableObject)
+        public GeneticAlgorithmParameter(IConfigurationSerializable serializableObject)
         {
             Type type = serializableObject.GetType();
             Type = type.IsGenericType ? type.GetGenericTypeDefinition().FullName : type.FullName;

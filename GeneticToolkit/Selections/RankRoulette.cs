@@ -1,6 +1,9 @@
 ﻿using GeneticToolkit.Interfaces;
-using System;
+
 using JetBrains.Annotations;
+
+using System;
+using System.Collections.Generic;
 
 namespace GeneticToolkit.Selections
 {
