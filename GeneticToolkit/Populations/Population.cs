@@ -9,95 +9,39 @@ using JetBrains.Annotations;
 namespace GeneticToolkit.Populations
 {
     [PublicAPI]
-    public class Population : IPopulation
+    public class Population : PopulationBase, IPopulation
     {
-        private IIndividual _best;
-        private bool _bestIsDeprecated = true;
-        private bool _populationHomogeneityDeprecated = true;
-        private bool _sorted;
-        private float _populationHomogeneity = -1;
-        protected IIndividual[] Individuals;
+        #region Params
 
+        public int MaxSelectionTries { get; set; } = 10;
+        public ICrossover Crossover { get; set; }
+        public IMutation Mutation { get; set; }
+        public IIncompatibilityPolicy IncompatibilityPolicy { get; set; }
+        public IMutationPolicy MutationPolicy { set; get; }
+        public IPopulationResizePolicy ResizePolicy { set; get; }
+        public ISelectionMethod SelectionMethod { get; set; }
+
+        #endregion
+        
         public Population(IFitnessFunction fitnessFunction, int size)
         {
             FitnessFunction = fitnessFunction;
             Individuals = new IIndividual[size];
         }
 
-        public int Size => Individuals.Length;
-        public uint Generation { get; protected set; }
-
-        public IIndividual Best
-        {
-            get
-            {
-                if (_bestIsDeprecated)
-                    _best = GetBest();
-                return _best;
-            }
-        }
-
-        public float Homogeneity
-        {
-            get
-            {
-                if (!_populationHomogeneityDeprecated)
-                    return _populationHomogeneity;
-                _populationHomogeneity = GetPopulationHomogeneity(IncestLimit);
-                _populationHomogeneityDeprecated = false;
-                return _populationHomogeneity;
-            }
-        }
-
-        public IIndividual this[int indexer]
-        {
-            get => Individuals[indexer];
-            set => Individuals[indexer] = value;
-        }
-
-        #region Utils
-
-        public Dictionary<string, IStatisticUtility> StatisticUtilities { get; set; }
-
-        #endregion
-
-
-        private void Reset()
-        {
-            Generation = 0;
-            _bestIsDeprecated = true;
-            _best = null;
-            foreach (var statisticUtility in StatisticUtilities.Values)
-                statisticUtility.Reset();
-        }
-
-        public virtual void Initialize()
-        {
-            Reset();
-            Individuals = IndividualFactory.CreateRandomPopulation(Size);
-            SortDescending();
-        }
-
-        public virtual void Initialize(Func<IIndividual[]> populationGenerator)
-        {
-            Reset();
-            Individuals = populationGenerator();
-            SortDescending();
-        }
-
-        public virtual void NextGeneration()
+        public override void NextGeneration()
         {
             int nextGenSize = ResizePolicy.NextGenSize(this);
             var nextGeneration = new IIndividual[nextGenSize];
             for (var i = 0; i < nextGenSize / Crossover.ChildrenCount; i++)
             {
-                var parentalGenotypes = SelectParentalGenotypes();
-                var genotypes = Crossover.Cross(parentalGenotypes);
+                IGenotype[] parentalGenotypes = SelectParentalGenotypes();
+                IGenotype[] genotypes = Crossover.Cross(parentalGenotypes);
                 for (var j = 0; j < genotypes.Length; j++)
                 {
-                    var child = IndividualFactory.CreateFromGenotype(genotypes[j]);
+                    IIndividual child = IndividualFactory.CreateFromGenotype(genotypes[j]);
                     Mutation.Mutate(child.Genotype, MutationPolicy, this);
-                    if (IncompatibilityPolicy.IsCompatible(this, child) == false)
+                    if (!IncompatibilityPolicy.IsCompatible(this, child))
                         child = IncompatibilityPolicy.GetReplacement(this, child, parentalGenotypes);
                     nextGeneration[i * Crossover.ChildrenCount + j] = child;
                 }
@@ -106,14 +50,14 @@ namespace GeneticToolkit.Populations
             int childrenCountDifference = nextGenSize % Crossover.ChildrenCount;
             if (childrenCountDifference > 0)
             {
-                var parentalGenotypes = SelectParentalGenotypes();
-                var genotypes = Crossover.Cross(parentalGenotypes);
+                IGenotype[] parentalGenotypes = SelectParentalGenotypes();
+                IGenotype[] genotypes = Crossover.Cross(parentalGenotypes);
                 int start = nextGenSize - childrenCountDifference;
                 for (var j = 0; j < childrenCountDifference; j++)
                 {
-                    var child = IndividualFactory.CreateFromGenotype(genotypes[j]);
+                    IIndividual child = IndividualFactory.CreateFromGenotype(genotypes[j]);
                     Mutation.Mutate(child.Genotype, MutationPolicy, this);
-                    if (IncompatibilityPolicy.IsCompatible(this, child) == false)
+                    if (!IncompatibilityPolicy.IsCompatible(this, child))
                         child = IncompatibilityPolicy.GetReplacement(this, child, parentalGenotypes);
                     nextGeneration[start + j] = child;
                 }
@@ -126,43 +70,7 @@ namespace GeneticToolkit.Populations
             if (Generation % 1000 == 0)
                 GC.Collect();
         }
-
-        public float GetPopulationHomogeneity(double maxSimilarity)
-        {
-            SortDescending();
-            float similar = 0;
-            for (var i = 0; i < Size - 1; i++)
-                if (this[i].Genotype.SimilarityCheck(this[i + 1].Genotype) > maxSimilarity)
-                    similar++;
-
-            return similar / Size;
-        }
-
-        public IIndividual GetBest()
-        {
-            var best = this[0];
-            for (var i = 1; i < Size; i++)
-                best = CompareCriteria.GetBetter(best, this[i]);
-            return best;
-        }
-
-        #region Params
-
-        public int MaxSelectionTries { get; set; } = 10;
-        public float IncestLimit { get; set; } = 0.99f;
-        public float DegenerationLimit { get; set; } = 0.95f;
-        public ICompareCriteria CompareCriteria { get; set; }
-        public ICrossover Crossover { get; set; }
-        public IMutation Mutation { get; set; }
-        public IFitnessFunction FitnessFunction { get; set; }
-        public IHeavenPolicy HeavenPolicy { get; set; }
-        public IIncompatibilityPolicy IncompatibilityPolicy { get; set; }
-        public IndividualFactoryBase IndividualFactory { get; set; }
-        public IMutationPolicy MutationPolicy { set; get; }
-        public IPopulationResizePolicy ResizePolicy { set; get; }
-        public ISelectionMethod SelectionMethod { get; set; }
-
-        #endregion
+        
 
         #region Private Methods
 
@@ -178,7 +86,7 @@ namespace GeneticToolkit.Populations
             for (var x = 0; x < parents.Length; x++)
             {
                 var trial = 0;
-                var candidate = SelectionMethod.Select(this).Genotype;
+                IGenotype candidate = SelectionMethod.Select(this).Genotype;
                 while (ParentAlreadySelected(candidate, parents) && Homogeneity < DegenerationLimit &&
                        trial++ < MaxSelectionTries)
                     candidate = SelectionMethod.Select(this).Genotype;
@@ -188,68 +96,9 @@ namespace GeneticToolkit.Populations
             return parents;
         }
 
-        private void DeprecateData()
-        {
-            _bestIsDeprecated = true;
-            _populationHomogeneityDeprecated = true;
-        }
-
-        private void UpdatePerGenerationData()
-        {
-            Generation++;
-            HeavenPolicy.HandleGeneration(this);
-            foreach (var statisticUtility in StatisticUtilities.Values)
-                statisticUtility.UpdateData(this);
-        }
 
         #endregion
 
-        #region Tools
 
-        public IIndividual[] OrderAscending()
-        {
-            var sortedList = new IIndividual[Size];
-            for (var i = 0; i < Size; i++)
-                sortedList[i] = Individuals[i];
-            Array.Sort(sortedList, (x1, x2) => CompareCriteria.Compare(x1, x2));
-            return sortedList;
-        }
-
-        public IIndividual[] OrderDescending()
-        {
-            var sortedList = new IIndividual[Size];
-            for (var i = 0; i < Size; i++)
-                sortedList[i] = Individuals[i];
-            Array.Sort(sortedList, (x1, x2) => CompareCriteria.Compare(x2, x1));
-            return sortedList;
-        }
-
-        public void SortAscending()
-        {
-            if(_sorted)
-                return;
-            Array.Sort(Individuals, (x1, x2) => CompareCriteria.Compare(x1, x2));
-            _sorted = true;
-        }
-
-        public void SortDescending()
-        {
-            if(_sorted)
-                return;
-            Array.Sort(Individuals, (x1, x2) => CompareCriteria.Compare(x2, x1));
-            _sorted = true;
-        }
-
-        #endregion
-
-        IEnumerator<IIndividual> IEnumerable<IIndividual>.GetEnumerator()
-        {
-            return Individuals.OfType<IIndividual>().GetEnumerator();
-        }
-
-        public IEnumerator GetEnumerator()
-        {
-            return Individuals.GetEnumerator();
-        }
     }
 }

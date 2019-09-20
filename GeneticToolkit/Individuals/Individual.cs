@@ -20,7 +20,7 @@ namespace GeneticToolkit.Individuals
         public double Value
         {
             get {
-                if (_fitnessValue.HasValue == false)
+                if (!_fitnessValue.HasValue)
                     _fitnessValue = FitnessFunction.GetValue(this);
                 return _fitnessValue.Value;
             }

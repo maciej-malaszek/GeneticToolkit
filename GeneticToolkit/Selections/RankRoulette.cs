@@ -68,7 +68,7 @@ namespace GeneticToolkit.Selections
             for (var i = 0; i < Population.Size; i++)
             {
                 double functionValue = RankingValueFunc(CompareCriteria.OptimizationMode == EOptimizationMode.Minimize ? i : Population.Size - 1 - i);
-                if (functionValue < MinValue || MinValue == null)
+                if (!MinValue.HasValue || functionValue < MinValue)
                     MinValue = functionValue;
                 FitnessList[i] = functionValue;
             }
@@ -76,7 +76,7 @@ namespace GeneticToolkit.Selections
                 for (int i = Population.Size; i < Population.Size + Population.HeavenPolicy.Size; i++)
                 {
                     double functionValue = Population.HeavenPolicy.Memory[i - Population.Size].Value;
-                    if (functionValue < MinValue || MinValue.HasValue == false)
+                    if (!MinValue.HasValue || functionValue < MinValue)
                         MinValue = functionValue;
                     FitnessList[i] = functionValue;
                 }

@@ -17,7 +17,7 @@ namespace GeneticToolkit.Policies.Stop
             if (population == null)
                 throw new PopulationNotInitializedException();
             if (FitnessFunction == null)
-                throw new FitnessFunctionNotInitialized();
+                throw new FitnessFunctionNotInitializedException();
 
             int comparisonResult = FitnessFunction.GetValue(population.Best).CompareTo(SufficientResult);
             comparisonResult *= population.CompareCriteria.OptimizationMode == EOptimizationMode.Minimize ? -1 : 1;

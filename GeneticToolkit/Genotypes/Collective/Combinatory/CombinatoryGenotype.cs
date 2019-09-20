@@ -26,7 +26,7 @@ namespace GeneticToolkit.Genotypes.Collective.Combinatory
         {
             get
             {
-                if (Deprecated == false)
+                if (!Deprecated)
                     return _value;
                 _value = new short[Count];
                 _reverseIndexValue = new int[Count];

@@ -29,7 +29,7 @@ namespace GeneticToolkit.Policies.Incompatibility
                 );
                 population.Mutation.Mutate(candidate.Genotype, population.MutationPolicy, population);
                 retry++;
-            } while ((compatible = IsCompatible(population, candidate)) == false && retry < _maxRetries);
+            } while (!(compatible = IsCompatible(population, candidate)) && retry < _maxRetries);
 
             return compatible ? candidate : null;
         }

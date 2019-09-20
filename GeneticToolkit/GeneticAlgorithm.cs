@@ -25,7 +25,7 @@ namespace GeneticToolkit
             switch (StopConditionMode)
             {
                 case EStopConditionMode.Any:
-                    while (StopConditions.Any(x => x.Satisfied(Population)) == false)
+                    while (!StopConditions.Any(x => x.Satisfied(Population)))
                     {
                         Population.NextGeneration();
                         CreatedNextGeneration?.Invoke(this, new NewGenerationEventArgs(Population, Population.Generation) );
@@ -33,7 +33,7 @@ namespace GeneticToolkit
 
                     break;
                 case EStopConditionMode.All:
-                    while (StopConditions.All(x => x.Satisfied(Population)) == false)
+                    while (!StopConditions.All(x => x.Satisfied(Population)))
                         Population.NextGeneration();
                     break;
                 default: return;

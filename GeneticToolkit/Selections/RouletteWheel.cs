@@ -1,8 +1,6 @@
 ﻿using GeneticToolkit.Interfaces;
 using GeneticToolkit.Utils.Data;
-
 using JetBrains.Annotations;
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,12 +41,14 @@ namespace GeneticToolkit.Selections
             while (localSum < randomValue && iterator < FitnessList.Count - 1)
                 localSum += FitnessList[++iterator] - MinValue ?? 0;
 
-            return iterator < population.Size ? Population[iterator] : Population.HeavenPolicy.Memory[iterator - population.Size];
+            return iterator < population.Size
+                ? Population[iterator]
+                : Population.HeavenPolicy.Memory[iterator - population.Size];
         }
 
         private void Update(IPopulation population)
         {
-           Population = population;
+            Population = population;
             CompareCriteria = Population.CompareCriteria;
             CurrentGeneration = population.Generation;
             MinValue = null;
@@ -59,7 +59,7 @@ namespace GeneticToolkit.Selections
                 for (int i = 0; i < Population.Size; i++)
                 {
                     double functionValue = Population[i].Value;
-                    if (functionValue < MinValue || MinValue.HasValue == false)
+                    if (!MinValue.HasValue || functionValue < MinValue)
                         MinValue = functionValue;
                     FitnessList.Add(functionValue);
                 }
@@ -68,10 +68,11 @@ namespace GeneticToolkit.Selections
                     for (int i = 0; i < Population.HeavenPolicy.Size; i++)
                     {
                         double functionValue = Population.HeavenPolicy.Memory[i].Value;
-                        if (functionValue < MinValue || MinValue.HasValue == false)
+                        if (!MinValue.HasValue || functionValue < MinValue)
                             MinValue = functionValue;
                         FitnessList.Add(functionValue);
                     }
+
                 Sum = FitnessList.Sum(x => x - MinValue ?? 0);
             }
             else
@@ -79,7 +80,7 @@ namespace GeneticToolkit.Selections
                 for (int i = 0; i < Population.Size; i++)
                 {
                     double functionValue = Population[i].Value;
-                    if (functionValue > MaxValue || MaxValue.HasValue == false)
+                    if (!MaxValue.HasValue || functionValue > MaxValue)
                         MaxValue = functionValue;
                     FitnessList.Add(functionValue);
                 }
@@ -88,7 +89,7 @@ namespace GeneticToolkit.Selections
                     for (int i = 0; i < Population.HeavenPolicy.Size; i++)
                     {
                         double functionValue = Population.HeavenPolicy.Memory[i].Value;
-                        if (functionValue > MaxValue || MaxValue.HasValue == false)
+                        if (!MaxValue.HasValue || functionValue > MaxValue)
                             MaxValue = functionValue;
                         FitnessList.Add(functionValue);
                     }
@@ -98,9 +99,8 @@ namespace GeneticToolkit.Selections
                         FitnessList[i] = MaxValue.Value / FitnessList[i];
                 Sum = FitnessList.Sum(x => x);
             }
+
             Deprecated = false;
         }
-
     }
-
 }
