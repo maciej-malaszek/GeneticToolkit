@@ -21,47 +21,58 @@ namespace GeneticToolkit.Crossovers
         /// </summary>
         public int BitAlign { get; set; }
 
+        private int _startCutIndex;
+        private int _endCutIndex;
+        private int _genotypeSize;
+
+        private void UpdateCutIndexes()
+        {
+            _startCutIndex = RandomNumberGenerator.Next(_genotypeSize - 3);
+            _endCutIndex = RandomNumberGenerator.Next(_startCutIndex + 1, _genotypeSize);
+        }
+
+        private short[] GetValuesForChild(PermutationGenotype[] parent, int currentParentId, int nextParentId)
+        {
+            var childValues = new short[_genotypeSize];
+                
+            for (var i = 0; i < _genotypeSize; i++)
+            {
+                if (i >= _startCutIndex && i <= _endCutIndex)
+                    childValues[i] = parent[nextParentId].Value[i];
+                else
+                    childValues[i] = GetValue(
+                        parent[currentParentId], parent[nextParentId],
+                        parent[currentParentId].Value[i]);
+            }
+
+            return childValues;
+
+        }
+
         public IGenotype[] Cross(IGenotype[] parents)
         {
             PermutationGenotype[] parent = {parents[0] as PermutationGenotype, parents[1] as PermutationGenotype};
             IGenotype[] children =
                 {parents[0].EmptyCopy<PermutationGenotype>(), parents[1].EmptyCopy<PermutationGenotype>()};
 
-            int genotypeSize = parent[0].Count;
-            var childrenValues = new short[ChildrenCount][];
+            _genotypeSize = parent[0].Count;
+            UpdateCutIndexes();
 
-            for (var i = 0; i < ChildrenCount; i++)
-                childrenValues[i] = new short[((PermutationGenotype)children[0]).Count];
-
-            int startCutIndex = RandomNumberGenerator.Next(genotypeSize - 3);
-            int endCutIndex = RandomNumberGenerator.Next(startCutIndex + 1, genotypeSize);
-
-            for (var i = 0; i < genotypeSize; i++)
             for (var j = 0; j < ChildrenCount; j++)
             {
                 int currentParentId = j;
                 int nextParentId = j + 1 >= ParentsCount ? 0 : j + 1;
-
-                if (i >= startCutIndex && i <= endCutIndex)
-                    childrenValues[currentParentId][i] = parent[nextParentId].Value[i];
-                else
-                    childrenValues[currentParentId][i] = GetValue(parent[currentParentId], parent[nextParentId],
-                        parent[currentParentId].Value[i],
-                        startCutIndex, endCutIndex);
+                ((PermutationGenotype) children[j]).Value = GetValuesForChild(parent, currentParentId, nextParentId);
             }
-
-            for (var j = 0; j < ChildrenCount; j++)
-                ((PermutationGenotype)children[j]).Value = childrenValues[j];
 
             return children;
         }
 
-        public short GetValue(PermutationGenotype parent, PermutationGenotype otherParent, short value, int startIndex,
-            int endIndex)
+        public short GetValue(PermutationGenotype parent, PermutationGenotype otherParent, short value)
         {
             int index = otherParent.GetIndex(value);
 
-            while (index >= startIndex && index <= endIndex)
+            while (index >= _startCutIndex && index <= _endCutIndex)
             {
                 value = parent.Value[index];
                 index = otherParent.GetIndex(value);

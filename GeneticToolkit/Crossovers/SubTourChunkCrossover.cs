@@ -15,75 +15,94 @@ namespace GeneticToolkit.Crossovers
         public int ChildrenCount { get; } = 2;
         public int BitAlign { get; set; } = 1;
 
-        private short[] GetChildValues(AdjacencyListGenotype[] parents, int genotypeSize, int startingParent)
+
+        protected int AvailableIndexCount;
+        protected bool[] UsedIndexes;
+        protected short[] AvailableIndexes;
+        protected short[] AvailableIndexesReverse;
+        protected short[] ChildValues;
+
+        protected int SubTourIndex;
+        protected int ParentIndex;
+        protected int StartIndex;
+        protected short Target;
+
+        protected void InitializeVariables(AdjacencyListGenotype[] parents, int genotypeSize, int startingParent)
         {
-            var childValues = new short[genotypeSize];
-
+            ChildValues = new short[genotypeSize];
             // Used to find edges that do not cause cycle
-            var usedIndexes = new bool[genotypeSize];
-            int availableIndexCount = genotypeSize - 1;
-
-            var availableIndexes = new short[genotypeSize];
-            var availableIndexesReverse = new short[genotypeSize];
+            UsedIndexes = new bool[genotypeSize];
+            AvailableIndexCount = genotypeSize - 1;
+            AvailableIndexes = new short[genotypeSize];
+            AvailableIndexesReverse = new short[genotypeSize];
             for (var i = 0; i < genotypeSize; i++)
             {
-                availableIndexes[i] = (short) i;
-                availableIndexesReverse[i] = (short) i;
+                AvailableIndexes[i] = (short) i;
+                AvailableIndexesReverse[i] = (short) i;
             }
 
             // Used to select parent
-            int subTourIndex = startingParent;
-            int parentIndex = ++subTourIndex % ParentsCount;
+            SubTourIndex = startingParent;
+            ParentIndex = ++SubTourIndex % ParentsCount;
 
-            var startIndex = 0;
-            short target = parents[parentIndex].Value[startIndex];
-
+            StartIndex = 0;
+            Target = parents[ParentIndex].Value[StartIndex];
 
             // First index is always locked as it is the first one
-            usedIndexes[0] = true;
-            availableIndexes.Swap(0, availableIndexCount);
-            availableIndexesReverse.Swap(0, availableIndexCount);
+            UsedIndexes[0] = true;
+            AvailableIndexes.Swap(0, AvailableIndexCount);
+            AvailableIndexesReverse.Swap(0, AvailableIndexCount);
+        }
 
+        protected virtual short[] GetChildValues(AdjacencyListGenotype[] parents, int genotypeSize, int startingParent)
+        {
+
+            InitializeVariables(parents, genotypeSize, startingParent);
             // 1. Choose length of subtour chunk. First subtour must not be too big.
-            int subTourLength = _random.Next(availableIndexCount / 2);
+            int subTourLength = _random.Next(AvailableIndexCount / 2);
 
             do
             {
                 // 2. Select current parent
-                parentIndex = ++subTourIndex % ParentsCount;
+                ParentIndex = ++SubTourIndex % ParentsCount;
 
                 for (var i = 0; i < subTourLength; i++)
                 {
                     // 3. Insert target - already assured that is OK
-                    childValues[startIndex] = target;
-
-                    // 4. Block inserted target
-                    usedIndexes[target] = true;
-                    // 5. Update list of available indexes. Blocked indexes are always at the end of array.
-                    availableIndexCount--;
-
-                    // 5A. Swap locked and available items
-                    availableIndexes.Swap(availableIndexesReverse[target], availableIndexCount);
-                    // 5B. Swap idexes of locked and available items. Available item is already swapped with target, so use target as index
-                    availableIndexesReverse.Swap(target, availableIndexes[availableIndexesReverse[target]]);
-
-                    // 6. Set last target as new start
-                    startIndex = target;
-
-                    // 7. Select candidate for new target
-                    target = parents[parentIndex].Value[startIndex];
-
-                    // 8. If candidate was used and there are left unused indexes
-                    if (usedIndexes[target] && availableIndexCount > 0)
-                        // 9. Select random target from list of available                            
-                        target = availableIndexes[_random.Next(0, availableIndexCount)];
+                    ChildValues[StartIndex] = GetTarget(parents);
                 }
 
                 // 10. Select next chunk length
-                subTourLength = _random.Next(availableIndexCount + 1);
-            } while (availableIndexCount > 0);
+                subTourLength = _random.Next(AvailableIndexCount + 1);
+            } while (AvailableIndexCount > 0);
 
-            return childValues;
+            return ChildValues;
+        }
+        
+
+        protected short GetTarget(AdjacencyListGenotype[] parents)
+        {
+            // 4. Block inserted target
+            UsedIndexes[Target] = true;
+            // 5. Update list of available indexes. Blocked indexes are always at the end of array.
+            AvailableIndexCount--;
+
+            // 5A. Swap locked and available items
+            AvailableIndexes.Swap(AvailableIndexesReverse[Target], AvailableIndexCount);
+            // 5B. Swap indexes of locked and available items. Available item is already swapped with target, so use target as index
+            AvailableIndexesReverse.Swap(Target, AvailableIndexes[AvailableIndexesReverse[Target]]);
+
+            // 6. Set last target as new start
+            StartIndex = Target;
+
+            // 7. Select candidate for new target
+            Target = parents[ParentIndex].Value[StartIndex];
+
+            // 8. If candidate was used and there are left unused indexes
+            if (UsedIndexes[Target] && AvailableIndexCount > 0)
+                // 9. Select random target from list of available                            
+                Target = AvailableIndexes[_random.Next(0, AvailableIndexCount)];
+            return Target;
         }
 
         public IGenotype[] Cross(IGenotype[] baseParents)
