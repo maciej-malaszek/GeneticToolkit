@@ -87,21 +87,6 @@ namespace GeneticToolkit.Genotypes.Collective.Combinatory
             return decoded;
         }
 
-        private void GetDecodedX()
-        {
-            int count = Value.Length;
-            var decoded = new short[count];
-            short index = 0;
-            short value = Value[index];
-
-            for (var i = 0; i < count; i++)
-            {
-                decoded[i] = value;
-                index = value;
-                value = Value[index];
-            }
-        }
-
         public override void Randomize()
         {
             var value = new short[Count];

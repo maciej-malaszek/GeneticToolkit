@@ -1,5 +1,6 @@
 ﻿using System;
 using GeneticToolkit.Interfaces;
+using GeneticToolkit.Utils.Exceptions;
 using JetBrains.Annotations;
 
 namespace GeneticToolkit.Policies.Stop
@@ -14,9 +15,9 @@ namespace GeneticToolkit.Policies.Stop
         public bool Satisfied(IEvolutionaryPopulation population)
         {
             if (population == null)
-                throw new NullReferenceException("Population has not been initialized!");
+                throw new PopulationNotInitializedException();
             if (FitnessFunction == null)
-                throw new NullReferenceException("Fitness function has not been initialized!");
+                throw new FitnessFunctionNotInitialized();
 
             int comparisonResult = FitnessFunction.GetValue(population.Best).CompareTo(SufficientResult);
             comparisonResult *= population.CompareCriteria.OptimizationMode == EOptimizationMode.Minimize ? -1 : 1;
@@ -25,6 +26,7 @@ namespace GeneticToolkit.Policies.Stop
 
         public void Reset()
         {
+            // This Stop Condition is Stateless
         }
 
         public SufficientIndividual(IFitnessFunction fitnessFunction, double sufficientResult)

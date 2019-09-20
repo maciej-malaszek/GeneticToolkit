@@ -19,19 +19,19 @@ namespace GeneticToolkit.Crossovers
         public int ChildrenCount => 2;
         public int BitAlign { get; set; }
 
-        public IGenotype[] Cross(IGenotype[] parentsBase)
+        public IGenotype[] Cross(IGenotype[] parents)
         {
-            var parents = new PermutationGenotype[ParentsCount];
+            var parentsPermutation = new PermutationGenotype[ParentsCount];
             var children = new IGenotype[ChildrenCount];
 
             for (var j = 0; j < ParentsCount; j++)
-                parents[j] = parentsBase[j] as PermutationGenotype;
+                parentsPermutation[j] = parents[j] as PermutationGenotype;
             for (var j = 0; j < ChildrenCount; j++)
-                children[j] = parents[0].EmptyCopy<PermutationGenotype>();
+                children[j] = parentsPermutation[0].EmptyCopy<PermutationGenotype>();
 
             var childrenValues = new short[ChildrenCount][];
             var availableIndexes = new bool[ChildrenCount][];
-            int genotypeSize = parents[0].Count;
+            int genotypeSize = parentsPermutation[0].Count;
 
             for (var childIndex = 0; childIndex < ChildrenCount; childIndex++)
             {
@@ -44,14 +44,14 @@ namespace GeneticToolkit.Crossovers
                 var index = 0;
                 while (availableIndexes[childIndex][index])
                 {
-                    childrenValues[childIndex][index] = parents[childIndex].Value[index];
+                    childrenValues[childIndex][index] = parentsPermutation[childIndex].Value[index];
                     availableIndexes[childIndex][index] = false;
-                    index = parents[childIndex].GetIndex(parents[nextParentIndex].Value[index]);
+                    index = parentsPermutation[childIndex].GetIndex(parentsPermutation[nextParentIndex].Value[index]);
                 }
 
                 for (var i = 0; i < genotypeSize; i++)
                     if (availableIndexes[childIndex][i])
-                        childrenValues[childIndex][i] = parents[nextParentIndex].Value[i];
+                        childrenValues[childIndex][i] = parentsPermutation[nextParentIndex].Value[i];
             }
 
             for (var j = 0; j < ChildrenCount; j++)

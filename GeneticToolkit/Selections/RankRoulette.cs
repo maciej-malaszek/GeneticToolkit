@@ -12,7 +12,7 @@ namespace GeneticToolkit.Selections
     {
         public ICompareCriteria CompareCriteria { get; set; }
 
-        public Func<int, double> RankingValueFunc;
+        public Func<int, double> RankingValueFunc { get; set; }
 
         protected Random RandomNumberGenerator { get; set; } = new Random();
 

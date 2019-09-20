@@ -4,6 +4,7 @@ using GeneticToolkit.Populations;
 using JetBrains.Annotations;
 
 using System;
+using GeneticToolkit.Utils.Exceptions;
 
 namespace GeneticToolkit.Selections
 {
@@ -23,10 +24,8 @@ namespace GeneticToolkit.Selections
         public IIndividual Select(IPopulation population)
         {
             int realSize = Math.Max(Math.Min(population.Size - 1, Math.Max(2,(int)(PopulationPercentage * population.Size))), 1);
-            if (population == null)
-                throw new NullReferenceException("Population has not been initialized!");
             if (population.Size < 2)
-                throw new NullReferenceException("Population is smaller than 2 individuals and therefore degenerated!");
+                throw new PopulationTooSmallException(population.Size, 2);
 
             var tournament = new Population(population.FitnessFunction, realSize)
             {

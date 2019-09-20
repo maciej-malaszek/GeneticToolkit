@@ -6,6 +6,7 @@ using System.Text;
 using GeneticToolkit.Crossovers;
 using GeneticToolkit.Interfaces;
 using GeneticToolkit.Utils;
+using GeneticToolkit.Utils.Exceptions;
 using GeneticToolkit.Utils.Extensions;
 
 namespace GeneticToolkit.Mutations
@@ -23,7 +24,7 @@ namespace GeneticToolkit.Mutations
         };
         public Range<float>[] MutationRanges { get; set; }
         public EMode[] Modes { get; set; }
-        private Random random = new Random();
+        private readonly Random _random = new Random();
 
         public ArithmeticMutation(Range<float>[] mutationRanges, EMode[] modes)
         {
@@ -33,7 +34,7 @@ namespace GeneticToolkit.Mutations
 
         public void Mutate(IGenotype genotype, IMutationPolicy mutationPolicy, IPopulation population)
         {
-            if (random.NextDouble() > mutationPolicy.GetMutationChance(population))
+            if (_random.NextDouble() > mutationPolicy.GetMutationChance(population))
                 return;
 
             int offset = 0;
@@ -45,13 +46,13 @@ namespace GeneticToolkit.Mutations
                 {
                     case EMode.Byte:
                         genotype.Genes[offset] =
-                            (byte)(genotype.Genes[offset] + (sbyte) (random.NextDouble() * (MutationRanges[i].High - MutationRanges[i].Low) +
+                            (byte)(genotype.Genes[offset] + (sbyte) (_random.NextDouble() * (MutationRanges[i].High - MutationRanges[i].Low) +
                                                           MutationRanges[0].Low));
                         offset += sizeof(byte);
                         break;
                     case EMode.Single:
                         float floats = BitConverterX.ToValue<float>(genotype.Genes, offset);
-                        floats += (float)(random.NextDouble() * (MutationRanges[i].High - MutationRanges[i].Low) +
+                        floats += (float)(_random.NextDouble() * (MutationRanges[i].High - MutationRanges[i].Low) +
                                   MutationRanges[0].Low);
                         bytes = BitConverter.GetBytes(floats);
                         bytes.CopyTo(genotype.Genes, offset);
@@ -59,7 +60,7 @@ namespace GeneticToolkit.Mutations
                         break;
                     case EMode.Double:
                         double doubles = BitConverterX.ToValue<double>(genotype.Genes, offset);
-                        doubles += random.NextDouble() * (MutationRanges[i].High - MutationRanges[i].Low) +
+                        doubles += _random.NextDouble() * (MutationRanges[i].High - MutationRanges[i].Low) +
                                    MutationRanges[0].Low;
                         bytes = BitConverter.GetBytes(doubles);
                         bytes.CopyTo(genotype.Genes, offset);
@@ -67,7 +68,7 @@ namespace GeneticToolkit.Mutations
                         break;
                     case EMode.Integer:
                         int ints = BitConverterX.ToValue<int>(genotype.Genes, offset);
-                        ints += (int)(random.NextDouble() * (MutationRanges[i].High - MutationRanges[i].Low) +
+                        ints += (int)(_random.NextDouble() * (MutationRanges[i].High - MutationRanges[i].Low) +
                                    MutationRanges[0].Low);
                         bytes = BitConverter.GetBytes(ints);
                         bytes.CopyTo(genotype.Genes, offset);
@@ -75,7 +76,7 @@ namespace GeneticToolkit.Mutations
                         break;
                     case EMode.Short:
                         short shorts = BitConverterX.ToValue<short>(genotype.Genes, offset);
-                        shorts += (short)(random.NextDouble() * (MutationRanges[i].High - MutationRanges[i].Low) +
+                        shorts += (short)(_random.NextDouble() * (MutationRanges[i].High - MutationRanges[i].Low) +
                                    MutationRanges[0].Low);
                         bytes = BitConverter.GetBytes(shorts);
                         bytes.CopyTo(genotype.Genes, offset);
@@ -83,14 +84,14 @@ namespace GeneticToolkit.Mutations
                         break;
                     case EMode.Long:
                         long longs = BitConverterX.ToValue<long>(genotype.Genes, offset);
-                        longs += (long)(random.NextDouble() * (MutationRanges[i].High - MutationRanges[i].Low) +
+                        longs += (long)(_random.NextDouble() * (MutationRanges[i].High - MutationRanges[i].Low) +
                                    MutationRanges[0].Low);
                         bytes = BitConverter.GetBytes(longs);
                         bytes.CopyTo(genotype.Genes, offset);
                         offset += sizeof(long);
                         break;
                     default:
-                        throw new ArgumentOutOfRangeException(nameof(mode), mode, null);
+                        throw new CrossoverInvalidParamException(nameof(mode));
 
                 }
             }
