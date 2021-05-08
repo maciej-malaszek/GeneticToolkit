@@ -102,7 +102,10 @@ stages:
                  assets: '$(Pipeline.Workspace)/**/*.nupkg'
                  changeLogCompareToRelease: 'lastFullRelease'
                  changeLogType: 'commitBased'
-             - task: DotNetCoreCLI@2
+             - task: NuGetToolInstaller@1
+               inputs:
+                checkLatest: true
+             - task: NuGetCommand@2
                inputs:
                  command: 'push'
                  packagesToPush: '$(Pipeline.Workspace)/**/*.nupkg'
