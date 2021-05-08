@@ -14,7 +14,7 @@ stages:
       vmImage: ubuntu-latest
     jobs:
     - job: Build
-      displayName: 'Run Build'      
+      displayName: 'Run Build'
       steps:
       - task: gitversion/setup@0
         inputs:
@@ -36,9 +36,9 @@ stages:
           RepositoryUrl: 'https://github.com/maciej-malaszek/GeneticToolkit'
           RepositoryType: 'GIT'
           VersionNumber: '$(GitVersion.AssemblySemVer)'
-          FileVersionNumber: '$(GitVersion.AssemblySemVer)'
-          InformationalVersion: '$(GitVersion.AssemblySemVer)'
-          PackageVersion: '$(GitVersion.AssemblySemVer)'
+          FileVersionNumber: '$(GitVersion.AssemblySemFileVer)'
+          InformationalVersion: '$(GitVersion.InformationalVersion)'
+          PackageVersion: '$(GitVersion.FullSemVer)'
           LogLevel: 'verbose'
           FailOnWarning: false
           DisableTelemetry: false
@@ -49,7 +49,7 @@ stages:
           scannerMode: 'MSBuild'
           projectKey: 'GeneticToolkit'
           projectName: 'GeneticToolkit'
-          projectVersion: '$(GitVersion.AssemblySemVer)'
+          projectVersion: '$(GitVersion.FullSemVer)'
       - task: DotNetCoreCLI@2
         inputs:
           command: test
