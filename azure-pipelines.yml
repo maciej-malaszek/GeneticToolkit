@@ -7,7 +7,7 @@ trigger:
 - master
 variables:
   buildConfiguration: 'Release'
-  Version: '0.3'
+
 stages:
   - stage: Build
     jobs:
@@ -59,14 +59,14 @@ stages:
           ArtifactName: 'genetic-toolkit'
           publishLocation: 'Container'
 
-  - stage: GithubRelease
-    displayName: 'GitHub Release'
+  - stage: Release
+    displayName: 'Release'
     dependsOn: Build
     pool:
       vmImage: ubuntu-latest
     jobs:
-      - deployment: DeploySolution
-        displayName: 'Deploy Solution'
+      - deployment: GithubRelease
+        displayName: 'Github Release'
         environment: Production
         strategy:
          runOnce:
