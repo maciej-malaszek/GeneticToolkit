@@ -60,7 +60,7 @@ namespace GeneticToolkit.Utils.TSPLIB.TSP
             return distance;
         }
 
-        protected double GetDistance(EDistanceMetric distanceMetric, Vector2F64 p0, Vector2F64 p1)
+        protected static double GetDistance(EDistanceMetric distanceMetric, Vector2F64 p0, Vector2F64 p1)
         {
             double yd;
             double xd;
