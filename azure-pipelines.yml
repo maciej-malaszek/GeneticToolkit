@@ -49,6 +49,7 @@ stages:
           scannerMode: 'MSBuild'
           projectKey: 'GeneticToolkit'
           projectName: 'GeneticToolkit'
+          projectVersion: '$(GitVersion.AssemblySemVer)'
       - task: DotNetCoreCLI@2
         inputs:
           command: test
