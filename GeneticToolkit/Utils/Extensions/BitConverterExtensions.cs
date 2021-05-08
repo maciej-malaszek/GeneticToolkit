@@ -62,6 +62,23 @@ namespace GeneticToolkit.Utils.Extensions
         {
             return BitConverter.GetBytes(value);
         }
+        public static byte[] GetBytes<T>(T val)
+        {
+            return val switch
+            {
+                bool b => GetBytes(b),
+                char c => GetBytes(c),
+                short s => GetBytes(s),
+                int i => GetBytes(i),
+                long l => GetBytes(l),
+                float f => GetBytes(f),
+                double d => GetBytes(d),
+                ushort us => GetBytes(us),
+                uint ui => GetBytes(ui),
+                ulong ul => GetBytes(ul),
+                _ => Array.Empty<byte>()
+            };
+        }
         
         public static float Int32BitsToSingle(int value)
         {
@@ -241,35 +258,6 @@ namespace GeneticToolkit.Utils.Extensions
         public static bool TryWriteBytes(Span<byte> destination, ulong value)
         {
             return BitConverter.TryWriteBytes(destination, value);
-        }
-
-        public static byte[] GetBytes<T>(T val)
-        {
-            switch (val)
-            {
-                case bool b:
-                    return GetBytes(b);
-                case char c:
-                    return GetBytes(c);
-                case short s:
-                    return GetBytes(s);
-                case int i:
-                    return GetBytes(i);
-                case long l:
-                    return GetBytes(l);
-                case float f:
-                    return GetBytes(f);
-                case double d:
-                    return GetBytes(d);
-                case ushort us:
-                    return GetBytes(us);
-                case uint ui:
-                    return GetBytes(ui);
-                case ulong ul:
-                    return GetBytes(ul);
-                default:
-                    return new byte[0];
-            }
         }
 
         public static T ToValue<T>(byte[] value, int startIndex)

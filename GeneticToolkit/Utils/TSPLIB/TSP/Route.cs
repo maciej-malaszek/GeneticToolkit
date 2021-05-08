@@ -35,7 +35,7 @@ namespace GeneticToolkit.Utils.TSPLIB.TSP
 
         public short[] DefaultOrder { get; set; }
 
-        private Tuple<double, double> ToGeographical(Vector2F64 v)
+        private static Tuple<double, double> ToGeographical(Vector2F64 v)
         {
             double deg = (int) (v.X + 0.5);
             double min = v.X - deg;
@@ -50,6 +50,14 @@ namespace GeneticToolkit.Utils.TSPLIB.TSP
         public double GetLength(EDistanceMetric distanceMetric = EDistanceMetric.Euclidean)
         {
             return GetLength(DefaultOrder, distanceMetric);
+        }
+        public double GetLength(short[] order, EDistanceMetric distanceMetric = EDistanceMetric.Euclidean)
+        {
+            double distance = 0;
+            for (var i = 0; i < Points.Count - 1; i++)
+                distance += GetDistance(distanceMetric, Points[order[i]], Points[order[i + 1]]);
+            distance += GetDistance(distanceMetric, Points[order[order.Length - 1]], Points[order[0]]);
+            return distance;
         }
 
         protected double GetDistance(EDistanceMetric distanceMetric, Vector2F64 p0, Vector2F64 p1)
@@ -89,13 +97,6 @@ namespace GeneticToolkit.Utils.TSPLIB.TSP
             }
         }
 
-        public double GetLength(short[] order, EDistanceMetric distanceMetric = EDistanceMetric.Euclidean)
-        {
-            double distance = 0;
-            for (var i = 0; i < Points.Count - 1; i++)
-                distance += GetDistance(distanceMetric, Points[order[i]], Points[order[i + 1]]);
-            distance += GetDistance(distanceMetric, Points[order[order.Length - 1]], Points[order[0]]);
-            return distance;
-        }
+        
     }
 }

@@ -54,7 +54,7 @@ namespace GeneticToolkit.Populations
             UpdatePerGenerationData();
         }
         
-        private bool SelectedNeighbours(int index0, int index1)
+        private static bool SelectedNeighbours(int index0, int index1)
         {
             return index1 - index0 > 1;
         }
@@ -80,17 +80,22 @@ namespace GeneticToolkit.Populations
             Individuals[index] = CompareCriteria.GetBetter(Individuals[index], childIndividual);
         }
 
-        private void ReverseSubArray(short[] array, int startIndex, int endIndex)
+        private static void ReverseSubArray(short[] array, int startIndex, int endIndex)
         {
             while (endIndex - startIndex > 0)
+            {
                 array.Swap(startIndex++, endIndex--);
+            }
         }
 
-        private void FixIndexOrder(ref int index0, ref int index1)
+        private static void FixIndexOrder(ref int index0, ref int index1)
         {
             if (index0 <= index1)
+            {
                 return;
-            int t = index0;
+            }
+
+            var t = index0;
             index0 = index1;
             index1 = t;
         }

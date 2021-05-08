@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.Serialization;
 
 namespace GeneticToolkit.Utils.Exceptions
 {
@@ -6,6 +7,12 @@ namespace GeneticToolkit.Utils.Exceptions
     public abstract class GeneticException : Exception
     {
         protected GeneticException(string message) : base(message)
+        {
+            
+        }
+
+        protected GeneticException(SerializationInfo serializationInfo, StreamingContext streamingContext) : base(serializationInfo,
+            streamingContext)
         {
             
         }

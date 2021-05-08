@@ -82,11 +82,14 @@ namespace GeneticToolkit.Crossovers
         }
 
 
-        private T[] GetNumbersSingle<T>(IGenotype[] parents, int offset)
+        private static T[] GetNumbersSingle<T>(IGenotype[] parents, int offset)
         {
-            T[] result = new T[parents.Length];
+            var result = new T[parents.Length];
             for (int i = 0; i < result.Length; i++)
+            {
                 result[i] = BitConverterX.ToValue<T>(parents[i].Genes, offset);
+            }
+
             return result;
         }
 

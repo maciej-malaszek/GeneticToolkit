@@ -12,10 +12,16 @@ namespace GeneticToolkit.Genotypes.Collective.Combinatory
         public AdjacencyListGenotype() : base(0)
         {
         }
-
+        public AdjacencyListGenotype(byte[] bytes) : base(bytes)
+        {
+        }
         public AdjacencyListGenotype(short[] decoded) : base(decoded.Length)
         {
             Value = Encoded(decoded);
+        }
+        public AdjacencyListGenotype(int size) : base(size)
+        {
+            Value = new short[Count];
         }
 
         public short[] Encoded(short[] decoded)
@@ -32,16 +38,7 @@ namespace GeneticToolkit.Genotypes.Collective.Combinatory
         {
             Value = Encoded(decoded);
         }
-
-        public AdjacencyListGenotype(int size) : base(size)
-        {
-            Value = new short[Count];
-        }
-
-        public AdjacencyListGenotype(byte[] bytes) : base(bytes)
-        {
-        }
-
+        
         public override IGenotype EmptyCopy()
         {
             return new AdjacencyListGenotype(Count);
