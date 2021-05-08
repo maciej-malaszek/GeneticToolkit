@@ -12,6 +12,7 @@ stages:
   - stage: build
     jobs:
     - job: run_build
+      displayName: 'Run Build'
       pool:
         vmImage: ubuntu-latest
       steps:
