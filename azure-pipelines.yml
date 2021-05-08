@@ -1,0 +1,107 @@
+# ASP.NET Core
+# Build and test ASP.NET Core projects targeting .NET Core.
+# Add steps that run tests, create a NuGet package, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+
+trigger:
+- master
+variables:
+  buildConfiguration: 'Release'
+
+stages:
+  - stage: Build
+    pool:
+      vmImage: ubuntu-latest
+    jobs:
+    - job: Build
+      displayName: 'Run Build'
+      steps:
+      - task: gitversion/setup@0
+        inputs:
+          versionSpec: '5.x'
+      - task: gitversion/execute@0
+
+      - task: Assembly-Info-NetCore@2
+        inputs:
+          Path: '$(Build.SourcesDirectory)'
+          FileNames: '**/*.csproj'
+          InsertAttributes: false
+          FileEncoding: 'auto'
+          WriteBOM: false
+          Authors: 'Maciej Małaszek'
+          Product: 'GeneticToolkit'
+          Copyright: 'Copyright © $(date:yyyy) Maciej Małaszek'
+          PackageLicenseUrl: 'https://opensource.org/licenses/MIT'
+          PackageProjectUrl: 'https://github.com/maciej-malaszek/GeneticToolkit'
+          RepositoryUrl: 'https://github.com/maciej-malaszek/GeneticToolkit'
+          RepositoryType: 'GIT'
+          VersionNumber: '$(GitVersion.AssemblySemVer)'
+          FileVersionNumber: '$(GitVersion.AssemblySemFileVer)'
+          InformationalVersion: '$(GitVersion.InformationalVersion)'
+          PackageVersion: '$(GitVersion.FullSemVer)'
+          LogLevel: 'verbose'
+          FailOnWarning: false
+          DisableTelemetry: false
+      - task: SonarCloudPrepare@1
+        inputs:
+          SonarCloud: 'SonarQube - GeneticToolkit'
+          organization: 'malasz-github'
+          scannerMode: 'MSBuild'
+          projectKey: 'GeneticToolkit'
+          projectName: 'GeneticToolkit'
+          projectVersion: '$(GitVersion.FullSemVer)'
+      - task: DotNetCoreCLI@2
+        inputs:
+          command: test
+      - task: SonarCloudAnalyze@1
+      - task: SonarCloudPublish@1
+        inputs:
+          pollingTimeoutSec: '300'
+        
+      - task: DotNetCoreCLI@2
+        inputs:
+          command: 'publish'
+          publishWebProjects: false
+          arguments: '--configuration $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)'
+          projects: '**/GeneticToolkit.csproj'
+          zipAfterPublish: false
+          modifyOutputPath: false
+      - task: sonarcloud-buildbreaker@2
+        inputs:
+          SonarCloud: 'SonarQube - GeneticToolkit'
+          organization: 'malasz-github'
+      - task: PublishBuildArtifacts@1
+        inputs:
+          PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+          ArtifactName: 'genetic-toolkit'
+          publishLocation: 'Container'
+   
+    
+  - stage: Release
+    displayName: 'Release'
+    dependsOn: Build
+    pool:
+      vmImage: ubuntu-latest
+    jobs:
+      - deployment: GithubRelease
+        displayName: 'Github Release'
+        environment: Production
+        strategy:
+         runOnce:
+           deploy:
+             steps:
+             - checkout: self
+             - task: gitversion/setup@0
+               inputs:
+                 versionSpec: '5.x'
+             - task: gitversion/execute@0
+             - task: GitHubRelease@1
+               inputs:
+                 gitHubConnection: 'GitHub Connection'
+                 repositoryName: 'maciej-malaszek/GeneticToolkit'
+                 action: 'create'
+                 target: '$(Build.SourceVersion)'
+                 tagSource: 'userSpecifiedTag'
+                 tag: '$(GitVersion.SemVer)'
+                 changeLogCompareToRelease: 'lastFullRelease'
+                 changeLogType: 'commitBased'

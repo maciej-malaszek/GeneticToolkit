@@ -9,13 +9,13 @@
 
 ### Status
 
-[![Build Status](https://img.shields.io/azure-devops/build/malasz/d96eee72-055c-487a-b498-5da0c1e2387c/9.svg?style=for-the-badge)](https://img.shields.io/azure-devops/build/malasz/d96eee72-055c-487a-b498-5da0c1e2387c/9.svg?style=for-the-badge)
+[![Build Status](https://malasz.visualstudio.com/GeneticToolkit/_apis/build/status/maciej-malaszek.GeneticToolkit?branchName=master&stageName=Build)](https://malasz.visualstudio.com/GeneticToolkit/_build/latest?definitionId=29&branchName=master)
 
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=GeneticToolkit&metric=ncloc)](https://sonarcloud.io/dashboard?id=GeneticToolkit)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=GeneticToolkit&metric=coverage)](https://sonarcloud.io/dashboard?id=GeneticToolkit)
 
 ![Version](https://img.shields.io/nuget/v/GeneticToolkit.svg?style=for-the-badge)
-![Framework](https://img.shields.io/badge/.NET%20Core-2.2-brightgreen.svg?style=for-the-badge)
+![Framework](https://img.shields.io/badge/.NET%205.0-brightgreen.svg?style=for-the-badge)
 
 ![Last Updated](https://img.shields.io/github/last-commit/maciej-malaszek/GeneticToolkit.svg?style=for-the-badge)
 ![Opened Issues](https://img.shields.io/github/issues-raw/maciej-malaszek/GeneticToolkit.svg?style=for-the-badge)
