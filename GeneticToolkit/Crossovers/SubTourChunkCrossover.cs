@@ -105,19 +105,21 @@ namespace GeneticToolkit.Crossovers
             return Target;
         }
 
-        public IGenotype[] Cross(IGenotype[] baseParents)
+        public IGenotype[] Cross(IGenotype[] parents)
         {
-            var parents = new AdjacencyListGenotype[baseParents.Length];
-            for (var i = 0; i < baseParents.Length; i++)
-                parents[i] = baseParents[i] as AdjacencyListGenotype;
+            var parentGenotypes = new AdjacencyListGenotype[parents.Length];
+            for (var i = 0; i < parents.Length; i++)
+            {
+                parentGenotypes[i] = parents[i] as AdjacencyListGenotype;
+            }
 
             var children = new IGenotype[ChildrenCount];
-            int genotypeSize = parents[0].Count;
+            var genotypeSize = parentGenotypes[0].Count;
 
             for (var j = 0; j < ChildrenCount; j++)
             {
-                var child = parents[0].EmptyCopy<AdjacencyListGenotype>();
-                child.Value = GetChildValues(parents, genotypeSize, j);
+                var child = parentGenotypes[0].EmptyCopy<AdjacencyListGenotype>();
+                child.Value = GetChildValues(parentGenotypes, genotypeSize, j);
                 children[j] = child;
             }
 

@@ -86,13 +86,20 @@ namespace GeneticToolkit.Genotypes
 
         public virtual int CompareTo(IGenotype other)
         {
-            var i = 0;
+            var i = -1;
             bool identical;
-            while ((identical = Genes[i] == other.Genes[i]) && i < Length - 1) i++;
+            do
+            {
+                i++;
+                identical = Genes[i] == other.Genes[i];
+            } while (identical && i < Length - 1);
 
-            return identical ? 0 : other.Genes[i] > Genes[i] ? -1 : 1;
+            if (identical)
+            {
+                return 0;
+            }
 
-
+            return other.Genes[i] > Genes[i] ? -1 : 1;
         }
     }
 }

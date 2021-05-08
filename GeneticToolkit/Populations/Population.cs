@@ -68,7 +68,9 @@ namespace GeneticToolkit.Populations
             DeprecateData();
             UpdatePerGenerationData();
             if (Generation % 1000 == 0)
+            {
                 GC.Collect();
+            }
         }
         
 

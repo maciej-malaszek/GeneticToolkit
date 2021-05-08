@@ -32,14 +32,19 @@ namespace GeneticToolkit.Selections
         {
             Deprecated = population != Population || population.Generation != CurrentGeneration;
             if (Deprecated)
+            {
                 Update(population);
+            }
 
-            double randomValue = RandomNumberGenerator.NextDouble() * Sum;
-            int iterator = 0;
-            double localSum = FitnessList[iterator] - MinValue ?? 0;
-
-            while (localSum < randomValue && iterator < FitnessList.Count - 1)
+            var randomValue = RandomNumberGenerator.NextDouble() * Sum;
+            var iterator = -1;
+            var localSum = 0.0;
+            do
+            {
                 localSum += FitnessList[++iterator] - MinValue ?? 0;
+            } while (localSum < randomValue && iterator < FitnessList.Count - 1);
+
+
 
             return iterator < population.Size
                 ? Population[iterator]
@@ -56,51 +61,96 @@ namespace GeneticToolkit.Selections
             FitnessList.Clear();
             if (CompareCriteria.OptimizationMode == EOptimizationMode.Maximize)
             {
-                for (int i = 0; i < Population.Size; i++)
-                {
-                    double functionValue = Population[i].Value;
-                    if (!MinValue.HasValue || functionValue < MinValue)
-                        MinValue = functionValue;
-                    FitnessList.Add(functionValue);
-                }
-
-                if (Population.HeavenPolicy.UseInCrossover && population.Generation > 0)
-                    for (int i = 0; i < Population.HeavenPolicy.Size; i++)
-                    {
-                        double functionValue = Population.HeavenPolicy.Memory[i].Value;
-                        if (!MinValue.HasValue || functionValue < MinValue)
-                            MinValue = functionValue;
-                        FitnessList.Add(functionValue);
-                    }
-
-                Sum = FitnessList.Sum(x => x - MinValue ?? 0);
+                MaximizeValue(population);
             }
             else
             {
-                for (int i = 0; i < Population.Size; i++)
-                {
-                    double functionValue = Population[i].Value;
-                    if (!MaxValue.HasValue || functionValue > MaxValue)
-                        MaxValue = functionValue;
-                    FitnessList.Add(functionValue);
-                }
-
-                if (Population.HeavenPolicy.UseInCrossover && population.Generation > 0)
-                    for (int i = 0; i < Population.HeavenPolicy.Size; i++)
-                    {
-                        double functionValue = Population.HeavenPolicy.Memory[i].Value;
-                        if (!MaxValue.HasValue || functionValue > MaxValue)
-                            MaxValue = functionValue;
-                        FitnessList.Add(functionValue);
-                    }
-
-                if (MaxValue.HasValue)
-                    for (int i = 0; i < FitnessList.Count; i++)
-                        FitnessList[i] = MaxValue.Value / FitnessList[i];
-                Sum = FitnessList.Sum(x => x);
+                MinimizeValue(population);
             }
 
             Deprecated = false;
+        }
+
+        private void MinimizeValue(IPopulation population)
+        {
+            for (var i = 0; i < Population.Size; i++)
+            {
+                var functionValue = Population[i].Value;
+                if (!MaxValue.HasValue || functionValue > MaxValue)
+                {
+                    MaxValue = functionValue;
+                }
+
+                FitnessList.Add(functionValue);
+            }
+
+            ApplyHeavenPolicy(population, EOptimizationMode.Maximize);
+
+            if (MaxValue.HasValue)
+            {
+                for (var i = 0; i < FitnessList.Count; i++)
+                {
+                    // Reverse values, so roulette could give highest chances to smallest values
+                    FitnessList[i] = MaxValue.Value / FitnessList[i]; 
+                }
+            }
+
+            Sum = FitnessList.Sum(x => x);
+        }
+
+        private void MaximizeValue(IPopulation population)
+        {
+            for (var i = 0; i < Population.Size; i++)
+            {
+                var functionValue = Population[i].Value;
+                if (!MinValue.HasValue || functionValue < MinValue)
+                {
+                    MinValue = functionValue;
+                }
+
+                FitnessList.Add(functionValue);
+            }
+
+            ApplyHeavenPolicy(population, EOptimizationMode.Maximize);
+
+            Sum = FitnessList.Sum(x => x - MinValue ?? 0);
+        }
+
+        private void ApplyHeavenPolicy(IPopulation population, EOptimizationMode optimizationMode)
+        {
+            if (!Population.HeavenPolicy.UseInCrossover || population.Generation <= 0)
+            {
+                return;
+            }
+
+            for (var i = 0; i < Population.HeavenPolicy.Size; i++)
+            {
+                var functionValue = UpdateBestValueOf(optimizationMode, i);
+                FitnessList.Add(functionValue);
+            }
+        }
+
+        private double UpdateBestValueOf(EOptimizationMode optimizationMode, int i)
+        {
+            var functionValue = Population.HeavenPolicy.Memory[i].Value;
+            if (optimizationMode == EOptimizationMode.Maximize)
+            {
+                MinValue ??= functionValue;
+                if (functionValue < MinValue)
+                {
+                    MinValue = functionValue;
+                }
+            }
+            else
+            {
+                MaxValue ??= functionValue;
+                if (functionValue > MaxValue)
+                {
+                    MaxValue = functionValue;
+                }
+            }
+
+            return functionValue;
         }
     }
 }

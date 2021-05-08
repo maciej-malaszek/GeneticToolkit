@@ -5,7 +5,7 @@ using JetBrains.Annotations;
 namespace GeneticToolkit.Policies.Stop
 {
     [PublicAPI]
-    public class ChangePlateau : IStopCondition
+    public class ChangePlateau : IResettableStopCondition
     {
         public double MinimalImprovement { get; set; }
         public ChangeHistory ChangeHistory { get; set; }
@@ -14,8 +14,11 @@ namespace GeneticToolkit.Policies.Stop
         public bool Satisfied(IEvolutionaryPopulation population)
         {
             if(population.Generation <= Generations + 1)
+            {
                 return false;
-            double improvement = ChangeHistory.GetAverageImprovement((int)(population.Generation - (int)Generations), Generations, population.CompareCriteria.OptimizationMode);
+            }
+
+            var improvement = ChangeHistory.GetAverageImprovement((int)(population.Generation - (int)Generations), Generations, population.CompareCriteria.OptimizationMode);
 
             return improvement <= MinimalImprovement;
 

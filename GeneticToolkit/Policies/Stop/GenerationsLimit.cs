@@ -1,5 +1,4 @@
-﻿using System;
-using GeneticToolkit.Interfaces;
+﻿using GeneticToolkit.Interfaces;
 using GeneticToolkit.Utils.Exceptions;
 using JetBrains.Annotations;
 
@@ -12,17 +11,12 @@ namespace GeneticToolkit.Policies.Stop
 
         public bool Satisfied(IEvolutionaryPopulation population)
         {
-            if (population == null)
-                throw new PopulationNotInitializedException();
-            return population.Generation >= _limit;
+            return population == null ? throw new PopulationNotInitializedException() : population.Generation >= _limit;
         }
-
-        public void Reset() {  }
-
+        
         public GenerationsLimit(uint generationsLimit = 1000)
         {
             _limit = generationsLimit;
         }
-
     }
 }

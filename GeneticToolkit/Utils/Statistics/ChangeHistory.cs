@@ -46,11 +46,16 @@ namespace GeneticToolkit.Utils.Statistics
             EOptimizationMode optimizationMode = EOptimizationMode.Maximize)
         {
             if (startIndex + generations > History.Length)
-                throw new IndexOutOfRangeException("History too short to calculate such statistic");
+            {
+                throw new ArgumentException("History too short to calculate such statistic");
+            }
 
             double sum = 0;
             for (int i = startIndex; i < startIndex + generations; i++)
+            {
                 sum += History[i] * (optimizationMode == EOptimizationMode.Minimize ? -1 : 1);
+            }
+
             sum /= generations;
             return sum;
         }

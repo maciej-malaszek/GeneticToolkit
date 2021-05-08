@@ -7,7 +7,7 @@ using JetBrains.Annotations;
 namespace GeneticToolkit.Interfaces
 {
     [PublicAPI]
-    public interface IEvolutionaryPopulation : IEnumerable, IEnumerable<IIndividual>
+    public interface IEvolutionaryPopulation : IEnumerable<IIndividual>
     {
         int Size { get; }
 

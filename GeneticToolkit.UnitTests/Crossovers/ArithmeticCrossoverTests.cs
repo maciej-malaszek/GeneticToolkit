@@ -4,12 +4,10 @@ using GeneticToolkit.Crossovers;
 using GeneticToolkit.Genotypes.Primitive;
 using GeneticToolkit.Interfaces;
 using NUnit.Framework;
-
-namespace CrossoversNUnit
+namespace GeneticToolkit.UnitTests.Crossovers
 {
-
-    public class ArithmeticCrossoverTest
-    {
+    public class ArithmeticCrossoverTests
+      {
 
         private ArithmeticCrossover _singleArithmeticCrossover;
         //private ArithmeticCrossover _doubleArithmeticCrossover;

@@ -64,29 +64,51 @@ namespace GeneticToolkit.Selections
             FitnessList = new double[Population.Size + (Population.HeavenPolicy.UseInCrossover ? Population.HeavenPolicy.Size : 0)];
             MinValue = null;
 
+            GenerateFitnessList();
+            if (Population.HeavenPolicy.UseInCrossover && population.Generation > 0)
+            {
+                ApplyHeavenPolicy();
+            }
+
+            Sum = 0;
+            foreach (var x in FitnessList)
+            {
+                if (MinValue != null)
+                {
+                    Sum += x - MinValue.Value;
+                }
+            }
+
+            Deprecated = false;
+        }
+
+        private void GenerateFitnessList()
+        {
             // Population is already sorted from best to worse
             for (var i = 0; i < Population.Size; i++)
             {
-                double functionValue = RankingValueFunc(CompareCriteria.OptimizationMode == EOptimizationMode.Minimize ? i : Population.Size - 1 - i);
+                var functionValue = RankingValueFunc(CompareCriteria.OptimizationMode == EOptimizationMode.Minimize ? i : Population.Size - 1 - i);
                 if (!MinValue.HasValue || functionValue < MinValue)
-                    MinValue = functionValue;
-                FitnessList[i] = functionValue;
-            }
-            if (Population.HeavenPolicy.UseInCrossover && population.Generation > 0)
-                for (int i = Population.Size; i < Population.Size + Population.HeavenPolicy.Size; i++)
                 {
-                    double functionValue = Population.HeavenPolicy.Memory[i - Population.Size].Value;
-                    if (!MinValue.HasValue || functionValue < MinValue)
-                        MinValue = functionValue;
-                    FitnessList[i] = functionValue;
+                    MinValue = functionValue;
                 }
 
+                FitnessList[i] = functionValue;
+            }
+        }
 
-            Sum = 0;
-            foreach (double x in FitnessList)
-                if (MinValue != null)
-                    Sum += x - MinValue.Value;
-            Deprecated = false;
+        private void ApplyHeavenPolicy()
+        {
+            for (var i = Population.Size; i < Population.Size + Population.HeavenPolicy.Size; i++)
+            {
+                var functionValue = Population.HeavenPolicy.Memory[i - Population.Size].Value;
+                if (!MinValue.HasValue || functionValue < MinValue)
+                {
+                    MinValue = functionValue;
+                }
+
+                FitnessList[i] = functionValue;
+            }
         }
     }
 }

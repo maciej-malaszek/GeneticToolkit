@@ -15,20 +15,19 @@ namespace GeneticToolkit.Policies.Stop
         public bool Satisfied(IEvolutionaryPopulation population)
         {
             if (population == null)
+            {
                 throw new PopulationNotInitializedException();
-            if (FitnessFunction == null)
-                throw new FitnessFunctionNotInitializedException();
+            }
 
-            int comparisonResult = FitnessFunction.GetValue(population.Best).CompareTo(SufficientResult);
+            if (FitnessFunction == null)
+            {
+                throw new FitnessFunctionNotInitializedException();
+            }
+
+            var comparisonResult = FitnessFunction.GetValue(population.Best).CompareTo(SufficientResult);
             comparisonResult *= population.CompareCriteria.OptimizationMode == EOptimizationMode.Minimize ? -1 : 1;
             return comparisonResult >= 0;
         }
-
-        public void Reset()
-        {
-            // This Stop Condition is Stateless
-        }
-
         public SufficientIndividual(IFitnessFunction fitnessFunction, double sufficientResult)
         {
             FitnessFunction = fitnessFunction;

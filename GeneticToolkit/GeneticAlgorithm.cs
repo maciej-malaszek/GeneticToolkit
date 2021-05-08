@@ -34,7 +34,10 @@ namespace GeneticToolkit
                     break;
                 case EStopConditionMode.All:
                     while (!StopConditions.All(x => x.Satisfied(Population)))
+                    {
                         Population.NextGeneration();
+                    }
+
                     break;
                 default: return;
             }
@@ -42,8 +45,10 @@ namespace GeneticToolkit
 
         public void Reset()
         {
-            foreach (IStopCondition stopCondition in StopConditions)
-                stopCondition.Reset();
+            foreach (var stopCondition in StopConditions)
+            {
+                (stopCondition as IResettableStopCondition)?.Reset();
+            }
         }
     }
 }

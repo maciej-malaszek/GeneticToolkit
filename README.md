@@ -17,8 +17,8 @@
 ![Version](https://img.shields.io/nuget/v/GeneticToolkit.svg?style=for-the-badge)
 ![Framework](https://img.shields.io/badge/.NET%20Core-2.2-brightgreen.svg?style=for-the-badge)
 
-![Last Updated](https://img.shields.io/github/last-commit/malasz/GeneticToolkit.svg?style=for-the-badge)
-![Opened Issues](https://img.shields.io/github/issues-raw/malasz/GeneticToolkit.svg?style=for-the-badge)
+![Last Updated](https://img.shields.io/github/last-commit/maciej-malaszek/GeneticToolkit.svg?style=for-the-badge)
+![Opened Issues](https://img.shields.io/github/issues-raw/maciej-malaszek/GeneticToolkit.svg?style=for-the-badge)
 
 ![Downloads](https://img.shields.io/nuget/dt/GeneticToolkit.svg?style=for-the-badge)
 

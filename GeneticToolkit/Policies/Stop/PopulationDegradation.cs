@@ -11,12 +11,6 @@ namespace GeneticToolkit.Policies.Stop
         {
             return population.Homogeneity >= MaximumSimilarity;
         }
-
-        public void Reset()
-        {
-            // This Stop Condition is Stateless
-        }
-
         public PopulationDegradation(double maximumSimilarity)
         {
             MaximumSimilarity = maximumSimilarity;

@@ -83,7 +83,10 @@ namespace GeneticToolkit.Populations
         {
             var sortedList = new IIndividual[Size];
             for (var i = 0; i < Size; i++)
+            {
                 sortedList[i] = Individuals[i];
+            }
+
             Array.Sort(sortedList, (x1, x2) => CompareCriteria.Compare(x1, x2));
             return sortedList;
         }
@@ -92,24 +95,31 @@ namespace GeneticToolkit.Populations
         {
             var sortedList = new IIndividual[Size];
             for (var i = 0; i < Size; i++)
+            {
                 sortedList[i] = Individuals[i];
-            Array.Sort(sortedList, (x1, x2) => CompareCriteria.Compare(x2, x1));
+            }
+
+            Array.Sort(sortedList, (x1, x2) => -CompareCriteria.Compare(x1, x2));
             return sortedList;
         }
 
         public void SortAscending()
         {
-            if(_sorted)
+            if (_sorted)
+            {
                 return;
-            Array.Sort(Individuals, (x1, x2) => CompareCriteria.Compare(x1, x2));
+            }
+            Individuals = OrderAscending();
             _sorted = true;
         }
 
         public void SortDescending()
         {
-            if(_sorted)
+            if (_sorted)
+            {
                 return;
-            Array.Sort(Individuals, (x1, x2) => CompareCriteria.Compare(x2, x1));
+            }
+            Individuals = OrderDescending();
             _sorted = true;
         }
 
@@ -120,8 +130,10 @@ namespace GeneticToolkit.Populations
             Generation = 0;
             BestIsDeprecated = true;
             _best = null;
-            foreach (IStatisticUtility statisticUtility in StatisticUtilities.Values)
+            foreach (var statisticUtility in StatisticUtilities.Values)
+            {
                 statisticUtility.Reset();
+            }
         }
 
         public virtual void Initialize()

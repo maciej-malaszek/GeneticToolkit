@@ -5,7 +5,7 @@ using JetBrains.Annotations;
 namespace GeneticToolkit.Policies.Stop
 {
     [PublicAPI]
-    public class TimeSpanCondition : IStopCondition
+    public class TimeSpanCondition : IResettableStopCondition
     {
         public DateTime StartTime { get; set; }
 
@@ -35,7 +35,10 @@ namespace GeneticToolkit.Policies.Stop
         public bool Satisfied(IEvolutionaryPopulation population)
         {
             if (_notStarted)
+            {
                 Start();
+            }
+
             return DateTime.Now >= EndTime;
         }
     }
