@@ -7,7 +7,7 @@ trigger:
 - master
 variables:
   buildConfiguration: 'Release'
-  Version: '0.3.'
+  Version: '0.3'
 stages:
   - stage: build
     jobs:
@@ -29,10 +29,10 @@ stages:
           PackageProjectUrl: 'https://github.com/maciej-malaszek/GeneticToolkit'
           RepositoryUrl: 'https://github.com/maciej-malaszek/GeneticToolkit'
           RepositoryType: 'GIT'
-          VersionNumber: '$(Version)$(Rev:.r)'
-          FileVersionNumber: '$(Version)$(Rev:.r)'
-          InformationalVersion: '$(Version)$(Rev:.r)'
-          PackageVersion: '$(Version)$(Rev:.r)'
+          VersionNumber: '$(Version).$(Rev:r)'
+          FileVersionNumber: '$(Version).$(Rev:r)'
+          InformationalVersion: '$(Version).$(Rev:r)'
+          PackageVersion: '$(Version).$(Rev:r)'
           LogLevel: 'verbose'
           FailOnWarning: false
           DisableTelemetry: false
