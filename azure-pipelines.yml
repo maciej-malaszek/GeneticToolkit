@@ -63,7 +63,7 @@ stages:
           command: 'pack'
           packagesToPack: '**/GeneticToolkit.csproj'
           versioningScheme: 'byEnvVar'
-          versionEnvVar: '$(GitVersion.NuGetVersionV2)'
+          versionEnvVar: 'GitVersion.NuGetVersionV2'
       - task: sonarcloud-buildbreaker@2
         inputs:
           SonarCloud: 'SonarQube - GeneticToolkit'
