@@ -73,16 +73,20 @@ stages:
           PathtoPublish: '$(Build.ArtifactStagingDirectory)'
           ArtifactName: 'genetic-toolkit'
           publishLocation: 'Container'
-   
-    
+      - task: DotNetCoreCLI@2
+        inputs:
+          command: 'push'
+          packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
+          nuGetFeedType: 'internal'
+          publishVstsFeed: 'b1f07fcc-83e0-40e3-88ec-7e85d5976fd4'
   - stage: Release
     displayName: 'Release'
     dependsOn: Build
     pool:
       vmImage: ubuntu-latest
     jobs:
-      - deployment: GithubRelease
-        displayName: 'Github Release'
+      - deployment: Release
+        displayName: 'Release'
         environment: Production
         strategy:
          runOnce:
@@ -103,3 +107,9 @@ stages:
                  tag: '$(GitVersion.SemVer)'
                  changeLogCompareToRelease: 'lastFullRelease'
                  changeLogType: 'commitBased'
+             - task: DotNetCoreCLI@2
+               inputs:
+                 command: 'push'
+                 packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
+                 nuGetFeedType: 'external'
+                 publishFeedCredentials: 'Nuget.Org'
