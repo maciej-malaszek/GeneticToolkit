@@ -72,8 +72,12 @@ stages:
          runOnce:
            deploy:
              steps:
-             - task: GitHubRelease@1
-               inputs:
+              - task: gitversion/setup@0
+                inputs:
+                  versionSpec: '5.x'
+              - task: gitversion/execute@0
+              - task: GitHubRelease@1
+                inputs:
                  gitHubConnection: 'GitHub Connection'
                  repositoryName: 'maciej-malaszek/GeneticToolkit'
                  action: 'create'
