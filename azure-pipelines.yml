@@ -39,7 +39,11 @@ stages:
           command: test
       - task: DotNetCoreCLI@2
         inputs:
-          command: publish
+          command: 'publish'
+          publishWebProjects: false
+          projects: '**/GeneticToolkit.csproj'
+          zipAfterPublish: false
+          modifyOutputPath: false
       - task: PublishBuildArtifacts@1
         inputs:
           PathtoPublish: '$(Build.ArtifactStagingDirectory)'
