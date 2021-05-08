@@ -58,15 +58,12 @@ stages:
       - task: SonarCloudPublish@1
         inputs:
           pollingTimeoutSec: '300'
-        
       - task: DotNetCoreCLI@2
         inputs:
-          command: 'publish'
-          publishWebProjects: false
-          arguments: '--configuration $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)'
-          projects: '**/GeneticToolkit.csproj'
-          zipAfterPublish: false
-          modifyOutputPath: false
+          command: 'pack'
+          packagesToPack: '**/GeneticToolkit.csproj'
+          versioningScheme: 'byEnvVar'
+          versionEnvVar: '$(GitVersion.NuGetVersionV2)'
       - task: sonarcloud-buildbreaker@2
         inputs:
           SonarCloud: 'SonarQube - GeneticToolkit'
