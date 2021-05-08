@@ -9,9 +9,9 @@ variables:
   buildConfiguration: 'Release'
   Version: '0.3'
 stages:
-  - stage: build
+  - stage: Build
     jobs:
-    - job: run_build
+    - job: Build
       displayName: 'Run Build'
       pool:
         vmImage: ubuntu-latest
@@ -20,6 +20,7 @@ stages:
         inputs:
           versionSpec: '5.x'
       - task: gitversion/execute@0
+
       - task: Assembly-Info-NetCore@2
         inputs:
           Path: '$(Build.SourcesDirectory)'
@@ -57,3 +58,26 @@ stages:
           PathtoPublish: '$(Build.ArtifactStagingDirectory)'
           ArtifactName: 'genetic-toolkit'
           publishLocation: 'Container'
+  - stage: GithubRelease
+    displayName: 'GitHub Release'
+    dependsOn: Build
+    pool:
+      vmImage: ubuntu-latest
+    jobs:
+      - deployment: DeploySolution
+        displayName: 'Deploy Solution'
+        environment: Production
+        strategy:
+         runOnce:
+           deploy:
+             steps:
+             - task: GitHubRelease@1
+               inputs:
+                 gitHubConnection: 'GitHub Connection'
+                 repositoryName: 'maciej-malaszek/GeneticToolkit'
+                 action: 'create'
+                 target: '$(Build.SourceVersion)'
+                 tagSource: 'userSpecifiedTag'
+                 tag: '$(GitVersion.SemVer)'
+                 changeLogCompareToRelease: 'lastFullRelease'
+                 changeLogType: 'commitBased''
