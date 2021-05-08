@@ -10,11 +10,11 @@ variables:
 
 stages:
   - stage: Build
+    pool:
+      vmImage: ubuntu-latest
     jobs:
     - job: Build
-      displayName: 'Run Build'
-      pool:
-        vmImage: ubuntu-latest
+      displayName: 'Run Build'      
       steps:
       - task: gitversion/setup@0
         inputs:
@@ -42,9 +42,21 @@ stages:
           LogLevel: 'verbose'
           FailOnWarning: false
           DisableTelemetry: false
+      - task: SonarCloudPrepare@1
+        inputs:
+          SonarCloud: 'SonarQube - GeneticToolkit'
+          organization: 'malasz-github'
+          scannerMode: 'MSBuild'
+          projectKey: 'GeneticToolkit'
+          projectName: 'GeneticToolkit'
       - task: DotNetCoreCLI@2
         inputs:
           command: test
+      - task: SonarCloudAnalyze@1
+      - task: SonarCloudPublish@1
+        inputs:
+          pollingTimeoutSec: '300'
+        
       - task: DotNetCoreCLI@2
         inputs:
           command: 'publish'
@@ -53,12 +65,17 @@ stages:
           projects: '**/GeneticToolkit.csproj'
           zipAfterPublish: false
           modifyOutputPath: false
+      - task: sonarcloud-buildbreaker@2
+        inputs:
+          SonarCloud: 'SonarQube - GeneticToolkit'
+          organization: 'malasz-github'
       - task: PublishBuildArtifacts@1
         inputs:
           PathtoPublish: '$(Build.ArtifactStagingDirectory)'
           ArtifactName: 'genetic-toolkit'
           publishLocation: 'Container'
-
+   
+    
   - stage: Release
     displayName: 'Release'
     dependsOn: Build
