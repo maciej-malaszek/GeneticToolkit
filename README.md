@@ -9,7 +9,7 @@
 
 ### Status
 
-[![Build Status](https://img.shields.io/azure-devops/build/malasz/d96eee72-055c-487a-b498-5da0c1e2387c/9.svg?style=for-the-badge)](https://img.shields.io/azure-devops/build/malasz/d96eee72-055c-487a-b498-5da0c1e2387c/9.svg?style=for-the-badge)
+[![Build Status](https://malasz.visualstudio.com/GeneticToolkit/_apis/build/status/maciej-malaszek.GeneticToolkit?branchName=master&stageName=Build)](https://malasz.visualstudio.com/GeneticToolkit/_build/latest?definitionId=29&branchName=master)
 
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=GeneticToolkit&metric=ncloc)](https://sonarcloud.io/dashboard?id=GeneticToolkit)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=GeneticToolkit&metric=coverage)](https://sonarcloud.io/dashboard?id=GeneticToolkit)
