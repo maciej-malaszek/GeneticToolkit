@@ -105,11 +105,12 @@ stages:
                  target: '$(Build.SourceVersion)'
                  tagSource: 'userSpecifiedTag'
                  tag: '$(GitVersion.SemVer)'
+                 assets: '$(System.DefaultWorkingDirectory)/**/*.nupkg'
                  changeLogCompareToRelease: 'lastFullRelease'
                  changeLogType: 'commitBased'
              - task: DotNetCoreCLI@2
                inputs:
                  command: 'push'
-                 packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
+                 packagesToPush: '$(System.DefaultWorkingDirectory)/**/*.nupkg'
                  nuGetFeedType: 'external'
                  publishFeedCredentials: 'Nuget.Org'
