@@ -58,6 +58,7 @@ stages:
           PathtoPublish: '$(Build.ArtifactStagingDirectory)'
           ArtifactName: 'genetic-toolkit'
           publishLocation: 'Container'
+
   - stage: GithubRelease
     displayName: 'GitHub Release'
     dependsOn: Build
@@ -80,4 +81,4 @@ stages:
                  tagSource: 'userSpecifiedTag'
                  tag: '$(GitVersion.SemVer)'
                  changeLogCompareToRelease: 'lastFullRelease'
-                 changeLogType: 'commitBased''
+                 changeLogType: 'commitBased'
