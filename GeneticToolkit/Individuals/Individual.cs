@@ -35,5 +35,7 @@ namespace GeneticToolkit.Individuals
             Phenotype.Genotype = genotype;
             FitnessFunction = fitnessFunction;
         }
+        
+        public Individual() {}
     }
 }

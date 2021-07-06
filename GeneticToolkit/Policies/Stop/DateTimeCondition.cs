@@ -16,5 +16,7 @@ namespace GeneticToolkit.Policies.Stop
             StopDateTime = stopDateTime;
             UseUtc = useUtc;
         }
+        
+        public DateTimeCondition() {}
     }
 }

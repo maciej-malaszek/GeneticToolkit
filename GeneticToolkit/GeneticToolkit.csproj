@@ -2,11 +2,11 @@
 
     <PropertyGroup>
         <OutputType>Library</OutputType>
-        <TargetFramework>net5.0</TargetFramework>
         <RootNamespace>GeneticToolkit</RootNamespace>
-        <LangVersion>9</LangVersion>
+        <LangVersion>Preview</LangVersion>
         <ApplicationIcon />
         <StartupObject />
+        <TargetFramework>net6.0</TargetFramework>
     </PropertyGroup>
 
     <ItemGroup>

@@ -25,21 +25,29 @@ namespace GeneticToolkit.Crossovers
             var children = new IGenotype[ChildrenCount];
 
             for (var j = 0; j < ParentsCount; j++)
+            {
                 parentsPermutation[j] = parents[j] as PermutationGenotype;
+            }
+
             for (var j = 0; j < ChildrenCount; j++)
+            {
                 children[j] = parentsPermutation[0].EmptyCopy<PermutationGenotype>();
+            }
 
             var childrenValues = new short[ChildrenCount][];
             var availableIndexes = new bool[ChildrenCount][];
-            int genotypeSize = parentsPermutation[0].Count;
+            var genotypeSize = parentsPermutation[0].Count;
 
             for (var childIndex = 0; childIndex < ChildrenCount; childIndex++)
             {
                 childrenValues[childIndex] = new short[genotypeSize];
                 availableIndexes[childIndex] = new bool[genotypeSize];
                 for (var i = 0; i < genotypeSize; i++)
+                {
                     availableIndexes[childIndex][i] = true;
-                int nextParentIndex = childIndex + 1 >= ParentsCount ? 0 : childIndex + 1;
+                }
+
+                var nextParentIndex = childIndex + 1 >= ParentsCount ? 0 : childIndex + 1;
 
                 var index = 0;
                 while (availableIndexes[childIndex][index])
@@ -50,12 +58,18 @@ namespace GeneticToolkit.Crossovers
                 }
 
                 for (var i = 0; i < genotypeSize; i++)
+                {
                     if (availableIndexes[childIndex][i])
+                    {
                         childrenValues[childIndex][i] = parentsPermutation[nextParentIndex].Value[i];
+                    }
+                }
             }
 
             for (var j = 0; j < ChildrenCount; j++)
+            {
                 ((PermutationGenotype) children[j]).Value = childrenValues[j];
+            }
 
             return children;
         }

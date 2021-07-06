@@ -1,4 +1,5 @@
-﻿using JetBrains.Annotations;
+﻿using System;
+using JetBrains.Annotations;
 
 namespace GeneticToolkit.Utils
 {
@@ -7,6 +8,11 @@ namespace GeneticToolkit.Utils
     {
         public T Low { get; set; }
         public T High { get; set; }
+
+        public Range()
+        {
+            
+        }
 
         public Range(T low, T high)
         {

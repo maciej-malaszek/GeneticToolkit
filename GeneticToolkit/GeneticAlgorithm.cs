@@ -4,9 +4,12 @@ using GeneticToolkit.Utils.Extensions;
 
 using System;
 using JetBrains.Annotations;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace GeneticToolkit
 {
+    [JsonConverter(typeof(StringEnumConverter))]
     public enum EStopConditionMode { Any, All }
 
     [PublicAPI]

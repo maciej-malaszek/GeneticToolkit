@@ -13,5 +13,7 @@ namespace GeneticToolkit.Policies.Mutation
         {
             MutatedGenesPercent = mutatedGenesPercent;
         }
+        
+        public BackMutation(){}
     }
 }

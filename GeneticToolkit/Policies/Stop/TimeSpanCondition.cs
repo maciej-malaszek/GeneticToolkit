@@ -14,6 +14,8 @@ namespace GeneticToolkit.Policies.Stop
         private DateTime EndTime { get; set; }
 
         private bool _notStarted = true;
+        
+        public TimeSpanCondition() {}
 
         public TimeSpanCondition(TimeSpan calculationTime)
         {

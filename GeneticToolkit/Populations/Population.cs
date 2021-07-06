@@ -22,7 +22,12 @@ namespace GeneticToolkit.Populations
         public ISelectionMethod SelectionMethod { get; set; }
 
         #endregion
-        
+
+        public Population() {}
+        public Population(int size)
+        {
+            Individuals = new IIndividual[size];
+        }
         public Population(IFitnessFunction fitnessFunction, int size)
         {
             FitnessFunction = fitnessFunction;

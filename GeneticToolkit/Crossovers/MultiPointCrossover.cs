@@ -13,6 +13,7 @@ namespace GeneticToolkit.Crossovers
         public int BitAlign { get; set; } = 1;
         public int CutPointCount { get; set; }
         protected Random RandomNumberGenerator { get; set; } = new Random();
+        public MultiPointCrossover() {}
 
         public MultiPointCrossover(int parentsCount, int childrenCount, int cutPointCount)
         {

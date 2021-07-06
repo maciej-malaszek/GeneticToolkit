@@ -13,6 +13,10 @@ namespace GeneticToolkit.Selections
     {
         private static readonly Random RandomNumberGenerator = new Random();
 
+        public Tournament()
+        {
+            
+        }
         public Tournament(ICompareCriteria compareCriteria, float populationPercentage)
         {
             CompareCriteria = compareCriteria;

@@ -7,6 +7,8 @@ namespace GeneticToolkit.Comparisons
     public class SimpleComparison : ICompareCriteria
     {
         public IFitnessFunction FitnessFunction { get; set; }
+        
+        public SimpleComparison() {}
 
         public SimpleComparison(IFitnessFunction fitnessFunction, EOptimizationMode optimizationMode = EOptimizationMode.Maximize)
         {

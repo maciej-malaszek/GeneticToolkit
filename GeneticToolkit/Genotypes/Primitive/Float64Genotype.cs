@@ -8,6 +8,7 @@ namespace GeneticToolkit.Genotypes.Primitive
     [PublicAPI]
     public class Float64Genotype : GenericPrimitiveGenotype<double>
     {
+        public Float64Genotype(): base(sizeof(double)) {}
         public Float64Genotype(int size) : base(size) { }
 
         public Float64Genotype(byte[] bytes) : base(bytes) { }
