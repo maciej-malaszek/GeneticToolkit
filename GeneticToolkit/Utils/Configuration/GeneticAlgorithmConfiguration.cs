@@ -1,9 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Reflection.Metadata.Ecma335;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace GeneticToolkit.Utils.Configuration
 {
@@ -16,8 +15,9 @@ namespace GeneticToolkit.Utils.Configuration
         public string Name { get; set; }
         public string Type { get; set; }
 
+
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        public object Value { get; set; }
+        public dynamic Value { get; set; }
 
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         public List<DynamicObjectInfo> Properties { get; set; }
@@ -39,7 +39,16 @@ namespace GeneticToolkit.Utils.Configuration
                 return default;
             }
 
-            if (type.IsPrimitive || type == typeof(string))
+            if (type.IsArray)
+            {
+                var value = ((JArray) objectInfo.Value);
+                var values = value.ToObject<List<DynamicObjectInfo>>()?
+                    .Select(info => DynamicObjectFactory<dynamic>.Build(info))?
+                    .ToArray();
+                return (dynamic) values;
+            }
+
+            if (type.IsPrimitive || type == typeof(string) || type.IsEnum)
             {
                 return (T) objectInfo.Value;
             }
@@ -83,15 +92,25 @@ namespace GeneticToolkit.Utils.Configuration
 
             foreach (var property in objectInfo.Properties)
             {
-                var propertyType = Type.GetType(property.Type);
-                if (propertyType.IsPrimitive || propertyType == typeof(string))
+                var parameterIsGenericType = (property.GenericParameters?.Count ?? 0) > 0;
+                var propertyType = Type.GetType(parameterIsGenericType
+                    ? $"{property.Type}`{property.GenericParameters.Count}"
+                    : property.Type);
+                if (propertyType == null)
                 {
-                    type.GetProperty(property.Name)?.SetValue(instance, property.Value);
                     continue;
                 }
 
-                var value = DynamicObjectFactory<dynamic>.Build(property);
-                type.GetProperty(property.Name)?.SetValue(instance, value);
+                if (propertyType.IsArray)
+                {
+                    var values = DynamicObjectFactory<dynamic[]>.Build(property);
+   //                 type.GetProperty(property.Name)?.SetValue(instance, value);
+                }
+                else
+                {
+                    var value = DynamicObjectFactory<dynamic>.Build(property);
+                    type.GetProperty(property.Name)?.SetValue(instance, Convert.ChangeType(value, propertyType));
+                }
             }
 
             return instance;
@@ -126,25 +145,26 @@ namespace GeneticToolkit.Utils.Configuration
             if (type.IsArray)
             {
                 type = type.UnderlyingSystemType;
-                var typeName= type.GetGenericArguments().ToList().Count > 0 
-                    ? type.FullName.Remove(type.FullName.IndexOf('`')) : type.FullName;
+                var typeName = type.GetGenericArguments().ToList().Count > 0
+                    ? type.FullName.Remove(type.FullName.IndexOf('`'))
+                    : type.FullName;
                 return new DynamicObjectInfo
                 {
                     Name = name,
                     Properties = null,
-                    GenericParameters = null,
+                    GenericParameters = type.GetGenericArguments().Select(t => t.FullName).ToList(),
                     Type = typeName,
-                    Value = (instance as object[])?.Select(obj => Serialize(obj, name))
+                    Value = ((System.Collections.IEnumerable) instance)?.Cast<object>().Select(obj => Serialize(obj, name)).ToArray()
                 };
             }
-            
+
             var info = new DynamicObjectInfo
             {
                 Name = name,
                 Properties = new List<DynamicObjectInfo>(),
                 GenericParameters = type.GetGenericArguments().Select(a => a.FullName).ToList()
             };
-            info.Type = info.GenericParameters?.Count > 0 ? type.FullName.Remove(type.FullName.IndexOf('`')) : type.Name;
+            info.Type = info.GenericParameters?.Count > 0 ? type.FullName.Remove(type.FullName.IndexOf('`')) : type.FullName;
 
             var properties = type.GetProperties().Where(p => p.CanWrite && p.CanRead && p.GetIndexParameters().Length == 0);
             foreach (var property in properties)

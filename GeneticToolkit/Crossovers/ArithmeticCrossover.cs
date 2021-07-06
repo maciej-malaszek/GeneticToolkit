@@ -1,9 +1,7 @@
 ﻿using GeneticToolkit.Interfaces;
 using GeneticToolkit.Utils.Extensions;
-
 using System;
 using System.Linq;
-using System.Runtime.InteropServices;
 using GeneticToolkit.Utils.Exceptions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;

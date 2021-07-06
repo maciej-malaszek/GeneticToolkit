@@ -3,15 +3,13 @@
     <PropertyGroup>
         <OutputType>Library</OutputType>
         <RootNamespace>GeneticToolkit</RootNamespace>
-        <LangVersion>Preview</LangVersion>
+        <LangVersion>Latest</LangVersion>
         <ApplicationIcon />
         <StartupObject />
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net5.0</TargetFramework>
     </PropertyGroup>
-
     <ItemGroup>
-        <PackageReference Include="JetBrains.Annotations" Version="2019.1.1" />
-        <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+        <PackageReference Include="JetBrains.Annotations" Version="2021.1.0" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     </ItemGroup>
-
 </Project>

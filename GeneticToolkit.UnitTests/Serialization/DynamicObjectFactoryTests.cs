@@ -170,35 +170,35 @@ namespace GeneticToolkit.UnitTests.Serialization
                     new PopulationDegradation(0.9f),
                     new SufficientIndividual(fitnessFunction, 0.0001f)
                 },
-                // StopConditionMode = EStopConditionMode.Any,
-                // Population = new Population(fitnessFunction, 30)
-                // {
-                //     CompareCriteria = compareCriteria,
-                //     Crossover = new SinglePointCrossover(),
-                //     HeavenPolicy = new OneGod(),
-                //     Mutation = new ArithmeticMutation(new[]
-                //         {
-                //             new Range<float>(-10, 10),
-                //             new Range<float>(-10, 10),
-                //             new Range<float>(-10, 10),
-                //             new Range<float>(-10, 10),
-                //             new Range<float>(-10, 10)
-                //         },
-                //         new[]
-                //         {
-                //             ArithmeticMutation.EMode.Byte,
-                //             ArithmeticMutation.EMode.Byte,
-                //             ArithmeticMutation.EMode.Byte,
-                //             ArithmeticMutation.EMode.Byte,
-                //             ArithmeticMutation.EMode.Byte
-                //         }
-                //     ),
-                //     MutationPolicy = new HesserMannerMutation(1, 1, 0.1f),
-                //     ResizePolicy = new ConstantResizePolicy(),
-                //     IncompatibilityPolicy = new AllowAll(),
-                //     SelectionMethod = new Tournament(compareCriteria, 0.01f),
-                //     StatisticUtilities = new Dictionary<string, IStatisticUtility>()
-                // }
+                StopConditionMode = EStopConditionMode.Any,
+                Population = new Population(fitnessFunction, 30)
+                {
+                    CompareCriteria = compareCriteria,
+                    Crossover = new SinglePointCrossover(),
+                    HeavenPolicy = new OneGod(),
+                    Mutation = new ArithmeticMutation(new[]
+                        {
+                            new Range<float>(-10, 10),
+                            new Range<float>(-10, 10),
+                            new Range<float>(-10, 10),
+                            new Range<float>(-10, 10),
+                            new Range<float>(-10, 10)
+                        },
+                        new[]
+                        {
+                            ArithmeticMutation.EMode.Byte,
+                            ArithmeticMutation.EMode.Byte,
+                            ArithmeticMutation.EMode.Byte,
+                            ArithmeticMutation.EMode.Byte,
+                            ArithmeticMutation.EMode.Byte
+                        }
+                    ),
+                    MutationPolicy = new HesserMannerMutation(1, 1, 0.1f),
+                    ResizePolicy = new ConstantResizePolicy(),
+                    IncompatibilityPolicy = new AllowAll(),
+                    SelectionMethod = new Tournament(compareCriteria, 0.01f),
+                    StatisticUtilities = new Dictionary<string, IStatisticUtility>()
+                }
             };
 
 
@@ -206,6 +206,61 @@ namespace GeneticToolkit.UnitTests.Serialization
 
             Console.WriteLine(JsonConvert.SerializeObject(info));
             Console.WriteLine(".");
+        }
+
+        [Test]
+        public void Factory_Serialization_Is_Reversible()
+        {
+            var fitnessFunction = new FitnessFunction(phenotype => 1);
+            var compareCriteria = new SimpleComparison(fitnessFunction, EOptimizationMode.Minimize);
+            var geneticAlgorithm = new GeneticAlgorithm
+            {
+                StopConditions = new IStopCondition[]
+                {
+                    new TimeSpanCondition(TimeSpan.FromSeconds(25f)),
+                    new PopulationDegradation(0.9f),
+                    new SufficientIndividual(fitnessFunction, 0.0001f)
+                },
+                StopConditionMode = EStopConditionMode.Any,
+                Population = new Population(fitnessFunction, 30)
+                {
+                    CompareCriteria = compareCriteria,
+                    Crossover = new SinglePointCrossover(),
+                    HeavenPolicy = new OneGod(),
+                    Mutation = new ArithmeticMutation(new[]
+                        {
+                            new Range<float>(-10, 10),
+                            new Range<float>(-10, 10),
+                            new Range<float>(-10, 10),
+                            new Range<float>(-10, 10),
+                            new Range<float>(-10, 10)
+                        },
+                        new[]
+                        {
+                            ArithmeticMutation.EMode.Byte,
+                            ArithmeticMutation.EMode.Byte,
+                            ArithmeticMutation.EMode.Byte,
+                            ArithmeticMutation.EMode.Byte,
+                            ArithmeticMutation.EMode.Byte
+                        }
+                    ),
+                    MutationPolicy = new HesserMannerMutation(1, 1, 0.1f),
+                    ResizePolicy = new ConstantResizePolicy(),
+                    IncompatibilityPolicy = new AllowAll(),
+                    SelectionMethod = new Tournament(compareCriteria, 0.01f),
+                    StatisticUtilities = new Dictionary<string, IStatisticUtility>()
+                }
+            };
+            
+            var info = DynamicObjectFactory<GeneticAlgorithm>.Serialize(geneticAlgorithm, "GeneticAlgorithm");
+            var stringified = JsonConvert.SerializeObject(info);
+            var destringified = JsonConvert.DeserializeObject<DynamicObjectInfo>(stringified);
+            var restoredGeneticAlgorithm = DynamicObjectFactory<GeneticAlgorithm>.Build(destringified);
+            Assert.NotNull(restoredGeneticAlgorithm);
+            var newInfo = DynamicObjectFactory<GeneticAlgorithm>.Serialize(geneticAlgorithm, "GeneticAlgorithm");
+            var newStringified = JsonConvert.SerializeObject(info);
+            
+            Assert.AreEqual(stringified, newStringified);
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using GeneticToolkit.Interfaces;
-using GeneticToolkit.Utils.Data;
 using JetBrains.Annotations;
 using System;
 using System.Collections.Generic;
