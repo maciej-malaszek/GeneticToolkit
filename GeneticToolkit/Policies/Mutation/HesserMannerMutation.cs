@@ -21,5 +21,6 @@ namespace GeneticToolkit.Policies.Mutation
             Alpha = Math.Abs(alpha);
             Beta = beta;
         }
+        public HesserMannerMutation() {}
     }
 }

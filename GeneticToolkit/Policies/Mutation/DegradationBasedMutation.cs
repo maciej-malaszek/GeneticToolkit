@@ -29,5 +29,6 @@ namespace GeneticToolkit.Policies.Mutation
             MutationChanceFactor = mutationChanceFactor;
             MutatedGenesPercent = mutatedGenesPercent;
         }
+        public DegradationBasedMutation() {}
     }
 }

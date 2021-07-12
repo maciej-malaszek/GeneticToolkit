@@ -1,15 +1,16 @@
 ﻿using GeneticToolkit.Interfaces;
 using GeneticToolkit.Utils.Extensions;
-
 using System;
 using System.Linq;
-using System.Runtime.InteropServices;
 using GeneticToolkit.Utils.Exceptions;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace GeneticToolkit.Crossovers
 {
     public class ArithmeticCrossover : ICrossover
     {
+        [JsonConverter(typeof(StringEnumConverter))]
         public enum EMode
         {
             Byte,
@@ -24,6 +25,8 @@ namespace GeneticToolkit.Crossovers
         public int ChildrenCount => 1;
         public int BitAlign { get; set; } = -1;
         public EMode[] Mode { get; set; }
+        
+        public ArithmeticCrossover() {}
 
         public ArithmeticCrossover(EMode[] mode)
         {

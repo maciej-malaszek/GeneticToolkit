@@ -33,5 +33,7 @@ namespace GeneticToolkit.Policies.Stop
             FitnessFunction = fitnessFunction;
             SufficientResult = sufficientResult;
         }
+        
+        public SufficientIndividual() {}
     }
 }

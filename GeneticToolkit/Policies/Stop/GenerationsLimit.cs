@@ -18,5 +18,7 @@ namespace GeneticToolkit.Policies.Stop
         {
             _limit = generationsLimit;
         }
+        
+        public GenerationsLimit() {}
     }
 }

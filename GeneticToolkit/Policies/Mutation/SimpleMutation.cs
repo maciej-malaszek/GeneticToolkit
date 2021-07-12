@@ -15,5 +15,7 @@ namespace GeneticToolkit.Policies.Mutation
             MutationChance = mutationChance;
             MutatedGenesPercent = mutatedGenesPercent;
         }
+        
+        public SimpleMutation() {}
     }
 }

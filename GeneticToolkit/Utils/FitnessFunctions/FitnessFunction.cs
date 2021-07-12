@@ -8,6 +8,8 @@ namespace GeneticToolkit.Utils.FitnessFunctions
     public class FitnessFunction : IFitnessFunction
     {
         public Func<IPhenotype, double> Function { get; private set; }
+        
+        public FitnessFunction() {}
 
         public FitnessFunction(Func<IPhenotype, double> function)
         {

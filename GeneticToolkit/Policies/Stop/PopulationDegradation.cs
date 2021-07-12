@@ -15,5 +15,7 @@ namespace GeneticToolkit.Policies.Stop
         {
             MaximumSimilarity = maximumSimilarity;
         }
+        
+        public PopulationDegradation() {}
     }
 }

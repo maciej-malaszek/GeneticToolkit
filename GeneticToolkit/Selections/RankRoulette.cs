@@ -28,6 +28,7 @@ namespace GeneticToolkit.Selections
 
         protected double Sum { get; set; }
 
+        public RankRoulette() {}
 
         public RankRoulette(ICompareCriteria compareCriteria, Func<int, double> rankingValueFunc)
         {

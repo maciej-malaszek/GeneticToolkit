@@ -9,6 +9,8 @@ namespace GeneticToolkit.Genotypes
     public class GenotypeWithWatcher : GenotypeBase
     {
         public event EventHandler ValueChanged;
+        
+        public GenotypeWithWatcher(){}
 
         public GenotypeWithWatcher(byte[] bytes):base(bytes.Length)
         {
@@ -23,7 +25,7 @@ namespace GeneticToolkit.Genotypes
             set
             {
                 Genes[indexer] = value;
-                OnValueChanged(new EventArgs());
+                OnValueChanged(EventArgs.Empty);
             }
         }
         public override IGenotype ShallowCopy()

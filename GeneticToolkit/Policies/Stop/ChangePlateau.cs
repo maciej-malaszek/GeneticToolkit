@@ -34,7 +34,8 @@ namespace GeneticToolkit.Policies.Stop
             MinimalImprovement = minimalImprovement;
             ChangeHistory = changeHistory;
             Generations = generations;
-
         }
+        
+        public ChangePlateau() {}
     }
 }

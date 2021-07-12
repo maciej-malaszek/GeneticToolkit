@@ -5,6 +5,7 @@ namespace GeneticToolkit.Genotypes.Primitive
 {
     public abstract class PrimitiveGenotype : GenotypeWithWatcher
     {
+        protected PrimitiveGenotype() {}
         protected PrimitiveGenotype(int size) : base(size)
         {
         }
@@ -20,6 +21,10 @@ namespace GeneticToolkit.Genotypes.Primitive
         protected bool Deprecated = true;
         private T _value;
 
+        protected GenericPrimitiveGenotype()
+        {
+            
+        }
         protected GenericPrimitiveGenotype(int size) : base(size)
         {
         }

@@ -2,12 +2,15 @@ using GeneticToolkit.Utils.DataStructs;
 using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace GeneticToolkit.Utils.TSPLIB.TSP
 {
     [PublicAPI]
     public class Route
     {
+        [JsonConverter(typeof(StringEnumConverter))]
         public enum EDistanceMetric
         {
             Euclidean,

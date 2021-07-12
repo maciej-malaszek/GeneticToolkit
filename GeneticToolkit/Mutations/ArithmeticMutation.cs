@@ -8,11 +8,14 @@ using GeneticToolkit.Interfaces;
 using GeneticToolkit.Utils;
 using GeneticToolkit.Utils.Exceptions;
 using GeneticToolkit.Utils.Extensions;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace GeneticToolkit.Mutations
 {
     public class ArithmeticMutation : IMutation
     {
+        [JsonConverter(typeof(StringEnumConverter))]
         public enum EMode
         {
             Byte,
@@ -26,6 +29,7 @@ namespace GeneticToolkit.Mutations
         public EMode[] Modes { get; set; }
         private readonly Random _random = new Random();
 
+        public ArithmeticMutation() {}
         public ArithmeticMutation(Range<float>[] mutationRanges, EMode[] modes)
         {
             MutationRanges = mutationRanges;

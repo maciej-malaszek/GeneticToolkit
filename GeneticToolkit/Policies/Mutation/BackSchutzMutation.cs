@@ -22,5 +22,7 @@ namespace GeneticToolkit.Policies.Mutation
             CalculationsTotalTime = calculationsTotalTime;
             GetCalculationTime = getCalculationTime;
         }
+        
+        public BackSchutzMutation(){}
     }
 }

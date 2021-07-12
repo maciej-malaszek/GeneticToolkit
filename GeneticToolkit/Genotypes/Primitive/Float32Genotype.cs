@@ -7,6 +7,7 @@ namespace GeneticToolkit.Genotypes.Primitive
     [PublicAPI]
     public class Float32Genotype : GenericPrimitiveGenotype<float>
     {
+        public Float32Genotype() : base(sizeof(float)) {}
         public Float32Genotype(int size) : base(size)
         {
         }

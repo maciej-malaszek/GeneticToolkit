@@ -13,6 +13,8 @@ namespace GeneticToolkit.Populations
     {
         public float ChangeParentProbability { get; set; }
         
+        public InverOverPopulation() {}
+        
         public InverOverPopulation(IFitnessFunction fitnessFunction, float changeParentProbability, int size)
         {
             FitnessFunction = fitnessFunction;

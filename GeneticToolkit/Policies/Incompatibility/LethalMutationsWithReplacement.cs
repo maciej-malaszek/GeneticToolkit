@@ -41,5 +41,7 @@ namespace GeneticToolkit.Policies.Incompatibility
             _maxRetries = maxRetries;
             IsCompatible = compatibilityFunction;
         }
+        
+        public LethalMutationsWithReplacement() {}
     }
 }

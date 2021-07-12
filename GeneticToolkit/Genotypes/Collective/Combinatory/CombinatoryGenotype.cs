@@ -11,7 +11,7 @@ namespace GeneticToolkit.Genotypes.Collective.Combinatory
 
         private int[] _reverseIndexValue;
         public int Count => _value.Length;
-
+        
         protected CombinatoryGenotype(int size) : base(size)
         {
             _value = new short[size];

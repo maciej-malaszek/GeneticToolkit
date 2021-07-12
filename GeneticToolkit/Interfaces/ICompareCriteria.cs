@@ -1,5 +1,9 @@
-﻿namespace GeneticToolkit.Interfaces
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+
+namespace GeneticToolkit.Interfaces
 {    
+    [JsonConverter(typeof(StringEnumConverter))]
     public enum EOptimizationMode { Maximize, Minimize};
     public interface ICompareCriteria
     {
