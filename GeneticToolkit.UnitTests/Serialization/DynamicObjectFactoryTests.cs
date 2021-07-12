@@ -257,7 +257,6 @@ namespace GeneticToolkit.UnitTests.Serialization
             var destringified = JsonConvert.DeserializeObject<DynamicObjectInfo>(stringified);
             var restoredGeneticAlgorithm = DynamicObjectFactory<GeneticAlgorithm>.Build(destringified);
             Assert.NotNull(restoredGeneticAlgorithm);
-            var newInfo = DynamicObjectFactory<GeneticAlgorithm>.Serialize(geneticAlgorithm, "GeneticAlgorithm");
             var newStringified = JsonConvert.SerializeObject(info);
             
             Assert.AreEqual(stringified, newStringified);
