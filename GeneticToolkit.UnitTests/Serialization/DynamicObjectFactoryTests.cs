@@ -67,9 +67,10 @@ namespace GeneticToolkit.UnitTests.Serialization
         [Test]
         public void Factory_Instantiates_Generic_Class_Type()
         {
+            var typeName = typeof(Range<>).FullName; 
             var objectInfo = new DynamicObjectInfo
             {
-                Type = typeof(Range<>).FullName,
+                Type = typeName.Remove(typeName.IndexOf('`')),
                 Properties = new List<DynamicObjectInfo>
                 {
                     new()
@@ -97,9 +98,10 @@ namespace GeneticToolkit.UnitTests.Serialization
         [Test]
         public void Factory_Instantiates_Generic_Class_Type_With_Constructor_Parameters()
         {
+            var typeName = typeof(Range<>).FullName; 
             var objectInfo = new DynamicObjectInfo
             {
-                Type = typeof(Range<>).FullName,
+                Type = typeName.Remove(typeName.IndexOf('`')),
                 Parameters = new List<DynamicObjectInfo>
                 {
                     new()
@@ -147,7 +149,7 @@ namespace GeneticToolkit.UnitTests.Serialization
                         Value = 10
                     }
                 },
-                GenericParameters = new List<string> {"System.Int32"}
+                GenericParameters = new List<string> {}
             };
 
             // Normally instead of specific type, one should use common interface
