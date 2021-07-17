@@ -101,9 +101,13 @@ namespace GeneticToolkit.Utils.Configuration
         public static dynamic[] GetConstructorParameters(DynamicObjectInfo objectInfo, ConstructorInfo constructor)
         {
             var parameterValues =
-                objectInfo.Parameters.ToDictionary(p => p.Name.ToLower(), p => p.Value);
+                objectInfo.Parameters.ToDictionary(
+                    p => p.Name.ToLower(),
+                    p => p.Value is IConvertible ? Convert.ChangeType(p.Value, p.BuildType()) : p.Value
+                );
             var parameters = constructor?
-                .GetParameters().OrderBy(p => p.Position)
+                .GetParameters()
+                .OrderBy(p => p.Position)
                 .Select(p => parameterValues[p.Name!.ToLower()])
                 .ToArray();
             return parameters;

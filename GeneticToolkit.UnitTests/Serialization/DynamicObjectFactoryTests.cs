@@ -67,7 +67,7 @@ namespace GeneticToolkit.UnitTests.Serialization
         [Test]
         public void Factory_Instantiates_Generic_Class_Type()
         {
-            var typeName = typeof(Range<>).FullName; 
+            var typeName = typeof(Range<>).FullName;
             var objectInfo = new DynamicObjectInfo
             {
                 Type = typeName.Remove(typeName.IndexOf('`')),
@@ -98,7 +98,7 @@ namespace GeneticToolkit.UnitTests.Serialization
         [Test]
         public void Factory_Instantiates_Generic_Class_Type_With_Constructor_Parameters()
         {
-            var typeName = typeof(Range<>).FullName; 
+            var typeName = typeof(Range<>).FullName;
             var objectInfo = new DynamicObjectInfo
             {
                 Type = typeName.Remove(typeName.IndexOf('`')),
@@ -149,7 +149,7 @@ namespace GeneticToolkit.UnitTests.Serialization
                         Value = 10
                     }
                 },
-                GenericParameters = new List<string> {}
+                GenericParameters = new List<string> { }
             };
 
             // Normally instead of specific type, one should use common interface
@@ -211,6 +211,26 @@ namespace GeneticToolkit.UnitTests.Serialization
         }
 
         [Test]
+        public void Factory_Deserializes_From_Json()
+        {
+            var population = new Population(30)
+            {
+                Crossover = new SinglePointCrossover(),
+                HeavenPolicy = new OneGod()
+            };
+            var serialized = DynamicObjectFactory<Population>.Serialize(population, "population");
+            serialized.Parameters = new List<DynamicObjectInfo>()
+            {
+                new DynamicObjectInfo {Name = "Size", Value = 30, Type = "System.Int32"}
+            };
+            var stringified = JsonConvert.SerializeObject(serialized);
+            var info = JsonConvert.DeserializeObject<DynamicObjectInfo>(stringified);
+            var restoredPopulation = DynamicObjectFactory<Population>.Build(info);
+            Assert.NotNull(restoredPopulation);
+            Assert.AreEqual(30, restoredPopulation.Size);
+        }
+
+        [Test]
         public void Factory_Serialization_Is_Reversible()
         {
             var fitnessFunction = new FitnessFunction(phenotype => 1);
@@ -253,14 +273,14 @@ namespace GeneticToolkit.UnitTests.Serialization
                     StatisticUtilities = new Dictionary<string, IStatisticUtility>()
                 }
             };
-            
+
             var info = DynamicObjectFactory<GeneticAlgorithm>.Serialize(geneticAlgorithm, "GeneticAlgorithm");
             var stringified = JsonConvert.SerializeObject(info);
             var destringified = JsonConvert.DeserializeObject<DynamicObjectInfo>(stringified);
             var restoredGeneticAlgorithm = DynamicObjectFactory<GeneticAlgorithm>.Build(destringified);
             Assert.NotNull(restoredGeneticAlgorithm);
             var newStringified = JsonConvert.SerializeObject(info);
-            
+
             Assert.AreEqual(stringified, newStringified);
         }
     }
