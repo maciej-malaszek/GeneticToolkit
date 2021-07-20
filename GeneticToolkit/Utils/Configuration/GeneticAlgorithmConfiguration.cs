@@ -79,6 +79,7 @@ namespace GeneticToolkit.Utils.Configuration
             {
                 genericParameters[i] = System.Type.GetType(GenericParameters[i]);
             }
+
             var genericType = type.MakeGenericType(genericParameters);
             return IsArray() ? Array.CreateInstance(genericType, 1).GetType() : genericType;
         }
@@ -117,7 +118,7 @@ namespace GeneticToolkit.Utils.Configuration
         {
             if ((objectInfo.Parameters?.Count ?? 0) == 0)
             {
-                return (T) Activator.CreateInstance(type);
+                return (T)Activator.CreateInstance(type);
             }
 
             var constructor = FindConstructor(objectInfo);
@@ -127,7 +128,7 @@ namespace GeneticToolkit.Utils.Configuration
             }
 
             var parameters = GetConstructorParameters(objectInfo, constructor);
-            return (T) constructor.Invoke(parameters);
+            return (T)constructor.Invoke(parameters);
         }
 
         public static dynamic ParsePrimitiveValue(DynamicObjectInfo objectInfo)
@@ -140,7 +141,7 @@ namespace GeneticToolkit.Utils.Configuration
 
             if (type.IsArray)
             {
-                var value = (JArray) objectInfo.Value;
+                var value = (JArray)objectInfo.Value;
                 var values = value.ToObject<List<DynamicObjectInfo>>()?
                     .Select(DynamicObjectFactory<dynamic>.Build)
                     .ToArray();
@@ -170,7 +171,7 @@ namespace GeneticToolkit.Utils.Configuration
             }
             else if (value is IConvertible)
             {
-                type.GetProperty(propertyInfo.Name)?.SetValue(instance,Convert.ChangeType(value, propertyInfo.BuildType()));
+                type.GetProperty(propertyInfo.Name)?.SetValue(instance, Convert.ChangeType(value, propertyInfo.BuildType()));
             }
             else
             {
@@ -180,7 +181,7 @@ namespace GeneticToolkit.Utils.Configuration
 
         public static void SetArrayPropertyValue(DynamicObjectInfo propertyInfo, dynamic instance)
         {
-            var infos = ((JArray) propertyInfo.Value).Select(t => t.ToObject<DynamicObjectInfo>()).ToList();
+            var infos = ((JArray)propertyInfo.Value).Select(t => t.ToObject<DynamicObjectInfo>()).ToList();
             var values = infos.Select(DynamicObjectFactory<dynamic>.Build).ToArray();
             var arrayType = Type.GetType(propertyInfo.ArrayTypeName());
             if (arrayType == null)
@@ -196,7 +197,7 @@ namespace GeneticToolkit.Utils.Configuration
         public static T Build(DynamicObjectInfo objectInfo)
         {
             T instance = ParsePrimitiveValue(objectInfo);
-            if (!instance.Equals(default(T)))
+            if (instance != null && !instance.Equals(default(T)))
             {
                 return instance;
             }
@@ -284,7 +285,7 @@ namespace GeneticToolkit.Utils.Configuration
                     Properties = null,
                     GenericParameters = type.GetGenericArguments().Select(t => t.FullName).ToList(),
                     Type = typeName,
-                    Value = ((System.Collections.IEnumerable) instance)?.Cast<object>().Select(obj => Serialize(obj, name)).ToArray()
+                    Value = ((System.Collections.IEnumerable)instance)?.Cast<object>().Select(obj => Serialize(obj, name)).ToArray()
                 };
             }
 
