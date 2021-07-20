@@ -43,6 +43,15 @@ namespace GeneticToolkit.UnitTests.Serialization
         }
 
         [Test]
+        public void Factory_Serializes_Timespan()
+        {
+            var timespan = TimeSpan.FromSeconds(10);
+            var serialized = DynamicObjectFactory<TimeSpan>.Serialize(timespan, "timespan");
+            var deserialized = DynamicObjectFactory<TimeSpan>.Build(serialized);
+            Assert.AreEqual(timespan.Ticks, deserialized.Ticks);
+        }
+
+        [Test]
         public void Factory_Instantiates_Simple_Class_Type()
         {
             var objectInfo = new DynamicObjectInfo()
@@ -50,7 +59,7 @@ namespace GeneticToolkit.UnitTests.Serialization
                 Type = typeof(Tournament).FullName,
                 Properties = new List<DynamicObjectInfo>
                 {
-                    new DynamicObjectInfo
+                    new()
                     {
                         Name = nameof(Tournament.PopulationPercentage),
                         Type = "System.Single",

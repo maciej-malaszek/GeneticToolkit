@@ -135,7 +135,7 @@ namespace GeneticToolkit.Utils.Configuration
             var type = objectInfo.BuildType();
             if (type == null)
             {
-                return default;
+                return default(T);
             }
 
             if (type.IsArray)
@@ -157,7 +157,7 @@ namespace GeneticToolkit.Utils.Configuration
                 return objectInfo.Value;
             }
 
-            return null;
+            return default(T);
         }
 
         public static void SetPropertyValue(DynamicObjectInfo propertyInfo, dynamic instance)
@@ -196,7 +196,7 @@ namespace GeneticToolkit.Utils.Configuration
         public static T Build(DynamicObjectInfo objectInfo)
         {
             T instance = ParsePrimitiveValue(objectInfo);
-            if (instance != null)
+            if (!instance.Equals(default(T)))
             {
                 return instance;
             }
@@ -251,6 +251,19 @@ namespace GeneticToolkit.Utils.Configuration
                     GenericParameters = null,
                     Type = type.FullName,
                     Value = instance
+                };
+            }
+
+            if (instance is TimeSpan)
+            {
+                return new DynamicObjectInfo()
+                {
+                    Name = name,
+                    Parameters = new List<DynamicObjectInfo>
+                    {
+                        new() { Name = "ticks", Type = "System.Int64", Value = ((TimeSpan)instance).Ticks }
+                    },
+                    Type = "System.TimeSpan"
                 };
             }
 
