@@ -1,15 +1,13 @@
-﻿using System;
-using GeneticToolkit.Interfaces;
+﻿using GeneticToolkit.Interfaces;
 using GeneticToolkit.Utils.Exceptions;
 using JetBrains.Annotations;
 
 namespace GeneticToolkit.Policies.Stop
 {
     [PublicAPI]
-    public class SufficientIndividual : IStopCondition
+    public class SufficientIndividual<TFitnessFunctionFactory> : IStopCondition where TFitnessFunctionFactory : IFitnessFunctionFactory, new()
     {
-        public IFitnessFunction FitnessFunction { get; set; }
-
+        private static IFitnessFunction _fitnessFunction;
         public double SufficientResult { get; set; }
 
         public bool Satisfied(IEvolutionaryPopulation population)
@@ -19,21 +17,24 @@ namespace GeneticToolkit.Policies.Stop
                 throw new PopulationNotInitializedException();
             }
 
-            if (FitnessFunction == null)
+            if (_fitnessFunction == null)
             {
                 throw new FitnessFunctionNotInitializedException();
             }
 
-            var comparisonResult = FitnessFunction.GetValue(population.Best).CompareTo(SufficientResult);
+            var comparisonResult = _fitnessFunction.GetValue(population.Best).CompareTo(SufficientResult);
             comparisonResult *= population.CompareCriteria.OptimizationMode == EOptimizationMode.Minimize ? -1 : 1;
             return comparisonResult >= 0;
         }
-        public SufficientIndividual(IFitnessFunction fitnessFunction, double sufficientResult)
+        public SufficientIndividual(double sufficientResult)
         {
-            FitnessFunction = fitnessFunction;
+            _fitnessFunction ??= new TFitnessFunctionFactory().Make();
             SufficientResult = sufficientResult;
         }
-        
-        public SufficientIndividual() {}
+
+        public SufficientIndividual()
+        {
+            _fitnessFunction ??= new TFitnessFunctionFactory().Make();
+        }
     }
 }

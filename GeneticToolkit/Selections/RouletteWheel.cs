@@ -15,10 +15,10 @@ namespace GeneticToolkit.Selections
     {
         public ICompareCriteria CompareCriteria { get; set; }
 
-        protected static Random RandomNumberGenerator { get; set; } = new Random();
+        protected static Random RandomNumberGenerator { get; set; } = new();
         protected IPopulation Population { get; set; }
 
-        protected List<double> FitnessList = new List<double>();
+        protected List<double> FitnessList = new();
         protected uint CurrentGeneration { get; set; }
         protected bool Deprecated { get; set; } = true;
 

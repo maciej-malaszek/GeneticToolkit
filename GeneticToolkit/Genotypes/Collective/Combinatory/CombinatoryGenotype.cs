@@ -27,7 +27,10 @@ namespace GeneticToolkit.Genotypes.Collective.Combinatory
             get
             {
                 if (!Deprecated)
+                {
                     return _value;
+                }
+
                 _value = new short[Count];
                 _reverseIndexValue = new int[Count];
                 for (var i = 0; i < Count; i++)
@@ -42,7 +45,10 @@ namespace GeneticToolkit.Genotypes.Collective.Combinatory
                 _value = value;
                 _reverseIndexValue = new int[_value.Length];
                 for (var i = 0; i < _value.Length; i++)
+                {
                     _reverseIndexValue[_value[i]] = i;
+                }
+
                 UpdateBits();
             }
         }
@@ -58,19 +64,22 @@ namespace GeneticToolkit.Genotypes.Collective.Combinatory
         {
             Genes = new byte[Count * sizeof(short)];
             for (var i = 0; i < Count; i++)
+            {
                 BitConverter.GetBytes(_value[i]).CopyTo(Genes, i * sizeof(short));
+            }
+
             Deprecated = false;
         }
 
         public short GetPrevious(short value)
         {
-            int index = _reverseIndexValue[value] <= 0 ? Count - 1 : _reverseIndexValue[value];
+            var index = _reverseIndexValue[value] <= 0 ? Count - 1 : _reverseIndexValue[value];
             return Value[index - 1];
         }
 
         public short GetNext(short value)
         {
-            int index = _reverseIndexValue[value] >= Count - 1 ? 0 : _reverseIndexValue[value];
+            var index = _reverseIndexValue[value] >= Count - 1 ? 0 : _reverseIndexValue[value];
             return Value[index + 1];
         }
 
@@ -85,17 +94,21 @@ namespace GeneticToolkit.Genotypes.Collective.Combinatory
             var otherCombinatoryGenotype = other as CombinatoryGenotype;
 
             if (otherCombinatoryGenotype == null)
+            {
                 return 0;
+            }
 
             for (var testedValue = 0; testedValue < Count; testedValue++)
             {
-                int testedIndex = _reverseIndexValue[testedValue];
-                int otherTestedIndex = otherCombinatoryGenotype._reverseIndexValue[testedValue];
+                var testedIndex = _reverseIndexValue[testedValue];
+                var otherTestedIndex = otherCombinatoryGenotype._reverseIndexValue[testedValue];
 
                 testedIndex = testedIndex >= Count - 2 ? 0 : testedIndex + 1;
                 otherTestedIndex = otherTestedIndex >= Count - 2 ? 0 : otherTestedIndex + 1;
                 if (Value[testedIndex] == otherCombinatoryGenotype.Value[otherTestedIndex])
+                {
                     sum++;
+                }
             }
 
             return sum / Count;

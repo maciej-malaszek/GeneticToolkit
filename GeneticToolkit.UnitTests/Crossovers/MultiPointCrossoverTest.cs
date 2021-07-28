@@ -1,13 +1,10 @@
-﻿using GeneticToolkit.Crossovers;
+﻿using System;
+using System.Linq;
+using GeneticToolkit.Crossovers;
 using GeneticToolkit.Genotypes.Primitive;
-using GeneticToolkit.Interfaces;
-
 using NUnit.Framework;
 
-using System;
-using System.Linq;
-
-namespace CrossoversNUnit
+namespace GeneticToolkit.UnitTests.Crossovers
 {
     public class MultiPointCrossoverTest
     {
@@ -20,8 +17,10 @@ namespace CrossoversNUnit
         public void Setup()
         {
             _parents = new PrimitiveGenotype[4];
-            for (int i = 0; i < _parents.Length; i++)
+            for (var i = 0; i < _parents.Length; i++)
+            {
                 _parents[i] = new UInt64Genotype((ulong)new Random().Next());
+            }
         }
 
         [Test]
@@ -37,11 +36,11 @@ namespace CrossoversNUnit
         public void PerformTest(int childrenCount, int parentsCount, int cutPoints, int bitAlign)
         {
             _multiPointCrossover = new MultiPointCrossover(parentsCount, childrenCount, cutPoints) {BitAlign = bitAlign};
-            IGenotype[] children = _multiPointCrossover.Cross(_parents.Take(parentsCount).ToArray());
+            var children = _multiPointCrossover.Cross(_parents.Take(parentsCount).ToArray());
 
             Assert.NotNull(children);
             Assert.AreEqual(childrenCount, children.Length);
-            foreach (IGenotype genotype in children)
+            foreach (var genotype in children)
             {
                 Assert.NotNull(genotype);
             }

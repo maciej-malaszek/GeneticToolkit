@@ -51,7 +51,7 @@ namespace GeneticToolkit.Utils.Statistics
             }
 
             double sum = 0;
-            for (int i = startIndex; i < startIndex + generations; i++)
+            for (var i = startIndex; i < startIndex + generations; i++)
             {
                 sum += History[i] * (optimizationMode == EOptimizationMode.Minimize ? -1 : 1);
             }

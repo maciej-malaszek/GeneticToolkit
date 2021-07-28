@@ -2,7 +2,7 @@
 using GeneticToolkit.Interfaces;
 using JetBrains.Annotations;
 
-namespace GeneticToolkit.Utils.FitnessFunctions
+namespace GeneticToolkit.FitnessFunctions
 {
     [PublicAPI]
     public class FitnessFunction : IFitnessFunction

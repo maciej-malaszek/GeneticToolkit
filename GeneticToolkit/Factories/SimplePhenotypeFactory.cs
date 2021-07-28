@@ -1,7 +1,7 @@
 ﻿using GeneticToolkit.Interfaces;
 using JetBrains.Annotations;
 
-namespace GeneticToolkit.Utils.Factories
+namespace GeneticToolkit.Factories
 {
     [PublicAPI]
     public class SimplePhenotypeFactory<TPhenotype> : IPhenotypeFactory<TPhenotype>
@@ -10,7 +10,7 @@ namespace GeneticToolkit.Utils.Factories
     {
         public TPhenotype Make(IGenotype genotype)
         {
-            return new TPhenotype()
+            return new()
             {
                 Genotype = genotype
             };

@@ -7,7 +7,7 @@ namespace GeneticToolkit.Utils.Statistics
     [PublicAPI]
     public class FitnessHistory : IStatisticUtility
     {
-        protected List<double> History { get; set; } = new List<double>();
+        protected List<double> History { get; set; } = new();
 
         public int Length => History.Count;
 
@@ -20,7 +20,7 @@ namespace GeneticToolkit.Utils.Statistics
 
         public void UpdateData(IEvolutionaryPopulation population)
         {
-            double functionValue = population.FitnessFunction.GetValue(population.Best);
+            var functionValue = population.FitnessFunction.GetValue(population.Best);
             History.Add(functionValue);
         }
 

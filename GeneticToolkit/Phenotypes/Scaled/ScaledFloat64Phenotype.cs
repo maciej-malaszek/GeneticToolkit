@@ -16,7 +16,7 @@ namespace GeneticToolkit.Phenotypes.Scaled
 
         public override double GetValue()
         {
-            double result = BitConverter.ToUInt64(Genotype.Genes) * Step + Scale.Low;
+            var result = BitConverter.ToUInt64(Genotype.Genes) * Step + Scale.Low;
             return result;
         }
 

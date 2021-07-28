@@ -2,14 +2,15 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using GeneticToolkit.Factories;
 using GeneticToolkit.Interfaces;
-using GeneticToolkit.Utils.Factories;
 
 namespace GeneticToolkit.Populations
 {
-    public abstract class PopulationBase : IEvolutionaryPopulation
+    public abstract class PopulationBase<TFitnessFunctionFactory> : IEvolutionaryPopulation
+        where TFitnessFunctionFactory : IFitnessFunctionFactory, new()
     {
-        protected readonly Random Random = new Random();
+        protected readonly Random Random = new();
         private bool _sorted;
         protected bool BestIsDeprecated = true;
         private IIndividual _best;
@@ -17,6 +18,7 @@ namespace GeneticToolkit.Populations
         protected float PopulationHomogeneity = -1;
 
         protected IIndividual[] Individuals;
+
         IEnumerator<IIndividual> IEnumerable<IIndividual>.GetEnumerator()
         {
             return Individuals.AsEnumerable().GetEnumerator();
@@ -31,18 +33,21 @@ namespace GeneticToolkit.Populations
         public uint Generation { get; protected set; }
         public float IncestLimit { get; set; } = 0.99f;
         public float DegenerationLimit { get; set; } = 0.95f;
+
         public float Homogeneity
         {
             get
             {
                 if (!PopulationHomogeneityDeprecated)
+                {
                     return PopulationHomogeneity;
+                }
+
                 PopulationHomogeneity = GetPopulationHomogeneity(IncestLimit);
                 PopulationHomogeneityDeprecated = false;
                 return PopulationHomogeneity;
             }
         }
-
 
         public IIndividual this[int indexer]
         {
@@ -51,29 +56,42 @@ namespace GeneticToolkit.Populations
         }
 
         public ICompareCriteria CompareCriteria { get; set; }
-        public IFitnessFunction FitnessFunction { get; set; }
+        public IFitnessFunction FitnessFunction { get; private set; }
         public IHeavenPolicy HeavenPolicy { get; set; }
         public IndividualFactoryBase IndividualFactory { get; set; }
+
+        protected PopulationBase()
+        {
+            FitnessFunction = new TFitnessFunctionFactory().Make();
+        }
+
         #region Utils
 
         public Dictionary<string, IStatisticUtility> StatisticUtilities { get; set; }
 
         #endregion
+
         public IIndividual Best
         {
             get
             {
                 if (BestIsDeprecated)
+                {
                     _best = GetBest();
+                }
+
                 return _best;
             }
         }
 
         public IIndividual GetBest()
         {
-            IIndividual best = this[0];
+            var best = this[0];
             for (var i = 1; i < Size; i++)
+            {
                 best = CompareCriteria.GetBetter(best, this[i]);
+            }
+
             return best;
         }
 
@@ -109,6 +127,7 @@ namespace GeneticToolkit.Populations
             {
                 return;
             }
+
             Individuals = OrderAscending();
             _sorted = true;
         }
@@ -119,12 +138,13 @@ namespace GeneticToolkit.Populations
             {
                 return;
             }
+
             Individuals = OrderDescending();
             _sorted = true;
         }
 
         #endregion
-        
+
         public void Reset()
         {
             Generation = 0;
@@ -157,12 +177,16 @@ namespace GeneticToolkit.Populations
             SortDescending();
             float similar = 0;
             for (var i = 0; i < Size - 1; i++)
+            {
                 if (this[i].Genotype.SimilarityCheck(this[i + 1].Genotype) > maxSimilarity)
+                {
                     similar++;
+                }
+            }
 
             return similar / Size;
         }
-        
+
         protected void DeprecateData()
         {
             BestIsDeprecated = true;
@@ -173,8 +197,10 @@ namespace GeneticToolkit.Populations
         {
             Generation++;
             HeavenPolicy.HandleGeneration(this);
-            foreach (IStatisticUtility statisticUtility in StatisticUtilities.Values)
+            foreach (var statisticUtility in StatisticUtilities.Values)
+            {
                 statisticUtility.UpdateData(this);
+            }
         }
     }
 }

@@ -16,7 +16,7 @@ namespace GeneticToolkit.Phenotypes.Scaled
 
         public override float GetValue()
         {
-            float result = BitConverter.ToUInt32(Genotype.Genes) * Step + Scale.Low;
+            var result = BitConverter.ToUInt32(Genotype.Genes) * Step + Scale.Low;
             return result;
         }
 

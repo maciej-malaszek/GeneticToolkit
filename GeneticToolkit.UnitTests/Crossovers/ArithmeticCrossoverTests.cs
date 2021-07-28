@@ -71,22 +71,22 @@ namespace GeneticToolkit.UnitTests.Crossovers
 
         private static bool GenericPrimitiveGenotypeTest<T>(ArithmeticCrossover crossover, TestCase<T> testCase) where T : struct
         {
-            int longestGenotype = testCase.Parents.Select(x => x.Length).Max();
-            int shortestGenotype = testCase.Parents.Select(x => x.Length).Min();
+            var longestGenotype = testCase.Parents.Select(x => x.Length).Max();
+            var shortestGenotype = testCase.Parents.Select(x => x.Length).Min();
             Assert.AreEqual(longestGenotype, shortestGenotype);
 
-            int expectedGenotypeLength = testCase.Parents[0].Length;
+            var expectedGenotypeLength = testCase.Parents[0].Length;
 
-            IGenotype[] children = crossover.Cross(testCase.Parents);
+            var children = crossover.Cross(testCase.Parents);
 
             // Arithmetic Crossover must return only one child
             Assert.AreEqual(1, children.Length);
 
-            IGenotype childGenotype = children[0];
+            var childGenotype = children[0];
 
             Assert.NotNull(childGenotype);
 
-            GenericPrimitiveGenotype<T> typedGenotype = childGenotype as GenericPrimitiveGenotype<T>;
+            var typedGenotype = childGenotype as GenericPrimitiveGenotype<T>;
             Assert.NotNull(typedGenotype);
 
             Assert.AreEqual(expectedGenotypeLength, typedGenotype.Length);

@@ -5,9 +5,12 @@ using JetBrains.Annotations;
 namespace GeneticToolkit.Individuals
 {
     [PublicAPI]
-    public class Individual : IIndividual
+    public class Individual<TFitnessFunctionFactory> : IIndividual where TFitnessFunctionFactory : IFitnessFunctionFactory, new()
     {
         private double? _fitnessValue;
+        
+        private static IFitnessFunction _fitnessFunction;
+        
         public IGenotype Genotype { get; set; }
 
         public IPhenotype Phenotype { get; }
@@ -19,21 +22,26 @@ namespace GeneticToolkit.Individuals
 
         public double Value
         {
-            get {
-                if (!_fitnessValue.HasValue)
-                    _fitnessValue = FitnessFunction.GetValue(this);
+            get
+            {
+                _fitnessValue ??= _fitnessFunction.GetValue(this);
                 return _fitnessValue.Value;
             }
         }
 
-        public IFitnessFunction FitnessFunction { get; set; }
-
-        public Individual(IGenotype genotype, IPhenotype phenotype, IFitnessFunction fitnessFunction)
+        public Individual(IGenotype genotype, IPhenotype phenotype)
         {
             Genotype = genotype;
             Phenotype = phenotype;
             Phenotype.Genotype = genotype;
-            FitnessFunction = fitnessFunction;
+
+            if (_fitnessFunction != null)
+            {
+                return;
+            }
+
+            var factory = new TFitnessFunctionFactory();
+            _fitnessFunction = factory.Make();
         }
         
         public Individual() {}

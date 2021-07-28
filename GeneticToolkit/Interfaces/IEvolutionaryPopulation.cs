@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using GeneticToolkit.Utils.Factories;
+using GeneticToolkit.Factories;
 using JetBrains.Annotations;
 
 namespace GeneticToolkit.Interfaces
@@ -19,7 +18,7 @@ namespace GeneticToolkit.Interfaces
 
         ICompareCriteria CompareCriteria { get; set; }
 
-        IFitnessFunction FitnessFunction { get; set; }
+        IFitnessFunction FitnessFunction { get; }
 
         IHeavenPolicy HeavenPolicy { get; set; }
 
@@ -28,6 +27,7 @@ namespace GeneticToolkit.Interfaces
         Dictionary<string, IStatisticUtility> StatisticUtilities { get; set; }
 
         IIndividual Best { get; }
+        
         IIndividual GetBest();
 
         IIndividual[] OrderDescending();

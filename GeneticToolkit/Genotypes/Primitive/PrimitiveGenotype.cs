@@ -39,7 +39,10 @@ namespace GeneticToolkit.Genotypes.Primitive
             get
             {
                 if (Deprecated)
+                {
                     _value = BitConverterX.ToValue<T>(Genes);
+                }
+
                 return _value;
             }
             set

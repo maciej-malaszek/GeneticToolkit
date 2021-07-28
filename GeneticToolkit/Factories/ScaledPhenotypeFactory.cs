@@ -1,7 +1,8 @@
 ﻿using GeneticToolkit.Interfaces;
+using GeneticToolkit.Utils;
 using JetBrains.Annotations;
 
-namespace GeneticToolkit.Utils.Factories
+namespace GeneticToolkit.Factories
 {
     [PublicAPI]
     public class ScaledPhenotypeFactory<TPhenotype, TOutput> : IPhenotypeFactory<TPhenotype>
@@ -15,7 +16,7 @@ namespace GeneticToolkit.Utils.Factories
         }
         public TPhenotype Make(IGenotype genotype)
         {
-            return new TPhenotype()
+            return new()
             {
                 Genotype = genotype,
                 Scale = Range

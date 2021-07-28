@@ -35,8 +35,7 @@ namespace GeneticToolkit.Policies.Incompatibility
             return compatible ? candidate : null;
         }
 
-        public LethalMutationsWithReplacement(int maxRetries,
-            Func<IPopulation, IIndividual, bool> compatibilityFunction)
+        public LethalMutationsWithReplacement(int maxRetries, Func<IPopulation, IIndividual, bool> compatibilityFunction)
         {
             _maxRetries = maxRetries;
             IsCompatible = compatibilityFunction;

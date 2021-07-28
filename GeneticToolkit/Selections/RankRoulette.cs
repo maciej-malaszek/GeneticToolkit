@@ -1,20 +1,17 @@
 ﻿using GeneticToolkit.Interfaces;
-
 using JetBrains.Annotations;
-
 using System;
-using System.Collections.Generic;
 
 namespace GeneticToolkit.Selections
 {
     [PublicAPI]
-    public class RankRoulette : ISelectionMethod
+    public class RankRoulette<TRankingFunctionFactory> : ISelectionMethod where TRankingFunctionFactory : IRankingFunctionFactory, new()
     {
         public ICompareCriteria CompareCriteria { get; set; }
 
-        public Func<int, double> RankingValueFunc { get; set; }
+        private static Func<int, double> _rankingValueFunc;
 
-        protected Random RandomNumberGenerator { get; set; } = new Random();
+        protected Random RandomNumberGenerator { get; set; } = new();
 
         protected IPopulation Population { get; set; }
 
@@ -28,12 +25,14 @@ namespace GeneticToolkit.Selections
 
         protected double Sum { get; set; }
 
-        public RankRoulette() {}
+        public RankRoulette()
+        {
+        }
 
-        public RankRoulette(ICompareCriteria compareCriteria, Func<int, double> rankingValueFunc)
+        public RankRoulette(ICompareCriteria compareCriteria)
         {
             CompareCriteria = compareCriteria;
-            RankingValueFunc = rankingValueFunc;
+            _rankingValueFunc ??= new TRankingFunctionFactory().Make();
         }
 
         public IIndividual Select(IPopulation population)
@@ -41,17 +40,23 @@ namespace GeneticToolkit.Selections
             Deprecated = population != Population || population.Generation != CurrentGeneration;
 
             if (Deprecated)
+            {
                 Update(population);
+            }
 
-            double randomValue = RandomNumberGenerator.NextDouble() * Sum;
-            int iterator = population.Size - 1;
+            var randomValue = RandomNumberGenerator.NextDouble() * Sum;
+            var iterator = population.Size - 1;
 
             if (MinValue == null)
+            {
                 return Population[iterator];
+            }
 
-            double localSum = FitnessList[iterator] - MinValue.Value;
+            var localSum = FitnessList[iterator] - MinValue.Value;
             while (localSum < randomValue && iterator > 0)
+            {
                 localSum += FitnessList[--iterator] - MinValue.Value;
+            }
 
             return iterator < population.Size ? Population[iterator] : Population.HeavenPolicy.Memory[iterator - population.Size];
         }
@@ -88,7 +93,8 @@ namespace GeneticToolkit.Selections
             // Population is already sorted from best to worse
             for (var i = 0; i < Population.Size; i++)
             {
-                var functionValue = RankingValueFunc(CompareCriteria.OptimizationMode == EOptimizationMode.Minimize ? i : Population.Size - 1 - i);
+                var functionValue =
+                    _rankingValueFunc(CompareCriteria.OptimizationMode == EOptimizationMode.Minimize ? i : Population.Size - 1 - i);
                 if (!MinValue.HasValue || functionValue < MinValue)
                 {
                     MinValue = functionValue;

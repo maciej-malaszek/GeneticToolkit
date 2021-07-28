@@ -10,7 +10,7 @@ namespace GeneticToolkit.Genotypes.Collective.Combinatory
     [PublicAPI]
     public class PermutationGenotype : CombinatoryGenotype
     {
-        private readonly Random _random = new Random();
+        private readonly Random _random = new();
 
         public PermutationGenotype() : base(0)
         {
@@ -55,7 +55,7 @@ namespace GeneticToolkit.Genotypes.Collective.Combinatory
 
         protected void SwapElements(int index0, int index1)
         {
-            short t = Value[index0];
+            var t = Value[index0];
             SetValue(index0, Value[index1]);
             SetValue(index1, t);
         }
@@ -63,10 +63,15 @@ namespace GeneticToolkit.Genotypes.Collective.Combinatory
         public override void Randomize()
         {
             for (var i = 0; i < Count; i++)
+            {
                 SetValue(i, (short) i);
+            }
+
             UpdateBits();
             for (var i = 0; i < Count; i++)
+            {
                 SwapElements(_random.Next(0, Count), _random.Next(0, Count));
+            }
         }
 
         public override IGenotype Randomized()

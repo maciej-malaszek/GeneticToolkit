@@ -9,7 +9,7 @@ namespace GeneticToolkit.Crossovers
     [PublicAPI]
     public class SubTourChunkCrossover : ICrossover
     {
-        private readonly Random _random = new Random();
+        private readonly Random _random = new();
 
         public int ParentsCount { get; } = 2;
         public int ChildrenCount { get; } = 2;
@@ -59,7 +59,7 @@ namespace GeneticToolkit.Crossovers
 
             InitializeVariables(parents, genotypeSize, startingParent);
             // 1. Choose length of subtour chunk. First subtour must not be too big.
-            int subTourLength = _random.Next(AvailableIndexCount / 2);
+            var subTourLength = _random.Next(AvailableIndexCount / 2);
 
             do
             {
@@ -101,7 +101,10 @@ namespace GeneticToolkit.Crossovers
             // 8. If candidate was used and there are left unused indexes
             if (UsedIndexes[Target] && AvailableIndexCount > 0)
                 // 9. Select random target from list of available                            
+            {
                 Target = AvailableIndexes[_random.Next(0, AvailableIndexCount)];
+            }
+
             return Target;
         }
 

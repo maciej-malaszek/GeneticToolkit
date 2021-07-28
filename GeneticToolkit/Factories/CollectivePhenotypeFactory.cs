@@ -1,9 +1,8 @@
-using System.Runtime.Serialization;
 using GeneticToolkit.Interfaces;
 using GeneticToolkit.Phenotypes.Collective;
 using JetBrains.Annotations;
 
-namespace GeneticToolkit.Utils.Factories
+namespace GeneticToolkit.Factories
 {
     [PublicAPI]
     public class CollectivePhenotypeFactory<T> : IPhenotypeFactory<CollectivePhenotype<T>>
@@ -11,7 +10,7 @@ namespace GeneticToolkit.Utils.Factories
     {
         public CollectivePhenotype<T> Make(IGenotype genotype)
         {
-            return new CollectivePhenotype<T>()
+            return new()
             {
                 Genotype = genotype
             };

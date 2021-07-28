@@ -11,9 +11,11 @@ namespace GeneticToolkit.Policies.Mutation
         private float _mutationChance;        
         public float GetMutationChance(IPopulation population)
         {
-            if (_lastGeneration == population.Generation) 
+            if (_lastGeneration == population.Generation)
+            {
                 return _mutationChance;
-            
+            }
+
             _mutationChance = population.Homogeneity * MutationChanceFactor;
             _lastGeneration = population.Generation;
 

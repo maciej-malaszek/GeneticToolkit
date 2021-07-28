@@ -11,7 +11,7 @@ namespace GeneticToolkit.Crossovers
     [PublicAPI]
     public class OrderCrossover : ICrossover
     {
-        protected Random RandomNumberGenerator { get; set; } = new Random();
+        protected Random RandomNumberGenerator { get; set; } = new();
 
         public int ParentsCount => 2;
         public int ChildrenCount => 2;
@@ -32,9 +32,11 @@ namespace GeneticToolkit.Crossovers
             var secondaryPoints = new short[_genotypeSize - (_endCutIndex - _startCutIndex + 1)];
             for (var i = 0; i < _genotypeSize; i++)
             {
-                int x = parents[currentParentId].GetIndex(parents[nextParentId].Value[i]);
+                var x = parents[currentParentId].GetIndex(parents[nextParentId].Value[i]);
                 if (x < _startCutIndex || x > _endCutIndex)
+                {
                     secondaryPoints[otherPointsIndex++] = parents[nextParentId].Value[i];
+                }
             }
 
             return secondaryPoints;
@@ -46,8 +48,8 @@ namespace GeneticToolkit.Crossovers
 
             for (var j = 0; j < ChildrenCount; j++)
             {
-                int currentParentId = j;
-                int nextParentId = j + 1 >= ParentsCount ? 0 : j + 1;
+                var currentParentId = j;
+                var nextParentId = j + 1 >= ParentsCount ? 0 : j + 1;
                 secondaryPoints[currentParentId] = GetSecondaryPointForChild(parents, currentParentId, nextParentId);
             }
 
@@ -57,12 +59,15 @@ namespace GeneticToolkit.Crossovers
         private void InsertPointsIntoChild(short[] childSecondaryPoints, short[] childValues)
         {
             var index = 0;
-            int childIndex = _endCutIndex;
+            var childIndex = _endCutIndex;
             while (index < childSecondaryPoints.Length)
             {
                 childIndex++;
                 if (childIndex >= _genotypeSize)
+                {
                     childIndex = 0;
+                }
+
                 childValues[childIndex] = childSecondaryPoints[index++];
             }
         }
@@ -70,8 +75,11 @@ namespace GeneticToolkit.Crossovers
         private short[] GetValuesForChild(PermutationGenotype parent, short[] secondaryPoints)
         {
             var childValues = new short[_genotypeSize];
-            for (int i = _startCutIndex; i <= _endCutIndex; i++)
+            for (var i = _startCutIndex; i <= _endCutIndex; i++)
+            {
                 childValues[i] = parent.Value[i];
+            }
+
             InsertPointsIntoChild(secondaryPoints, childValues);
             return childValues;
         }
@@ -87,7 +95,7 @@ namespace GeneticToolkit.Crossovers
             _endCutIndex = RandomNumberGenerator.Next(_startCutIndex + 1, _genotypeSize);
             
             var childrenValues = new short[ChildrenCount][];
-            short[][] secondaryPoints = GetSecondaryPoints(parent);
+            var secondaryPoints = GetSecondaryPoints(parent);
 
             for (var j = 0; j < ChildrenCount; j++)
             {

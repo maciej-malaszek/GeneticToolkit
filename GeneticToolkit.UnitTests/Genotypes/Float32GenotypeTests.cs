@@ -1,6 +1,6 @@
 using NUnit.Framework;
 
-namespace GenotypeNUnit
+namespace GeneticToolkit.UnitTests.Genotypes
 {
     public class Float32GenotypeTests
     {

@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Net.Http.Json;
 using GeneticToolkit.Comparisons;
 using GeneticToolkit.Crossovers;
+using GeneticToolkit.FitnessFunctions;
 using GeneticToolkit.Interfaces;
 using GeneticToolkit.Mutations;
 using GeneticToolkit.Policies.Heaven;
@@ -14,7 +14,6 @@ using GeneticToolkit.Populations;
 using GeneticToolkit.Selections;
 using GeneticToolkit.Utils;
 using GeneticToolkit.Utils.Configuration;
-using GeneticToolkit.Utils.FitnessFunctions;
 using Newtonsoft.Json;
 using NUnit.Framework;
 
@@ -54,21 +53,21 @@ namespace GeneticToolkit.UnitTests.Serialization
         [Test]
         public void Factory_Instantiates_Simple_Class_Type()
         {
-            var objectInfo = new DynamicObjectInfo()
+            var objectInfo = new DynamicObjectInfo
             {
-                Type = typeof(Tournament).FullName,
+                Type = typeof(Tournament<MockFitnessFunctionFactory>).FullName,
                 Properties = new List<DynamicObjectInfo>
                 {
                     new()
                     {
-                        Name = nameof(Tournament.PopulationPercentage),
+                        Name = nameof(Tournament<MockFitnessFunctionFactory>.PopulationPercentage),
                         Type = "System.Single",
                         Value = 0.69f
                     }
                 },
                 GenericParameters = new List<string>()
             };
-            var result = DynamicObjectFactory<Tournament>.Build(objectInfo);
+            var result = DynamicObjectFactory<Tournament<MockFitnessFunctionFactory>>.Build(objectInfo);
             Assert.NotNull(result);
             Assert.AreEqual(0.69f, result.PopulationPercentage);
         }
@@ -140,7 +139,7 @@ namespace GeneticToolkit.UnitTests.Serialization
         {
             var objectInfo = new DynamicObjectInfo
             {
-                Type = typeof(Population).FullName,
+                Type = typeof(Population<MockFitnessFunctionFactory>).FullName,
                 Properties = new List<DynamicObjectInfo>
                 {
                     new()
@@ -171,18 +170,17 @@ namespace GeneticToolkit.UnitTests.Serialization
         [Test]
         public void Factory_Serializes_Complex_Instance()
         {
-            var fitnessFunction = new FitnessFunction(phenotype => 1);
-            var compareCriteria = new SimpleComparison(fitnessFunction, EOptimizationMode.Minimize);
+            var compareCriteria = new SimpleComparison<MockFitnessFunctionFactory>(EOptimizationMode.Minimize);
             var geneticAlgorithm = new GeneticAlgorithm
             {
                 StopConditions = new IStopCondition[]
                 {
                     new TimeSpanCondition(TimeSpan.FromSeconds(25f)),
                     new PopulationDegradation(0.9f),
-                    new SufficientIndividual(fitnessFunction, 0.0001f)
+                    new SufficientIndividual<MockFitnessFunctionFactory>(0.0001f)
                 },
                 StopConditionMode = EStopConditionMode.Any,
-                Population = new Population(fitnessFunction, 30)
+                Population = new Population<MockFitnessFunctionFactory>(30)
                 {
                     CompareCriteria = compareCriteria,
                     Crossover = new SinglePointCrossover(),
@@ -207,7 +205,7 @@ namespace GeneticToolkit.UnitTests.Serialization
                     MutationPolicy = new HesserMannerMutation(1, 1, 0.1f),
                     ResizePolicy = new ConstantResizePolicy(),
                     IncompatibilityPolicy = new AllowAll(),
-                    SelectionMethod = new Tournament(compareCriteria, 0.01f),
+                    SelectionMethod = new Tournament<MockFitnessFunctionFactory>(compareCriteria, 0.01f),
                     StatisticUtilities = new Dictionary<string, IStatisticUtility>()
                 }
             };
@@ -222,19 +220,19 @@ namespace GeneticToolkit.UnitTests.Serialization
         [Test]
         public void Factory_Deserializes_From_Json()
         {
-            var population = new Population(30)
+            var population = new Population<MockFitnessFunctionFactory>(30)
             {
                 Crossover = new SinglePointCrossover(),
                 HeavenPolicy = new OneGod()
             };
-            var serialized = DynamicObjectFactory<Population>.Serialize(population, "population");
+            var serialized = DynamicObjectFactory<Population<MockFitnessFunctionFactory>>.Serialize(population, "population");
             serialized.Parameters = new List<DynamicObjectInfo>()
             {
-                new DynamicObjectInfo {Name = "Size", Value = 30, Type = "System.Int32"}
+                new() {Name = "Size", Value = 30, Type = "System.Int32"}
             };
             var stringified = JsonConvert.SerializeObject(serialized);
             var info = JsonConvert.DeserializeObject<DynamicObjectInfo>(stringified);
-            var restoredPopulation = DynamicObjectFactory<Population>.Build(info);
+            var restoredPopulation = DynamicObjectFactory<Population<MockFitnessFunctionFactory>>.Build(info);
             Assert.NotNull(restoredPopulation);
             Assert.AreEqual(30, restoredPopulation.Size);
         }
@@ -242,18 +240,17 @@ namespace GeneticToolkit.UnitTests.Serialization
         [Test]
         public void Factory_Serialization_Is_Reversible()
         {
-            var fitnessFunction = new FitnessFunction(phenotype => 1);
-            var compareCriteria = new SimpleComparison(fitnessFunction, EOptimizationMode.Minimize);
+            var compareCriteria = new SimpleComparison<MockFitnessFunctionFactory>(EOptimizationMode.Minimize);
             var geneticAlgorithm = new GeneticAlgorithm
             {
                 StopConditions = new IStopCondition[]
                 {
                     new TimeSpanCondition(TimeSpan.FromSeconds(25f)),
                     new PopulationDegradation(0.9f),
-                    new SufficientIndividual(fitnessFunction, 0.0001f)
+                    new SufficientIndividual<MockFitnessFunctionFactory>(0.0001f)
                 },
                 StopConditionMode = EStopConditionMode.Any,
-                Population = new Population(fitnessFunction, 30)
+                Population = new Population<MockFitnessFunctionFactory>(30)
                 {
                     CompareCriteria = compareCriteria,
                     Crossover = new SinglePointCrossover(),
@@ -278,7 +275,7 @@ namespace GeneticToolkit.UnitTests.Serialization
                     MutationPolicy = new HesserMannerMutation(1, 1, 0.1f),
                     ResizePolicy = new ConstantResizePolicy(),
                     IncompatibilityPolicy = new AllowAll(),
-                    SelectionMethod = new Tournament(compareCriteria, 0.01f),
+                    SelectionMethod = new Tournament<MockFitnessFunctionFactory>(compareCriteria, 0.01f),
                     StatisticUtilities = new Dictionary<string, IStatisticUtility>()
                 }
             };

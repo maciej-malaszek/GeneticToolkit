@@ -13,7 +13,7 @@ namespace GeneticToolkit.Policies.Incompatibility
     {
         public AllowAll()
         {
-            IsCompatible = (population, individual) => true;
+            IsCompatible = (_, _) => true;
         }
 
         public Func<IPopulation, IIndividual, bool> IsCompatible { get; set; }

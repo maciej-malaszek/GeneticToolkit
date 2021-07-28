@@ -7,7 +7,7 @@ namespace GeneticToolkit.Genotypes.Collective.Combinatory
     [PublicAPI]
     public class AdjacencyListGenotype : CombinatoryGenotype
     {
-        private readonly Random _random = new Random();
+        private readonly Random _random = new();
 
         public AdjacencyListGenotype() : base(0)
         {
@@ -28,7 +28,10 @@ namespace GeneticToolkit.Genotypes.Collective.Combinatory
         {
             var value = new short[Count];
             for (var i = 0; i < Count - 1; i++)
+            {
                 value[decoded[i]] = decoded[i + 1];
+            }
+
             value[decoded[Count - 1]] = decoded[0];
 
             return value;
@@ -69,10 +72,10 @@ namespace GeneticToolkit.Genotypes.Collective.Combinatory
 
         public override short[] GetDecoded()
         {
-            int count = Value.Length;
+            var count = Value.Length;
             var decoded = new short[count];
             short index = 0;
-            short value = Value[index];
+            var value = Value[index];
 
             for (var i = 0; i < count; i++)
             {
@@ -88,13 +91,15 @@ namespace GeneticToolkit.Genotypes.Collective.Combinatory
         {
             var value = new short[Count];
             for (var i = 0; i < Count; i++)
+            {
                 value[i] = (short) i;
+            }
 
             for (var i = 0; i < Count; i++)
             {
-                int index0 = _random.Next(0, Count);
-                int index1 = _random.Next(0, Count);
-                short t = value[index0];
+                var index0 = _random.Next(0, Count);
+                var index1 = _random.Next(0, Count);
+                var t = value[index0];
                 value[index0] = value[index1];
                 value[index1] = t;
             }
@@ -112,11 +117,15 @@ namespace GeneticToolkit.Genotypes.Collective.Combinatory
         public override double SimilarityCheck(IGenotype other)
         {
             if (!(other is AdjacencyListGenotype adjacencyListGenotype))
+            {
                 return 0;
+            }
 
             double sum = 0;
             for (var i = 0; i < Count; i++)
+            {
                 sum += Value[i] == adjacencyListGenotype.Value[i] ? 1 : 0;
+            }
 
             return sum / Count;
         }

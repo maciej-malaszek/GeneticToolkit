@@ -1,7 +1,5 @@
 ﻿using GeneticToolkit.Interfaces;
-using GeneticToolkit.Utils.Factories;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
@@ -9,7 +7,8 @@ using JetBrains.Annotations;
 namespace GeneticToolkit.Populations
 {
     [PublicAPI]
-    public class Population : PopulationBase, IPopulation
+    public class Population<TFitnessFunctionFactory> : PopulationBase<TFitnessFunctionFactory>, IPopulation
+        where TFitnessFunctionFactory : IFitnessFunctionFactory, new()
     {
         #region Params
 
@@ -23,47 +22,51 @@ namespace GeneticToolkit.Populations
 
         #endregion
 
-        public Population() {}
+        public Population()
+        {
+        }
+
         public Population(int size)
         {
-            Individuals = new IIndividual[size];
-        }
-        public Population(IFitnessFunction fitnessFunction, int size)
-        {
-            FitnessFunction = fitnessFunction;
             Individuals = new IIndividual[size];
         }
 
         public override void NextGeneration()
         {
-            int nextGenSize = ResizePolicy.NextGenSize(this);
+            var nextGenSize = ResizePolicy.NextGenSize(this);
             var nextGeneration = new IIndividual[nextGenSize];
             for (var i = 0; i < nextGenSize / Crossover.ChildrenCount; i++)
             {
-                IGenotype[] parentalGenotypes = SelectParentalGenotypes();
-                IGenotype[] genotypes = Crossover.Cross(parentalGenotypes);
+                var parentalGenotypes = SelectParentalGenotypes();
+                var genotypes = Crossover.Cross(parentalGenotypes);
                 for (var j = 0; j < genotypes.Length; j++)
                 {
-                    IIndividual child = IndividualFactory.CreateFromGenotype(genotypes[j]);
+                    var child = IndividualFactory.CreateFromGenotype(genotypes[j]);
                     Mutation.Mutate(child.Genotype, MutationPolicy, this);
                     if (!IncompatibilityPolicy.IsCompatible(this, child))
+                    {
                         child = IncompatibilityPolicy.GetReplacement(this, child, parentalGenotypes);
+                    }
+
                     nextGeneration[i * Crossover.ChildrenCount + j] = child;
                 }
             }
 
-            int childrenCountDifference = nextGenSize % Crossover.ChildrenCount;
+            var childrenCountDifference = nextGenSize % Crossover.ChildrenCount;
             if (childrenCountDifference > 0)
             {
-                IGenotype[] parentalGenotypes = SelectParentalGenotypes();
-                IGenotype[] genotypes = Crossover.Cross(parentalGenotypes);
-                int start = nextGenSize - childrenCountDifference;
+                var parentalGenotypes = SelectParentalGenotypes();
+                var genotypes = Crossover.Cross(parentalGenotypes);
+                var start = nextGenSize - childrenCountDifference;
                 for (var j = 0; j < childrenCountDifference; j++)
                 {
-                    IIndividual child = IndividualFactory.CreateFromGenotype(genotypes[j]);
+                    var child = IndividualFactory.CreateFromGenotype(genotypes[j]);
                     Mutation.Mutate(child.Genotype, MutationPolicy, this);
                     if (!IncompatibilityPolicy.IsCompatible(this, child))
+                    {
                         child = IncompatibilityPolicy.GetReplacement(this, child, parentalGenotypes);
+                    }
+
                     nextGeneration[start + j] = child;
                 }
             }
@@ -77,7 +80,7 @@ namespace GeneticToolkit.Populations
                 GC.Collect();
             }
         }
-        
+
 
         #region Private Methods
 
@@ -93,19 +96,19 @@ namespace GeneticToolkit.Populations
             for (var x = 0; x < parents.Length; x++)
             {
                 var trial = 0;
-                IGenotype candidate = SelectionMethod.Select(this).Genotype;
+                var candidate = SelectionMethod.Select(this).Genotype;
                 while (ParentAlreadySelected(candidate, parents) && Homogeneity < DegenerationLimit &&
                        trial++ < MaxSelectionTries)
+                {
                     candidate = SelectionMethod.Select(this).Genotype;
+                }
+
                 parents[x] = candidate;
             }
 
             return parents;
         }
 
-
         #endregion
-
-
     }
 }

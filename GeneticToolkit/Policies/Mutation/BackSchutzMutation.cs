@@ -4,6 +4,7 @@ using System;
 
 namespace GeneticToolkit.Policies.Mutation
 {
+    // TODO: NEEDS FIXES
     public class BackSchutzMutation : IMutationPolicy
     {
         public float GetMutationChance(IPopulation population)
@@ -13,7 +14,7 @@ namespace GeneticToolkit.Policies.Mutation
 
         public float CalculationsTotalTime { get; set; }
         public float CalculationTime { get; set; }
-        public float MutatedGenesPercent { get; }
+        public float MutatedGenesPercent { get; set; }
 
         public Func<float> GetCalculationTime { get; set; }
 

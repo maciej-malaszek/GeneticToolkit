@@ -4,16 +4,16 @@ using JetBrains.Annotations;
 namespace GeneticToolkit.Comparisons
 {
     [PublicAPI]
-    public class SimpleComparison : ICompareCriteria
+    public class SimpleComparison<TFitnessFunctionFactory> : ICompareCriteria where TFitnessFunctionFactory : IFitnessFunctionFactory, new()
     {
-        public IFitnessFunction FitnessFunction { get; set; }
+        private static IFitnessFunction _fitnessFunction;
         
         public SimpleComparison() {}
 
-        public SimpleComparison(IFitnessFunction fitnessFunction, EOptimizationMode optimizationMode = EOptimizationMode.Maximize)
+        public SimpleComparison(EOptimizationMode optimizationMode = EOptimizationMode.Maximize)
         {
             OptimizationMode = optimizationMode;
-            FitnessFunction = fitnessFunction;
+            _fitnessFunction ??= new TFitnessFunctionFactory().Make();
         }
 
         public EOptimizationMode OptimizationMode { get; private set; }
@@ -21,17 +21,21 @@ namespace GeneticToolkit.Comparisons
         public IIndividual GetBetter( IIndividual  x1,  IIndividual  x2)
         {
             if (x1 == null)
+            {
                 return x2;
-            if (x2 == null)
-                return x1;
-            return Compare(x1, x2) <= 0 ? x1 : x2;
+            }
+
+            return x2 == null ? x1 : Compare(x1, x2) <= 0 ? x1 : x2;
         }
 
         public int Compare( IIndividual  x1,  IIndividual  x2)
         {
-            int result = FitnessFunction.GetValue(x1).CompareTo(FitnessFunction.GetValue(x2));
+            var result = _fitnessFunction.GetValue(x1).CompareTo(_fitnessFunction.GetValue(x2));
             if (OptimizationMode == EOptimizationMode.Maximize)
+            {
                 result *= -1;
+            }
+
             return result;
         }
     }

@@ -11,7 +11,7 @@ namespace GeneticToolkit.Crossovers
     [PublicAPI]
     public class PartiallyMappedCrossover : ICrossover
     {
-        protected Random RandomNumberGenerator { get; set; } = new Random();
+        protected Random RandomNumberGenerator { get; set; } = new();
 
         public int ParentsCount => 2;
         public int ChildrenCount => 2;
@@ -38,11 +38,15 @@ namespace GeneticToolkit.Crossovers
             for (var i = 0; i < _genotypeSize; i++)
             {
                 if (i >= _startCutIndex && i <= _endCutIndex)
+                {
                     childValues[i] = parent[nextParentId].Value[i];
+                }
                 else
+                {
                     childValues[i] = GetValue(
                         parent[currentParentId], parent[nextParentId],
                         parent[currentParentId].Value[i]);
+                }
             }
 
             return childValues;
@@ -58,11 +62,10 @@ namespace GeneticToolkit.Crossovers
             _genotypeSize = parent[0].Count;
             UpdateCutIndexes();
 
-            for (var j = 0; j < ChildrenCount; j++)
+            for (var currentParentId = 0; currentParentId < ChildrenCount; currentParentId++)
             {
-                int currentParentId = j;
-                int nextParentId = j + 1 >= ParentsCount ? 0 : j + 1;
-                ((PermutationGenotype) children[j]).Value = GetValuesForChild(parent, currentParentId, nextParentId);
+                var nextParentId = currentParentId + 1 >= ParentsCount ? 0 : currentParentId + 1;
+                ((PermutationGenotype) children[currentParentId]).Value = GetValuesForChild(parent, currentParentId, nextParentId);
             }
 
             return children;
@@ -70,7 +73,7 @@ namespace GeneticToolkit.Crossovers
 
         public short GetValue(PermutationGenotype parent, PermutationGenotype otherParent, short value)
         {
-            int index = otherParent.GetIndex(value);
+            var index = otherParent.GetIndex(value);
 
             while (index >= _startCutIndex && index <= _endCutIndex)
             {

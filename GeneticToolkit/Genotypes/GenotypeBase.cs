@@ -71,14 +71,19 @@ namespace GeneticToolkit.Genotypes
         public virtual double SimilarityCheck(IGenotype other)
         {
             if (other.Length != Length)
+            {
                 return 0;
+            }
+
             long sum = 0;
 
             for (var i = 0; i < Length; i++)
             {
-                byte diff = (byte)(Genes[i] ^ other.Genes[i]);
+                var diff = (byte)(Genes[i] ^ other.Genes[i]);
                 for (var j = 0; j < 8; j++)
+                {
                     sum += (diff & (1u << j)) > 0 ? 1 : 0;
+                }
             }
 
             return (8.0 * Length - sum) / (Length * 8.0);

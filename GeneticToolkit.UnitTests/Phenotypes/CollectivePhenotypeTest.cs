@@ -1,12 +1,11 @@
 using System;
+using GeneticToolkit.Factories;
 using GeneticToolkit.Genotypes.Collective;
 using GeneticToolkit.Interfaces;
 using GeneticToolkit.Phenotypes.Collective;
-using GeneticToolkit.Utils.Factories;
-using GeneticToolkit.Utils.FitnessFunctions;
 using NUnit.Framework;
 
-namespace CollectivePhenotypeNUnit
+namespace GeneticToolkit.UnitTests.Phenotypes
 {
     internal struct SimpleStructure : IGeneticallySerializable
     {
@@ -28,14 +27,14 @@ namespace CollectivePhenotypeNUnit
     {
         private CollectivePhenotypeFactory<SimpleStructure> _phenotypeFactory;
 
-        private IndividualFactory<CollectiveGenotype<SimpleStructure>, CollectivePhenotype<SimpleStructure>>
+        private IndividualFactory<CollectiveGenotype<SimpleStructure>, CollectivePhenotype<SimpleStructure>, MockFitnessFunctionFactory>
             _individualFactory;
 
         private IIndividual _individual;
 
         private const int TestedInteger = 1234;
 
-        private static readonly SimpleStructure TestedSimpleStructure = new SimpleStructure()
+        private static readonly SimpleStructure _testedSimpleStructure = new()
             {IntegerValue = TestedInteger};
 
         [SetUp]
@@ -43,7 +42,8 @@ namespace CollectivePhenotypeNUnit
         {
             _phenotypeFactory = new CollectivePhenotypeFactory<SimpleStructure>();
             _individualFactory =
-                new IndividualFactory<CollectiveGenotype<SimpleStructure>, CollectivePhenotype<SimpleStructure>>(_phenotypeFactory, new FitnessFunction(phenotype => 0));
+                new IndividualFactory<CollectiveGenotype<SimpleStructure>, CollectivePhenotype<SimpleStructure>, MockFitnessFunctionFactory>(
+                    _phenotypeFactory);
         }
 
         [Test(Author = "Maciej Małaszek", Description = "Is it possible to create individual with such phenotype")]
@@ -63,13 +63,12 @@ namespace CollectivePhenotypeNUnit
 
             Assert.Pass();
         }
-        
-        
+
 
         [Test(Author = "Maciej Małaszek", Description = "Is phenotype correctly decoded")]
         public void Decoding()
         {
-            var stubGenotype = new CollectiveGenotype<SimpleStructure>(TestedSimpleStructure);
+            var stubGenotype = new CollectiveGenotype<SimpleStructure>(_testedSimpleStructure);
             var collectivePhenotype = _phenotypeFactory.Make(stubGenotype);
             var decodedStructure = collectivePhenotype.GetValue();
 

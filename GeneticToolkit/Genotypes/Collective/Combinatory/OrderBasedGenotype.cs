@@ -12,14 +12,18 @@ namespace GeneticToolkit.Genotypes.Collective.Combinatory
 
             var indexes = new short[Count];
             for (short i = 0; i < Count; i++)
+            {
                 indexes[i] = i;
+            }
         }
 
         protected OrderBasedGenotype(byte[] bytes) : base(bytes)
         {
             var indexes = new short[bytes.Length / sizeof(short)];
             for (short i = 0; i < bytes.Length / sizeof(short); i++)
+            {
                 indexes[i] = i;
+            }
         }
 
         public override IGenotype EmptyCopy()
@@ -61,11 +65,13 @@ namespace GeneticToolkit.Genotypes.Collective.Combinatory
                 var offset = 0;
                 int val = Value[i];
                 for (var j = 0; j <= val; j++)
+                {
                     if (indexIsUsed[j + offset])
                     {
                         offset++;
                         j--;
                     }
+                }
 
                 decoded[i] = (short) (val + offset);
                 indexIsUsed[decoded[i]] = true;

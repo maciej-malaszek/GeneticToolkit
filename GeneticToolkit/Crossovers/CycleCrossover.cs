@@ -16,7 +16,9 @@ namespace GeneticToolkit.Crossovers
         public CycleCrossover(Dictionary<string, object> parameters) {  }
 
         public int ParentsCount => 2;
+        
         public int ChildrenCount => 2;
+        
         public int BitAlign { get; set; }
 
         public IGenotype[] Cross(IGenotype[] parents)

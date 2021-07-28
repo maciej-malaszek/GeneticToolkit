@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.IO.Enumeration;
 using System.Linq;
-using System.Net.Http.Headers;
 using System.Reflection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -29,6 +27,26 @@ namespace GeneticToolkit.Utils.Configuration
 
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         public List<string> GenericParameters { get; set; }
+
+        private Dictionary<string, string> _typeAssembly = new();
+
+        private string GetAssemblyName(string type)
+        {
+            if (_typeAssembly.ContainsKey(type))
+            {
+                return _typeAssembly[type];
+            }
+
+            var assembly = AppDomain.CurrentDomain
+                .GetAssemblies()
+                .Where(s => s.FullName != null)
+                .Where(s => type.StartsWith(s.FullName.Split(",").First()))
+                .FirstOrDefault(s => 
+                    s.GetTypes().Select(t => t.FullName).Contains(type)
+                );
+            _typeAssembly[type] = assembly?.FullName;
+            return _typeAssembly[type];
+        }
 
         public bool IsGenericType()
         {
@@ -75,9 +93,16 @@ namespace GeneticToolkit.Utils.Configuration
             }
 
             var genericParameters = new Type[GenericParameters.Count];
+
+
             for (var i = 0; i < genericParameters.Length; i++)
             {
-                genericParameters[i] = System.Type.GetType(GenericParameters[i]);
+                var assemblyName = GetAssemblyName(GenericParameters[i]);
+                
+                var assemblyTypeName = string.IsNullOrWhiteSpace(assemblyName) 
+                    ? GenericParameters[i] 
+                    : $"{GenericParameters[i]},{assemblyName}";
+                genericParameters[i] = System.Type.GetType(assemblyTypeName);
             }
 
             var genericType = type.MakeGenericType(genericParameters);
@@ -118,7 +143,7 @@ namespace GeneticToolkit.Utils.Configuration
         {
             if ((objectInfo.Parameters?.Count ?? 0) == 0)
             {
-                return (T)Activator.CreateInstance(type);
+                return (T) Activator.CreateInstance(type);
             }
 
             var constructor = FindConstructor(objectInfo);
@@ -128,7 +153,7 @@ namespace GeneticToolkit.Utils.Configuration
             }
 
             var parameters = GetConstructorParameters(objectInfo, constructor);
-            return (T)constructor.Invoke(parameters);
+            return (T) constructor.Invoke(parameters);
         }
 
         public static dynamic ParsePrimitiveValue(DynamicObjectInfo objectInfo)
@@ -141,7 +166,7 @@ namespace GeneticToolkit.Utils.Configuration
 
             if (type.IsArray)
             {
-                var value = (JArray)objectInfo.Value;
+                var value = (JArray) objectInfo.Value;
                 var values = value.ToObject<List<DynamicObjectInfo>>()?
                     .Select(DynamicObjectFactory<dynamic>.Build)
                     .ToArray();
@@ -181,7 +206,7 @@ namespace GeneticToolkit.Utils.Configuration
 
         public static void SetArrayPropertyValue(DynamicObjectInfo propertyInfo, dynamic instance)
         {
-            var infos = ((JArray)propertyInfo.Value).Select(t => t.ToObject<DynamicObjectInfo>()).ToList();
+            var infos = ((JArray) propertyInfo.Value).Select(t => t.ToObject<DynamicObjectInfo>()).ToList();
             var values = infos.Select(DynamicObjectFactory<dynamic>.Build).ToArray();
             var arrayType = Type.GetType(propertyInfo.ArrayTypeName());
             if (arrayType == null)
@@ -262,7 +287,7 @@ namespace GeneticToolkit.Utils.Configuration
                     Name = name,
                     Parameters = new List<DynamicObjectInfo>
                     {
-                        new() { Name = "ticks", Type = "System.Int64", Value = ((TimeSpan)instance).Ticks }
+                        new() {Name = "ticks", Type = "System.Int64", Value = ((TimeSpan) instance).Ticks}
                     },
                     Type = "System.TimeSpan"
                 };
@@ -285,7 +310,7 @@ namespace GeneticToolkit.Utils.Configuration
                     Properties = null,
                     GenericParameters = type.GetGenericArguments().Select(t => t.FullName).ToList(),
                     Type = typeName,
-                    Value = ((System.Collections.IEnumerable)instance)?.Cast<object>().Select(obj => Serialize(obj, name)).ToArray()
+                    Value = ((System.Collections.IEnumerable) instance)?.Cast<object>().Select(obj => Serialize(obj, name)).ToArray()
                 };
             }
 

@@ -266,34 +266,54 @@ namespace GeneticToolkit.Utils.Extensions
             var tType = typeof(T);
 
             if (tType == typeof(bool))
+            {
                 returnValue = ToBoolean(value, startIndex);
+            }
 
             if (tType == typeof(char))
+            {
                 returnValue = ToChar(value, startIndex);
+            }
 
             if (tType == typeof(short))
+            {
                 returnValue = ToInt16(value, startIndex);
+            }
 
             if (tType == typeof(int))
+            {
                 returnValue = ToInt32(value, startIndex);
+            }
 
             if (tType == typeof(long))
+            {
                 returnValue = ToInt64(value, startIndex);
+            }
 
             if (tType == typeof(float))
+            {
                 returnValue = ToSingle(value, startIndex);
+            }
 
             if (tType == typeof(double))
+            {
                 returnValue = ToDouble(value, startIndex);
+            }
 
             if (tType == typeof(ushort))
+            {
                 returnValue = ToUInt16(value, startIndex);
+            }
 
             if (tType == typeof(uint))
+            {
                 returnValue = ToUInt32(value, startIndex);
+            }
 
             if (tType == typeof(ulong))
+            {
                 returnValue = ToUInt64(value, startIndex);
+            }
 
             return (T) (returnValue == null ? default(T) : Convert.ChangeType(returnValue, tType));
         }
@@ -304,34 +324,54 @@ namespace GeneticToolkit.Utils.Extensions
             var tType = typeof(T);
 
             if (tType == typeof(bool))
+            {
                 returnValue = ToBoolean(value);
+            }
 
             if (tType == typeof(char))
+            {
                 returnValue = ToChar(value);
+            }
 
             if (tType == typeof(short))
+            {
                 returnValue = ToInt16(value);
+            }
 
             if (tType == typeof(int))
+            {
                 returnValue = ToInt32(value);
+            }
 
             if (tType == typeof(long))
+            {
                 returnValue = ToInt64(value);
+            }
 
             if (tType == typeof(float))
+            {
                 returnValue = ToSingle(value);
+            }
 
             if (tType == typeof(double))
+            {
                 returnValue = ToDouble(value);
+            }
 
             if (tType == typeof(ushort))
+            {
                 returnValue = ToUInt16(value);
+            }
 
             if (tType == typeof(uint))
+            {
                 returnValue = ToUInt32(value);
+            }
 
             if (tType == typeof(ulong))
+            {
                 returnValue = ToUInt64(value);
+            }
 
             return (T) (returnValue == null ? default(T) : Convert.ChangeType(returnValue, tType));
         }

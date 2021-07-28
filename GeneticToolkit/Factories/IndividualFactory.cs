@@ -2,31 +2,30 @@
 using GeneticToolkit.Interfaces;
 using JetBrains.Annotations;
 
-namespace GeneticToolkit.Utils.Factories
+namespace GeneticToolkit.Factories
 {
     [PublicAPI]
-    public class IndividualFactory<TGenotype, TPhenotype> : IndividualFactoryBase
+    public class IndividualFactory<TGenotype, TPhenotype,TFitnessFunctionFactory> : IndividualFactoryBase
         where TGenotype : IGenotype, new()
         where TPhenotype : IPhenotype, new()
+        where TFitnessFunctionFactory : IFitnessFunctionFactory, new()
     {
         public IPhenotypeFactory<TPhenotype> Factory { get; set; }
-        public IFitnessFunction FitnessFunction { get; set; }
 
-        public IndividualFactory(IPhenotypeFactory<TPhenotype> factory, IFitnessFunction fitnessFunction)
+        public IndividualFactory(IPhenotypeFactory<TPhenotype> factory)
         {
             Factory = factory;
-            FitnessFunction = fitnessFunction;
         }
 
         public override IIndividual CreateFromGenotype(IGenotype genotype)
         {
-            return new Individual(genotype, Factory.Make(genotype),FitnessFunction);
+            return new Individual<TFitnessFunctionFactory>(genotype, Factory.Make(genotype));
         }
 
         public override IIndividual CreateRandomIndividual()
         {
             var genotype = new TGenotype().Randomized();
-            return new Individual(genotype, Factory.Make(genotype),FitnessFunction);
+            return new Individual<TFitnessFunctionFactory>(genotype, Factory.Make(genotype));
         }
     }
 }
