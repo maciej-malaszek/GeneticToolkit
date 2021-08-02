@@ -65,14 +65,20 @@ namespace GeneticToolkit.Utils.Configuration
 
         public string ArrayTypeName()
         {
-            return IsArray() ? Type.Remove(Type.IndexOf("[]", StringComparison.Ordinal)) : null;
+            if (IsArray() == false)
+            {
+                return null;
+            }
+
+            var typeName = Type.Remove(Type.IndexOf("[]", StringComparison.Ordinal));
+            return IsGenericType() ? $"{typeName}`{GenericParameters.Count}" : typeName;
         }
 
         public string BuildStringType()
         {
             if (IsArray())
             {
-                return IsGenericType() ? $"{Type}`{GenericParameters.Count}[]" : $"{Type}[]";
+                return IsGenericType() ? $"{ArrayTypeName()}`{GenericParameters.Count}[]" : Type;
             }
 
             return IsGenericType() ? $"{Type}`{GenericParameters.Count}" : $"{Type}";
@@ -80,13 +86,12 @@ namespace GeneticToolkit.Utils.Configuration
 
         public Type BuildType()
         {
+            var type = System.Type.GetType(IsArray() ? $"{ArrayTypeName()}" : BuildStringType());
             if (!IsGenericType())
             {
-                return System.Type.GetType(BuildStringType());
+                return type;
             }
 
-            var typeName = $"{Type}`{GenericParameters.Count}";
-            var type = System.Type.GetType(typeName);
             if (type == null)
             {
                 return null;
@@ -106,7 +111,8 @@ namespace GeneticToolkit.Utils.Configuration
             }
 
             var genericType = type.MakeGenericType(genericParameters);
-            return IsArray() ? Array.CreateInstance(genericType, 1).GetType() : genericType;
+            return genericType;
+            //  return IsArray() ? Array.CreateInstance(genericType, 1).GetType() : genericType;
         }
     }
 
@@ -208,12 +214,11 @@ namespace GeneticToolkit.Utils.Configuration
         {
             var infos = ((JArray) propertyInfo.Value).Select(t => t.ToObject<DynamicObjectInfo>()).ToList();
             var values = infos.Select(DynamicObjectFactory<dynamic>.Build).ToArray();
-            var arrayType = Type.GetType(propertyInfo.ArrayTypeName());
+            var arrayType = propertyInfo.BuildType();
             if (arrayType == null)
             {
                 return;
             }
-
             var arrayInstance = Array.CreateInstance(arrayType, values.Length);
             Array.Copy(values, arrayInstance, values.Length);
             instance.GetType().GetProperty(propertyInfo.Name)?.SetValue(instance, arrayInstance);
