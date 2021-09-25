@@ -4,6 +4,7 @@ using GeneticToolkit.Populations;
 using JetBrains.Annotations;
 
 using System;
+using System.Linq;
 using GeneticToolkit.Utils.Exceptions;
 
 namespace GeneticToolkit.Selections
@@ -37,9 +38,10 @@ namespace GeneticToolkit.Selections
             {
                 CompareCriteria = CompareCriteria,
             };
+            
             for (var i = 0; i < realSize; i++)
             {
-                if (population.HeavenPolicy.UseInCrossover)
+                if (population.HeavenPolicy.UseInCrossover == false)
                 {
                     tournament[i] = population[_randomNumberGenerator.Next(population.Size)];
                 }

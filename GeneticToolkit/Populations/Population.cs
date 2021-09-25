@@ -86,8 +86,10 @@ namespace GeneticToolkit.Populations
 
         private bool ParentAlreadySelected(IGenotype candidate, IEnumerable<IGenotype> parents)
         {
-            return parents.Any(parent =>
-                parent != null && (candidate == parent || candidate.SimilarityCheck(parent) > IncestLimit));
+            return parents
+                .Any(parent => parent != null && 
+                    (candidate == parent || candidate is null || candidate.SimilarityCheck(parent) > IncestLimit)
+                );
         }
 
         private IGenotype[] SelectParentalGenotypes()
@@ -96,11 +98,10 @@ namespace GeneticToolkit.Populations
             for (var x = 0; x < parents.Length; x++)
             {
                 var trial = 0;
-                var candidate = SelectionMethod.Select(this).Genotype;
-                while (ParentAlreadySelected(candidate, parents) && Homogeneity < DegenerationLimit &&
-                       trial++ < MaxSelectionTries)
+                var candidate = SelectionMethod.Select(this)?.Genotype;
+                while (ParentAlreadySelected(candidate, parents) && Homogeneity < DegenerationLimit && trial++ < MaxSelectionTries)
                 {
-                    candidate = SelectionMethod.Select(this).Genotype;
+                    candidate = SelectionMethod.Select(this)?.Genotype;
                 }
 
                 parents[x] = candidate;
